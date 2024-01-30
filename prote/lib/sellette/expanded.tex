@@ -1,0 +1,18 @@
+\catcode`\{=1 \catcode`\}=2
+\def\space{ }
+\def\a{\b}\def\b{c}
+\message{unprotected message: "Hello \a\space #";}
+\protected\def\space{ }
+\message{protected message: "Hello \a\space #";}
+\message{protected expanded: "\detokenize\expandafter{\expanded{Hello \a\space #}}"}
+\catcode`\@=11
+\catcode`\#=6
+\protected\def\newconditional{\def}
+\def\@firstofone#1{#1}
+\def\@firstoftwo#1#2{#1}
+\def\y{x}
+\expanded {\noexpand \@firstofone%
+{\unexpanded {\newconditional \SomeCS #1}}
+{\unexpanded \expandafter {\@firstoftwo{\y}{y}}}}
+\show\SomeCS
+\end

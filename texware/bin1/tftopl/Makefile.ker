@@ -1,0 +1,20 @@
+PROG = tftopl
+
+LIBES = $(WEBLIB) $(PASCALLIB)
+
+MAKE_STATIC=YES
+
+COBJ =	tftopl.o
+
+all: $(PROG)
+
+tftopl.p tftopl.pool:	$(KNUTH_SRC_DIR)/texware/tftopl.web tftopl.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/texware/tftopl.web tftopl.ch
+
+tftopl.c coerce.h: 	tftopl.p tftopl.h
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		tftopl.p \
+		| $(M_DIR)/pp2rc -h tftopl.h\
+		| $(M_DIR)/fixwrites >tftopl.c
+	

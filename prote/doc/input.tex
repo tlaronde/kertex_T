@@ -1,0 +1,304 @@
+\input article
+\input manmac
+%\magnification=1200
+\parskip=1ex
+
+% It starts here...
+%
+\hrule height 0.2ex
+\vskip 1ex
+\maintitle{The bytes stream as input: data and filenames}
+\vskip 3ex
+\centerline{Thierry Laronde---tlaronde\AT polynum.com}
+\centerline{2022-04-17}
+\vskip 1ex
+\hrule height 0.2ex
+\vskip 1ex
+
+\resume{Thanks to Phelype Oleinik for providing a \TeX\ test file
+for the implementation and for commenting on the early draft!}
+ 
+\begindiv The input in \TeX\ related programs
+
+@ The Donald E. Knuth's digital typography programs accept as input 
+lines as streams of unsigned integers in the range $[0,255]$. Whether
+these, in the programs, are octets (bytes) or not is an implementation
+detail. What the programs see is a sequence of unsigned integers in
+this range.
+
+Since the \TeX\ and \MF\ programs are compilers/interpreters chewing
+``text'', they have to understand at least a subset of this integer
+range as mapping to defined "letters". The convention adopted for
+the encoding of this subset is the ASCII one, at least for the
+printable characters in the subrange $[32, 126]$, that is from
+space to tilde (see module $21$ of {\tt tex.web} for example).
+There are $3$ other special values: the {\tt null\_code} ($0$); the
+{\tt carriage\_return} ($13$ i.e. ASCII carriage return, not new
+line) and the {\tt invalid\_code} ($127$) (see module $22$ of {\tt
+tex.web} for example). But if these three values are used internally,
+they are not expected to appear by default in the input.
+
+\extra{This use of a stream of bytes and of a (partial) ASCII convention
+leads naturally to the conclusion that UTF-8 also could be handled
+by \TeX\ (the program) without very involved modifications---but
+the devil is in the details: see below. This adaptation to accept also
+the UTF-8 way of encoding wider integers as a stream of bytes (but not
+in any mapping assumption, except for ASCII, even not Unicode) will be
+done some day in ker\TeX, but is not done yet.}
+
+@ Since the programs expect at least this ASCII convention for the
+subrange specified, two arrays are used to allow a conversion between
+the system encoding and this \TeX\ encoding. 
+
+The programs get input files line by line, and the routine inputing
+a new line in the buffer scanned by the programs, translates the
+system characters to the \TeX\ convention using the so-called {\tt xord}
+array.
+
+When the programs send something to the system (including on the
+terminal), the other array, so-called {\tt xchr}, is used to translate
+from the \TeX\ convention to the system encoding.
+
+\crux{We have {\sl not} written: the {\sl converse} or {\sl reverse}
+array in order to not give the false impression that the mapping
+conversion between ``chars'' is, implicitely, reversible i.e. that
+the mapping from $[0,255]$ to $[0,255]$ is injective and thus,
+the sets being finite and of equal cardinal, the translation 
+function is bijective: in general, it shall not be taken for granted
+that $xchr[xord[i]]==i$. For example, in the written source, this
+does not hold. Since these arrays have been created to allow
+adaptation according to local (system) idiosynchrasies, it depends
+on the implementation.}
+
+\extra{In ker\TeX, the arrays are the identity arrays: the mapping
+yields the very same octet in both ways. This allows to input
+whatever, but the user level (macro package using the engines) has
+to provide handling for the supplementary values outside the ASCII
+printable range that may appear as input.}
+
+@ It shall be noted that since this ASCII partial convention is
+used as the basis for \TeX\ (here: not the system, but the very
+program itself), the result emitted by \TeX\ is in this \TeX\ encoding
+for the fonts\note{There are means to create a TFM file for use by
+\TeX, refering to a font (for the glyphes) not organized according
+to this convention: virtual fonts. In this case, the remapping is done
+by the DVI interpreter when a hardcopy is to be produced.}.
+
+@ There is one word upon which an emphasis has to be made: {\sl line}.
+The input (since the inputs are text programs) is read line by line, but
+whatever is the marker of the end of line is not part of what is scanned
+by the program: the {\tt eoln}---being one or several characters---is
+removed, as well as trailing ``blanks''.
+
+\crux{In ker\TeX, the trailing ``blanks'' removed are not limited to
+``the'' (ASCII) space character, but are whatever bytes are considered
+to be space by the C routine {\tt isspace(3)}, that is ``the'' space and
+all the binary spaces. If one wants some trailing spaces to be
+kept (because one uses them as active characters for example), they must
+be followed by a non space character (for example, a comment character)
+before the end of line in order to be retained.}
+
+\extra{In ker\TeX, the C library {\tt fgets(3)} routine is used
+in order to let the system convert whatever is an end of line marker
+to $\bslash n$. The question arises about the portability of a
+\TeX\ or a \MF\ script, written on a system and with an editor that
+will use say the carriage return as the end of line marker (not
+followed by the ASCII end of line; this is the case for old
+Macintosh), if such a script would be fed to a \TeX\ or \MF\ instance
+on a system with a differing convention: the lines will not be
+detected the same way, and in this case the whole file would be absorbed
+and an error will probably be raised because the size of the buffer
+is not sufficient to hold the line\dots It shall be noted that some
+network utilities, like {\tt ftp(1)}, have a special mode so that
+the transfer of files declared as text would change the end of line
+markers. But the fact is that, contrary to common belief, a ``text''
+file is not absolutely portable.}
+
+\begindiv Filenames
+
+@ In some sense, there are four different ways a filename is handled
+in the \TeX\ or \MF\ (or derived) program:
+
+(1)~The {\tt poolname} is a file whose name is given ``as is'',
+without any translation (with {\tt xord} or {\tt xch}) or scanning,
+to the opening routine since it is needed before everything---think
+of bootstrapping a kernel.
+
+(2)~A file format, that is a pre-compiled version of a set of macros and
+predefined memory areas, is given with a name taken at the very
+beginning of the job. This name (even the one defined as the default
+name) is translated using the {\tt xord} array but is handled by
+a special routine.
+ 
+(3)~Other input files have their name taken from the stream of
+text instructions, meaning that, depending on the implementation,
+there is a first translation of the system bytes to the \TeX\ convention
+to feed the buffer; followed by an expansion of what is given and
+a tokenization of the result with ``the'' space being used as the
+delimiter and the filename being defined as the first such token;
+and then a conversion of this defined name (with, perhaps, an extension
+added) back to the system encoding.
+
+(4)~And finally, when an input file is not found, if interactive,
+there is a prompt to give the file name; but this is not subjected
+to expansion, contrary to the third case above, but still with a
+space tokenization.
+
+In the special first case of the poolname, spaces could be in the
+name, while they can't exist in the other cases due to the space
+tokenization.
+
+\extra{Blanks in filenames---or paths---are definitively not something
+the author likes or recommends and a \TeX\ implementation could
+accept---it was the case in ker\TeX\ before this very
+modification---spaces in paths searched but not in the portion of the
+filenames passed to the programs. But we enforce no policy: we provide
+rope\dots}
+
+@ A filename given to the |\input| primitive has always an extension. If
+the extension is not given, the default one is added (this is ``.tex''
+for the \TeX\ engines; ``.mf'' for a \MF\ script; ``.mp'' for a \MP\
+script).
+
+So one can input a file with a not default extension but can not input
+a file without an extension.
+
+@ Engines derived from \TeX\ (here: the program itself) have
+allowed to specify a filename including spaces by specifying a string
+enclosed in double quotes; and a further extension has been developped
+to allow to pass an argument in the more common way using grouping.
+
+This is allowed not as a \TeX\ extension but as an implementation
+detail. This is why it is not provided in \Prote\ but as a separate
+change file to be applied when making implementation modifications.
+
+\crux{This extension impacts only the input primitive, and not the
+{\tt fmt} case: in ker\TeX, a fmt (or whatever a digest is) name has
+no spaces.}
+
+@ But there is still a problem to consider:
+
+If what \TeX\ (the program) considers is ``text'', meaning that the
+integers considered are supposed to map to characters in one or
+several languages, a filename has not to be in some language: it
+is mainly, in filesystems, a C nul terminated string with some byte
+values not accepted (the nul character is never accepted; the
+directory separator `/' is not accepted either; but other
+characters/bytes are forbidden in some filesystems while being valid
+in other ones).
+
+To take the example of UTF-8, if inputing a text in this encoding could
+make sense, a filename in some filesystem could well be a string of
+bytes that is not a valid string for UTF-8.
+
+This does mean that a filename should have a specific treatment. But
+this specific treatment would be done in the implementation added 
+glue, without modifying the core of the engines' code.
+
+\enddiv % Filenames
+
+\enddiv % The input in \TeX\ related programs
+
+\begindiv System integration
+
+@ The glue code for opening a file has to be adapted in order to be able
+to deal with whatever string is given as a filename not relying on
+space characters as sentries.
+
+In order to do so, in ker\TeX, |name_of_file| and |name_length|
+are defined by the translated Pascal code and the glue code takes the
+range $[1, name\_length]$ in the bytes vector |name_of_file|
+as the definition of the ``as is'' absolute or relative pathname
+to open---|name_of_file| is defined so that there is always room for
+a supplementary nul byte, i.e. the C end of string character; but
+this nul byte is not added by the Pascal code.
+
+This pathname has already been put in the system encoding by the
+calling code.
+
+@ What is called an {\tt area} in the programs, are directories in
+ker\TeX. The filenames are searched according to path specifications
+taken from the environment.
+
+Files read may be searched. Files written are written without alteration
+to the pathname given, meaning are written relative to the (process)
+current directory if the dirname is not absolutely qualified
+(this is in accordance with what is specified, m. 511, in
+\TeX, {\sl The Program}: ``{\sl The file area can be arbitrary on input
+files, but files are usually output to the user's current area.}''; in
+ker\TeX, the user current area is the (process) current working directory).
+
+If a filename is given as an absolute path, beginning by the root path
+separator, the filename is not searched. The same is true for a filename
+given with a leading current directory specification (``./''): taken
+as is without any search. Unspecified relative filenames are searched
+according to a path search specification defined in the environment
+variable {\tt KERTEXINPUTS}. It is a semi-colon sequence of paths,
+searched in this order, with additional chunks maybe interpolated (ex.:
+when the set of macros is the La\TeX\ one, the {\tt virprote} instance
+is named {\tt latex} and {\tt latex} as a subdir is added automatically
+to the searched paths.
+
+If {\tt KERTEXINPUTS} is not defined in the environment, a default
+definition is used, putting the (process) current directory as the first
+directory to search, and the system ones to be searched after.
+
+For other kinds of files to search (not |\input|'ed ones), there are
+other environment variables following the same principles.
+
+\enddiv % System integration
+
+\begindiv Modification of the input primitive
+
+@ The modification adds other ways to define a filename for the |\input|
+primitive, meaning that the traditional way still works.
+
+They are now three ways to define a filename for the |\input| primitive:
+
+(1)~A filename given as a recursive expanded text argument enclosed in
+grouping characters (generally: braces), the initial left one being
+mandatory (contrary to the common definition of |<general text>|). In
+the result, the double quotes are all eliminated (and not replaced by
+anything). Contrary to the traditional behavior, such an argument can
+call |\input| in its text (one can input the content of a file as the
+name of a file to input...);
+
+(2)~A filename given as the expanded text between double quotes, the
+double quotes being removed. The last double quote is optional: an
+end of line ends the filename;
+
+(3)~The traditional space tokenizing if none of the two previous
+ways applies (expansion is done; but the file name is the first token
+in the result with space tokenization).
+
+There is one caveat: as for the general text, an initial sequence of
+optional blanks and/or |\relax| is ignored (absorbed), and only the
+first non such following command is taken into account to switch
+between the three ways of defining the filename.
+
+@ |\input [blanks_or_\relax*]
+{ <recursive expanded text with mandatory left brace>
+OR `"' <expanded text> [`"']
+OR <first token of expanded text with space tokenization> }|
+({\sl input class})\enskip
+Initial spaces or |\relax| are ignored; the first other character is
+taken to switch between the three ways of defining the filename and
+tested in this order: a |<left brace>| defines the filename as the
+expansion fo the general text given as an argument to the primitive,
+|\input| commands allowed inside the argument (recursive call) and all
+double quotes being removed from the result;
+if not and the first character is a double quote, the filename is 
+taken as the traditional expansion of the text between the double
+quotes, the double quotes being removed (the end of line is considered
+as the closing double quote is there was none---one can not input
+a newline character in a filename, and neither a double quote); if
+neither, the traditional way of defining the file name is taken,
+i.e. expansion (|\input| not allowed) and space tokenization.
+
+@ In case of error and prompting, there is still no expansion done, but
+it is allowed to provide a name between double quotes, i.e. to specify
+a name with blanks.
+
+\enddiv % Modification of the input primitive
+
+\bye

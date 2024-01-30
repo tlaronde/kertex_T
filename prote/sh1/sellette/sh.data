@@ -1,0 +1,102 @@
+#!@@TARGETSHELL@@
+#
+# Trip'ping and Etrip'ping Prote, in the three modes, and testing the
+# PAPI contract for the new primitives.
+#
+# Thierry Laronde, 2021-10-10.
+#
+
+# These ones are set at config time and can be overwritten in env.
+#
+: ${KERTEX_LIBDIR:=@@KERTEX_LIBDIR@@}
+: ${KERTEX_BINDIR:=@@KERTEX_BINDIR@@}
+
+#========== NOTHING SHOULD HAVE TO BE CHANGED BELOW
+: ${TMPDIR:=/tmp}
+
+usage="Usage:
+
+$(basename $0) [-h]
+
+"
+
+test $# -eq 0\
+	|| { echo "Incorrect arguments. $usage" >&2; exit 1; }
+
+cat <<EOT
+==================== 1) TRIP and ETRIP tests in three modes
+
+The first pass is to qualify Prote as a TeX implementation and as an
+e-TeX implementation, in the three modes: TeX compatibility; e-TeX
+compatibility and Prote mode.
+
+We simply call the routine for testing e-TeX since this one calls, first
+the routine for testing TeX compatibility.
+
+EOT
+
+$KERTEX_BINDIR/adm/ck_etex -p
+
+cat <<EOT
+==================== 2) Prote tests
+
+The second pass is not a torture test, since, at the moment, Prote
+adds only features that have a function early, in the mouth.
+
+So this tests all the primitives in turn, in order to verify the API
+contract as specified in the Prote manual.
+
+Note: discrepancy in time displayed by timer is normal since it depends
+on the node the process is running on... It should work, but the values
+(incrementing) may vary.
+EOT
+
+cd $TMPDIR
+
+cp $KERTEX_BINDIR/lib/sellette initex
+chmod 755 initex
+cp $KERTEX_LIBDIR/prote/sellette/sellette.pool prote.pool
+
+
+KERTEXINPUTS=".;$KERTEX_LIBDIR/prote/sellette"
+export KERTEXINPUTS
+
+for feature in expanddepth \
+	Prote_id \
+	shellescape \
+	ifincsname \
+	ifprimitive	 \
+	expanded \
+	strcmp \
+	pseudo-randoms \
+	creationdate \
+	timer \
+	dvipos \
+	filemoddate \
+	filesize \
+	filedump \
+	mdfivesum; do
+	(
+	test -f $KERTEX_LIBDIR/prote/sellette/$feature.pre.sh\
+		&& . $KERTEX_LIBDIR/prote/sellette/$feature.pre.sh
+	# Avoid path difference.
+	#
+	cp $KERTEX_LIBDIR/prote/sellette/$feature.tex .
+	cat <<EOT | ./initex >/dev/null
+**./$feature
+EOT
+
+	echo
+	echo "##BEGIN DIFF $feature.log"
+	diff $feature.log $KERTEX_LIBDIR/prote/sellette/$feature.log
+	echo "##END DIFF $feature.log"
+
+	rm -f "${feature:-nonexisting}"*
+	)
+done
+
+# Cleaning.
+#
+rm -f initex prote.pool 
+
+exit

@@ -1,0 +1,7 @@
+NAME: bibtex
+AUTHOR: Oren Patashnik
+LICENCE: Same as for TeX.
+VERSION: 0.99d
+BIN_FILES:
+LIB_FILES:
+END:

@@ -1,0 +1,7 @@
+NAME: tex
+AUTHOR: Donald E. Knuth
+LICENCE: The program for TeX is in the public but see D.E.K.'s books.
+VERSION: 3.141592653
+BIN_FILES:
+LIB_FILES:
+END:

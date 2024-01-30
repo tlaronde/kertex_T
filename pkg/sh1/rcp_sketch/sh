@@ -1,0 +1,40 @@
+#!/bin/sh
+# Sketch a rcp for a CTAN LaTeX contrib package
+version='$Header: /data/cvs/priv/2/23/pkg/sh1/rcp_sketch/sh,v 1.1 2024/01/27 14:32:13 tlaronde Exp $
+C) 2024
+	Thierry Laronde <tlaronde@kergis.com>
+All rights reserved and no warranty of any kind! Use at your own risk!
+KerTeX PUBLIC LICENCE version 1.0
+'
+
+set -e
+
+usage="$(basename $0) [-h] CTAN_name
+
+Sketch the rcp for a type (only supported for now: latex contrib)
+pkgname on CTAN.
+The file is created in the working dir and its name published on
+stdout.
+
+Flags:
+	-h	display the Help message
+"
+
+test $# -eq 1 || { echo "$usage" >&2; exit 1; }
+
+if test $1 = "-h"; then
+	echo "$usage"
+	exit 0
+fi
+
+name="$1"
+
+. which_kertex >&2
+
+sed -e "s!@@NAME@@!$name!g" \
+	 $KERTEX_LIBDIR/pkg/proto/latex.rct \
+	>"${name}@latex.sh"
+
+printf "Recipe (rcp) created: '${name}@latex.sh'\n" 
+
+exit 0

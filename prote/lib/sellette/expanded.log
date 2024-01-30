@@ -1,0 +1,18 @@
+This is Prote, Version kerTeX C 3.141592653-2.6-1.1.0 (INITEX)  1 AUG 2023 16:09
+entering extended mode
+entering Prote mode
+****./expanded
+(./expanded.tex unprotected message: "Hello c #";
+protected message: "Hello c\space #";
+protected expanded: "Hello c\space #"
+> \SomeCS=macro:
+#1 ->\y .
+l.17 \show\SomeCS
+                 
+? 
+! Emergency stop.
+l.17 \show\SomeCS
+                 
+End of file on the terminal!
+
+No pages of output.

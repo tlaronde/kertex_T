@@ -1,0 +1,6 @@
+DATA = texc.ips
+
+all: $(DATA)
+
+texc.ips: script.data tex.data
+	$(SHELL) script.data tex.data texc.ips

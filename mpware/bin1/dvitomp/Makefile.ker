@@ -1,0 +1,21 @@
+PROG = dvitomp
+
+LIBES = $(WEBLIB) $(PASCALLIB)
+
+MAKE_STATIC=YES
+
+COBJ =	dvitomp.o
+
+all: $(PROG)
+
+dvitomp.p dvitomp.pool:	dvitomp.web dvitomp.ch
+	$(M_DIR)/tangle dvitomp.web dvitomp.ch
+
+dvitomp.c coerce.h: 	dvitomp.p dvitomp.h ppdef.data
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		ppdef.data dvitomp.p \
+		| sed -f $(M_DIR)/uniqids.sed\
+		| $(M_DIR)/pp2rc -h dvitomp.h\
+		| $(M_DIR)/fixwrites >dvitomp.c
+	

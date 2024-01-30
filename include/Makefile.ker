@@ -1,0 +1,14 @@
+DATA = kertex.h
+
+all: $(DATA)
+
+$(DATA): kertex.h.data
+	sed	-e 's!@@KERTEX_LIBDIR@@!$(KERTEX_LIBDIR)!' \
+		-e 's!@@KERTEX_BINDIR@@!$(KERTEX_BINDIR)!' \
+		-e 's!@@OBJDIR@@!$(OBJDIR)!' \
+		-e 's!@@MAXPATHSPEC@@!$(MAXPATHSPEC)!' \
+		-e 's!@@DIR_SEP@@!$(T_DIR_SEP)!' \
+		-e 's!@@PATH_SEP@@!$(T_PATH_SEP)!' \
+		-e 's!@@SYSTEM_ENCODING@@!$(SYSTEM_ENCODING)!' \
+		kertex.h.data >$@
+	if test $(FIXPT) = "YES"; then echo '#define FIXPT' >>$@; fi

@@ -1,0 +1,7 @@
+LIB = $(PASCALLIB)
+
+COBJ =	lib.o
+
+all: $(LIB)
+
+$(COBJ): pascal.h

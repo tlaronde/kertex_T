@@ -1,0 +1,20 @@
+PROG = weave
+
+LIBES = $(WEBLIB) $(PASCALLIB)
+
+MAKE_STATIC=YES
+
+COBJ =	weave.o
+
+all: $(PROG)
+
+weave.p weave.pool:	$(KNUTH_SRC_DIR)/web/weave.web weave.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/web/weave.web weave.ch
+
+weave.c coerce.h: 	weave.p weave.h ppdef.data
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		ppdef.data weave.p\
+		| $(M_DIR)/pp2rc -h weave.h\
+		| $(M_DIR)/fixwrites >weave.c
+	

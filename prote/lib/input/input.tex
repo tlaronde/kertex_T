@@ -1,0 +1,83 @@
+\def\mkfile#1#2{%
+  \immediate\openout1{#1}%
+  \toks0{#2}%
+  \immediate\write1{\the\toks0 }%
+  \immediate\closeout1 }
+
+\mkfile{filea.tex}{\message{I'm file A}}
+\mkfile{fileb.tex}{filea\noexpand}
+\mkfile{y.tex}{\message{ignored}}
+
+\scrollmode
+\def\msg#1{\immediate\write0{>> #1 (\line):}}
+\def\line{l. \the\inputlineno}
+
+\msg{Basics}
+\input{filea}
+
+\msg{Missing file}
+\input{filex}
+
+% web2c prints double quotes around the file name in
+% error messages if the name has spaces
+\msg{Quotes in error messages}
+\input{file x}
+
+\def\x{filea}
+% before the brace, stuff is expanded and \relax and spaces are ignored
+% (@<Get the next non-blank non-relax non-call...@>;)
+\msg{Expansion and fillers}
+\input\relax\space\expandafter{\x}
+
+% if another non-expandable token is found instead of the brace,
+% the old filename scanner is used
+\msg{Space-delimited}
+\input\relax\expandafter\space\x
+
+% The braced-input code is somewhat incompatible with Knuth's original
+% version (though he classifies that as a system-dependent extension,
+% so a change is acceptable).  An empty file name (.tex) can no longer
+% be input with |\input\relax|.
+\msg{Backwards incompatibility}
+\input\relax filea
+
+% With brace-delimited, you can nest \input (which makes
+% arguably zero sense :)
+\msg{Nesting}
+\input{\input{fileb}}
+
+% A space-delimited \input also works inside a brace-delimited one
+\msg{Nesting again}
+\input{\input fileb }
+
+% An implicit \bgroup works, but not an implicit \egroup
+\msg{Implicit bgroup}
+\input \bgroup filea}
+
+% Non-expandable tokens are passed through
+\msg{Non-expandable tokens}
+\input{file\relax a}
+
+% Braces are treated as part of the file name as usual
+\msg{Braces}
+\input{f{i{l}e}a}
+
+% Double are (unfortunately) dropped entirely when in a braced file
+% name, and have no effect on the treatment of spaces
+\msg{Quotes in braced file name}
+\input{"f"i"l"e"a"}
+
+% Line breaks are tokenised as spaces, contrary to space-delimited \input
+\msg{Line breaks}
+\input{file
+a}
+
+% Two line breaks are tokenised as \par
+\msg{Blank line}
+\input{file
+
+a}
+
+% And an \outer macro isn't accepted
+\msg{\string\outer}
+\input{file\bye

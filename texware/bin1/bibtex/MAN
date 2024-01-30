@@ -1,0 +1,74 @@
+.\" man page for bibtex
+.TH BIBTEX 1 "8 march 2011"
+.SH NAME
+bibtex \- producing a bibliographic reference list to be formatted by
+TeX.
+.SH DESCRIPTION
+BibTeX is a bibliography program to be used with an incarnation of
+TeX (it is no longer limited to LaTeX). BibTeX mastered a file
+produced by a first pass of TeX to generate a TeX description to
+be formatted by it afterwards.
+.P
+
+.SH FILES ON ENTRY
+.I btxmac
+the plain TeX BibTeX macro-definitions to be included if not using
+LaTeX.
+.br
+.I somestyle.bst
+a specially written style specification to be used for the produced
+reference list.
+.br
+.I somebib.bib
+a specially written bibliography database from which the entries will
+be extracted.
+.br
+.I sometex.tex
+the TeX to be formatted text, including the BibTeX macro-definitions,
+the directives \\cite{key}, the definition of the bibliography
+database to use (\\bibliography{somebib}), the style
+(\\bibliographystyle{somestyle}).
+.br
+
+.SH Invocation
+This is a two steps process. One first invokes the TeX incarnation (could
+be latex or other):
+.br
+.B tex sometex
+.br
+that produces a
+.I sometex.aux
+that lists the citations.
+.P
+Then on this produced auxiliary file, the invocation :
+.br
+.B bibtex sometex
+.br
+produces
+.I sometex.bbl
+and
+.I sometex.blg
+.
+.P
+These files produced, two successive invocations of the TeX incarnation
+(could be latex or other):
+.br
+.B tex sometex
+.br
+once more
+.br
+.B tex sometex
+.br
+produces the (hopefully) desired result with the embedded bibliography
+and references.
+
+.SH "SEE ALSO"
+tex(1), the paper from TeXNorthEast Conference March 22-24 1998
+
+.SH AUTHORS
+Oren Patashnik <opbibtex@cs.stanford.edu> wrote the original WEB
+program.
+
+Thierry Laronde <tlaronde@polynum.com> adapted the program for the
+kerTeX transcription, and wrote this man page from Oran Patashnik's
+published description.

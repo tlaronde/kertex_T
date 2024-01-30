@@ -1,0 +1,8 @@
+NAME: e-TeX
+AUTHOR: the NTS team --- Joachim Lammarsch, Philip Taylor,
+  Peter Breitenlohner, Jiri Zlatuska, Bernd Raichle, Friedhelm Sowa.
+LICENCE: TeX one like (see the sources)
+VERSION: 2.6
+BIN_FILES:
+LIB_FILES:
+END:

@@ -1,0 +1,241 @@
+% TeX Text Typewritter compatible encoding.
+% This is the default encoding used when generating a TFM from a AFM
+% by the afm2tfm(1) util. It matches the encoding of cmtt described in
+% the TeXbook, Appendix F.
+% Since this is typewriter, there is almost no ligature, except for the
+% spanish ``inverted'' ! and ?. So the ligatures are almost all negative
+% ones: suppressing them if they exist.
+% [TL]
+%
+%   These are the ligs and kerns in addition to those found in the
+%   AFM file.  (The only ligs in the Times-Roman.afm file are the
+%   fi and fl ligatures.)
+%
+% LIGKERN question quoteleft =: questiondown ; exclam quoteleft =: exclamdown ;
+%
+%   We blow away kerns to and from spaces (TeX doesn't have a
+%   space) and also remove any kerns from the numbers (although
+%   the only kern pair that mentions a number in Times-Roman.afm
+%   is one one.)
+%
+% LIGKERN space {} * ; * {} space ; zero {} * ; * {} zero ;
+% LIGKERN one {} * ; * {} one ; two {} * ; * {} two ;
+% LIGKERN three {} * ; * {} three ; four {} * ; * {} four ;
+% LIGKERN five {} * ; * {} five ; six {} * ; * {} six ;
+% LIGKERN seven {} * ; * {} seven ; eight {} * ; * {} eight ;
+% LIGKERN nine {} * ; * {} nine ;
+%
+%	Kern accented characters the same way as their base.
+% LIGKERN Aacute <> A ; aacute <> a ;
+% LIGKERN Acircumflex <> A ; acircumflex <> a ;
+% LIGKERN Adieresis <> A ; adieresis <> a ;
+% LIGKERN Agrave <> A ; agrave <> a ;
+% LIGKERN Aring <> A ; aring <> a ;
+% LIGKERN Atilde <> A ; atilde <> a ;
+% LIGKERN Ccedilla <> C ; ccedilla <> c ;
+% LIGKERN Eacute <> E ; eacute <> e ;
+% LIGKERN Ecircumflex <> E ; ecircumflex <> e ;
+% LIGKERN Edieresis <> E ; edieresis <> e ;
+% LIGKERN Egrave <> E ; egrave <> e ;
+% LIGKERN Iacute <> I ; iacute <> i ;
+% LIGKERN Icircumflex <> I ; icircumflex <> i ;
+% LIGKERN Idieresis <> I ; idieresis <> i ;
+% LIGKERN Igrave <> I ; igrave <> i ;
+% LIGKERN Ntilde <> N ; ntilde <> n ;
+% LIGKERN Oacute <> O ; oacute <> o ;
+% LIGKERN Ocircumflex <> O ; ocircumflex <> o ;
+% LIGKERN Odieresis <> O ; odieresis <> o ;
+% LIGKERN Ograve <> O ; ograve <> o ;
+% LIGKERN Oslash <> O ; oslash <> o ;
+% LIGKERN Otilde <> O ; otilde <> o ;
+% LIGKERN Scaron <> S ; scaron <> s ;
+% LIGKERN Uacute <> U ; uacute <> u ;
+% LIGKERN Ucircumflex <> U ; ucircumflex <> u ;
+% LIGKERN Udieresis <> U ; udieresis <> u ;
+% LIGKERN Ugrave <> U ; ugrave <> u ;
+% LIGKERN Yacute <> Y ; yacute <> y ;
+% LIGKERN Ydieresis <> Y ; ydieresis <> y ;
+% LIGKERN Zcaron <> Z ; zcaron <> z ;
+%
+/TeXTtEncoding [          % now 256 chars follow
+
+% 0x0
+/Gamma
+/Delta
+/Theta
+/Lambda
+/Xi
+/Pi
+/Sigma
+/Upsilon
+
+% 0x8
+/Phi
+/Psi
+/Omega
+/arrowup
+/arrowdown
+/quotesingle
+/exclamdown
+/questiondown
+
+% 0x10
+/dotlessi
+/dotlessj
+/grave
+/acute
+/caron
+/breve
+/macron
+/ring
+
+% 0x18
+/cedilla
+/germandbls
+/ae
+/oe
+/oslash
+/AE
+/OE
+/Oslash
+
+% 0x20
+/space
+/exclam
+/quotedbl
+/numbersign
+/dollar
+/percent
+/ampersand
+/quoteright
+
+% 0x28
+/parenleft
+/parenright
+/asterisk
+/plus
+/comma
+/hyphen
+/period
+/slash
+
+% 0x30
+/zero
+/one
+/two
+/three
+/four
+/five
+/six
+/seven
+
+% 0x38
+/eight
+/nine
+/colon
+/semicolon
+/less
+/equal
+/greater
+/question
+
+% 0x40
+/at
+/A
+/B
+/C
+/D
+/E
+/F
+/G
+
+% 0x48
+/H
+/I
+/J
+/K
+/L
+/M
+/N
+/O
+
+% 0x50
+/P
+/Q
+/R
+/S
+/T
+/U
+/V
+/W
+
+% 0x58
+/X
+/Y
+/Z
+/bracketleft
+/backslash
+/bracketright
+/circumflex
+/underscore
+
+% 0x60
+/quoteleft
+/a
+/b
+/c
+/d
+/e
+/f
+/g
+
+% 0x68
+/h
+/i
+/j
+/k
+/l
+/m
+/n
+/o
+
+% x070
+/p
+/q
+/r
+/s
+/t
+/u
+/v
+/w
+
+% 0x78
+/x
+/y
+/z
+/braceleft
+/bar
+/braceright
+/tilde
+/dieresis
+
+% 0x80
+% Have to have 128 .notdef's now to fill things out.
+% 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+] def

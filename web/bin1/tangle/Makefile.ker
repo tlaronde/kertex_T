@@ -1,0 +1,20 @@
+PROG = tangle
+
+LIBES = $(WEBLIB) $(PASCALLIB)
+
+MAKE_STATIC=YES
+
+COBJ =	tangle.o
+
+all: $(PROG)
+
+tangle.p tangle.pool:	$(KNUTH_SRC_DIR)/web/tangle.web tangle.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/web/tangle.web tangle.ch
+
+tangle.c coerce.h: 	tangle.p ppdef.data tangle.h
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		ppdef.data tangle.p\
+		| $(M_DIR)/pp2rc -h tangle.h\
+		| $(M_DIR)/fixwrites >tangle.c
+	

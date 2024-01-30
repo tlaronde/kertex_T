@@ -1,0 +1,572 @@
+\input article
+\input manmac
+%\magnification=1200
+\parskip=1ex
+
+% It starts here...
+%
+\hrule height 0.2ex
+\vskip 1ex
+\maintitle{PROTE}
+\vskip 3ex
+\centerline{Thierry Laronde---tlaronde\AT polynum.com}
+\centerline{1.1.0}
+\centerline{2023-08-01}
+\vskip 1ex
+\hrule height 0.2ex
+\vskip 1ex
+
+{\raggedcenter\par{Acknowledgements: Philip Taylor and Nelson H. F.
+Beebe have made several suggestions and reported several corrections
+to the first draft of the manual. Philip Taylor has once more reviewed
+this document afterwards. Thank to them, if this draft is
+not good, at least it is better! Martin Ruckert has reported some
+typos and infelicities in the \PASCAL\ code that got in the way when
+trying to directly use the \PASCAL\ program produced. And Phelype
+Oleinik has been a great help in narrowing down test samples from the
+La\TeX\ format in order to correct the implementation of the new
+primitives. Thanks to them all!}\par}
+
+\vfil
+\input mytabmat
+\vfil\eject
+\begindiv The name of the game
+
+@ {\sl Prote} is a French word with the following meaning (translated
+from the first sentence of the definition in M.~Bescherelle's
+ {\sl Dictionnaire national}, $11^{th}$ edition, 1865):
+\iquote{Typography. Title given, in a printing house, to the person who,
+under the guidance of the master, leads, conducts and oversees the
+typographical implementation of a book.~}
+
+@ It can be seen too as a short name for a word play around 
+{\sl proto-typing}, i.e., creating an archetype from some fundamental
+elements (primitives: {\it proto}) leading to changing/various
+forms---because of protean and Proteus\dots.
+
+\enddiv % The name of the game
+
+\begindiv Implementation principles
+
+@ \Prote\ inherits---obviously and primarily---from D.E.~Knuth's \TeX,
+but also inherits from the \NTS\ team' \eTeX, not only the extensions
+themselves, but also the principles on which these are based: extensions
+are added to \TeX, but switches are required to activate these
+extensions; in the absence of these switches, the behavior of the
+engine is compatible with \TeX.
+
+However, while in \eTeX\ one can selectively activate or not each 
+feature, in \Prote, once activated, all \Prote\ additions are there.
+
+@ \Prote\ has three modes of operation:
+
+(1)~In \TeX\ compatibility mode, it fully deserves the name \TeX\ and
+there are neither extended features nor additional primitive commands.
+That means in particular that \Prote\ passes the {\tt TRIP} test
+without any restriction.  There are, however, a few
+minor modifications that would be legitimate in any implementation of
+\TeX\note{For the moment, these come from \eTeX.}.
+
+(2)~An initial asterisk (in {\tt INITEX} mode) switches to \eTeX\
+extended mode, giving access to \eTeX\ additional primitive commands
+and extended features.
+
+(3)~Two asterisks (in {\tt INITEX} mode) switch to \eTeX\ and \Prote\
+features, i.e., the \Prote\ extensions being unconditionally added to
+\eTeX.
+
+@ Following the example of the \NTS\ team, we have limited the
+modifications of the \TeX\ engine proper to the minimum, and added the
+bulk of the supplementary features to the 53rd section, the 54th
+still being a hook for host system changes.
+
+The \Prote\ change file {\tt prote.ch} thus extends \TeX\ and \eTeX\ but
+does not depend on the ker\TeX\ distribution, even if it was developed
+in its midst. Hence this change file can be used by anyone, having to be
+applied after the \eTeX\ change file and before any change file needed
+for the host system adaptations.
+
+Some extensions may require a call to the host system for things that
+\PASCAL\ does not provide. A basic implementation of these routines,
+based on the |fix_date_and_time| example, is provided, yielding a 
+syntactically correct ``answer'', but one that may be semantically
+useless or semantically correct but obtained in an inefficient way
+(for example, finding the size in bytes of a file). These are marked
+as {\sl system dependencies} and are to be adapted as usual.
+
+@ If \eTeX\ introduces modifications also at the semantic level,
+for the moment the \Prote\ primitives are only at the syntactic
+level (in the early process when mastering the commands) or, late,
+supplementary information in the DVI produced.
+
+In order to clarify things, we speak of {\sl command classes} for
+the main command level ({\it cf}. m.207 to m.210 in {\sl \TeX: The Program}). 
+Every variant in these classes has to be identified in the class by a
+command modifier.
+
+We do not add any new command classes, so our primitives are only variants
+(instances) of the \TeX\ existing command classes.
+
+When adding a new primitive, the first decision to make is in which
+command class to add it, because it drives the behavior: expandable
+or not; value to be expanded by |\the| or not; read-only or read---write
+(this is the distinction between parameters and external variables).
+
+The following principles have been followed:
+
+(1)~When a primitive corresponds to a read-write variable, the variable
+has been added as a parameter in the corresponding |eqtb| region,
+integer (if the units, even if defined, is not specified at expansion)
+or dimension. These are |assign_*| variants.
+
+(2)~When the primitive corresponds to a read-only variable but whose
+value can be expanded by |\the|, it is a |last_item| variant.
+
+(3)~When the primitive expands to something that is externally given
+(and is not expanded by |\the|), it is a |convert| variant.
+
+(4)~When the primitive is a conditional, it is obviously a |if_else|
+variant.
+
+(5)~When the primitive changes (or may change) the definition of the
+following token, it is a |expand_after| variant.
+
+(6)~When the primitive is really orthogonal, it is an |extension|
+variant.
+
+@ In \TeX, there is a lot of ``numbering'' in the sense of encoding
+various relations between objects in the relations between the integers
+used to designate them. For example, there are command codes and
+command code modifiers, and, even if we do not introduce new commands,
+we must not step on \TeX\ or \eTeX\ toes with the command
+modifiers.
+
+@ The numeric routines dealing with pseudo-random numbers are
+John Hobby's implementation in \MP\ of D.E.~Knuth's algorithms from
+Section 3.6 of {\sl The Art of Computer Programming}, marginally adapted
+to fit in \TeX.
+
+\enddiv % Implementation principles
+
+\begindiv Style
+
+@ We have tried to stick to D.E.~Knuth style and to the \NTS\ team
+style. Additions (not deviations) are indicated below.
+
+@ \PASCAL\ does not permit block scope variables inside the routines. It
+is an unfelicity because the variables declared in the
+routines have possibly two different uses: some really general
+variables that drive the general process (these are the
+variables mainly defined in the original \TeX\ routines) or variables
+that are indeed needed by the cases and have a limited block use.
+
+In order to differentiate, following D.E.~Knuth practice, we add in the
+comment aside the added variables {\tt general purpose} in order to
+indicate that the values of these variables can be set in the cases
+blocks without interfering with the general process of the routine.
+
+We try also to give such added variables a sufficiently general meaning
+(a single letter), so that they can be used for different purposes
+according to their type.
+
+\enddiv % Style
+
+\begindiv Testing
+
+@ D.E.~Knuth has designed a torture test that is a \TeX\ command file in
+order to check the conformity of the TeX engine. The torture test is
+named {\tt TRIP}. What is tested is a version of the {\tt INITEX}
+instance of the \TeX engine, with some defined parameters for
+compilation.
+
+So there are two things to be distinguished: the name of the command
+file pushing the engine in all dark corners (for \TeX: {\tt TRIP}) and
+the version of the engine tested (in ker\TeX, the corresponding
+{\tt INITEX} for the \TeX version is called {\tt triptex}).
+
+@ \eTeX\ adds more than a simple torture test, called {\tt ETRIP}: it
+adds the constraints that the {\tt INITEX} instance of the \eTeX\ engine
+(called {\tt etriptex} in ker\TeX) shall be \TeX\ compatible, this means
+shall pass the {\tt TRIP} test, in both compatible mode and \eTeX\ mode.
+
+@ \Prote, in the same spirit, imposes that the {\tt INITEX} instance of
+\Prote\ shall pass the {\tt TRIP} test in the three modes: \TeX\
+compatible, \eTeX\ compatible and \Prote; and the {\tt ETRIP} test in
+two modes: \eTeX\ compatible and \Prote.
+
+To this is added, not a torture test at the moment, but tests for all
+the primitives added in order to verify that they conform to the API
+contract defined below.
+
+\extra{In ker\TeX, one will find the Bourne shell scripts {\tt ck\_tex},
+{\tt ck\_etex} and {\tt ck\_prote}, in the directory {\tt 
+\$KERTEX\_BINDIR/adm}, to check the conformance. One can refer to these
+files for further information.}
+
+\enddiv % Mise sur la sellette
+
+\begindiv System integration
+
+@ There are some added system dependencies---things that are not
+provided by standard \PASCAL\ and, hence, have to be provided by system
+dependent code.
+
+These are file or time/date related, or bitwise processing related
+(MD5 hash computation).
+
+\begindiv Exchanging with the system
+
+@ In order to try to protect the inner code of \TeX, when we need to
+exchange with some externally provided routine, we use a separated
+dedicated array of
+bytes called |xchg_buffer|\note{For system integrators: please remember
+that the underscore is not allowed by standard \PASCAL\ and that {\tt
+tangle} suppresses the underscores in the identifiers finally
+produced.}. Its size is specified by a constant (m.11)
+|xchg_buffer_size|, whose value is checked to provide at least what is
+expected by the default code.
+
+If the value is incorrect, the |bad| code $51$ is returned and {\tt
+iniprote} terminates if requested to switch to \Prote\ mode---the check
+is not made in other modes since the array is only used for \Prote\
+supplementary features.
+
+The array is an array of bytes (|eight_bits|), in order to be used for
+whatever interpretation of bytes. The values, if characters, have to be
+in the host encoding, the internal code making the transcription to
+\TeX\ ASCII when needed.
+
+A global variable |xchg_buffer_length| shall be defined with the
+last index in the buffer with valid data, whether set by the internal
+code when passing data to external routines, or set by the external
+routine to pass data to the internal code. Remember that the index
+starts at $1$ (and not $0$ like in normal C code). If |xchg_buffer_length|
+is $0$ this does mean that there is no data. Even if the array is
+representing a string, it is neither NUL or space terminated: the
+|xchg_buffer_length| gives the size.
+
+\enddiv % Exchanging with the system
+
+\begindiv Date and time reference
+
+@ The |fix_date_and_time| routine in \TeX\ shall fix the reference
+moment for the timer---see primitives |\elapsedtime| and |\resettimer|---
+as well as the creation date---see primitive |\creationdate|.
+
+Since \PASCAL\ can not provide anything useful here, the reference date
+and time are D.E.~Knuth' reference date: 4 July 1776 at noon (local
+time).
+
+@ For the creation date, if the environment variable |FORCE_SOURCE_DATE|
+is $1$ and |SOURCE_DATE_EPOCH| is set, the creation date and the values
+for |\year|, |\month|, |\day| and |\time| are set from the definition of
+|SOURCE_DATE_EPOCH| and the time zone is UTC. This is of some use only
+if the system integrators have provided a better version of the default
+code.
+
+@ The timer is not a clock: \Prote\ does not interrupt regularily to
+increment an internal counter: the elapsed time is returned at request,
+by taking the difference, in scaled seconds, between the moment of the
+call and the reference moment. This value can not exceed \TeX\ scaled
+integer that is |infinity|.
+
+Hence, without system support, resetting the timer (redefining the
+moment of reference) will not change what the default implementation
+returns, i.e., |infinity|.
+
+The creation date is not stored in \Prote; it is a system fixed value
+corresponding to the reference date, retrieved at request.
+
+\enddiv % Date and time reference
+
+\enddiv % System integration
+
+\begindiv Identifying \Prote\ mode
+
+@ The specific |\Proteversion| (an integer that can be used in
+assignment or dereferenced by |\the|) and |\Proterevision| (expanding to
+a string) primitives can be tested to detect the \Prote\ mode. They
+have the very same nature as the corresponding |\eTeXversion| and
+|\eTeXrevision|.
+
+\enddiv % Identifying \Prote\ mode
+
+\begindiv \Prote\ additional parameters and primitives
+
+@ The aim of the present section is to give a definition of the {\sl
+usage} of the new primitives, i.e., the syntax of the call and the
+result. In what follows, the syntax definitions shall agree with the
+conventions of the \TeXbook---see {\sl chapter 24} and {\sl chapter 25}.
+
+For example, |<general text>| means a text starting with optional
+spaces and/or |\relax|, a (possibly inserted) |<left brace>|,
+balanced text and a |<right brace>|; and it is subject to expansion
+or not depending on the command class.
+
+@ We will not repeat below the following features: keywords are case
+insensitive (this is a \TeX\ feature); an |<integer>| can be given by
+whatever mean is legitimate at this moment.
+
+@ For all the file related primitives, if the file can not, for whatever
+reason, be opened, there is no error set, no dialog with the user, but
+the primitive expands to nothing (it is a no-op or ``returns'' an empty
+string).
+
+{\it De facto}, La\TeX\ uses for example |\filesize| in order to test
+for the existence---or at least the readability, since search routines
+intervene---of the file: if the result is the empty string, it is not
+available.
+
+\begindiv \eTeX\ missing
+
+@ \eTeX\ uses |expand_depth| and |expand_depth_count| but these are not
+defined anywhere.
+
+\Prote\ adds them, making |expand_depth| an integer parameter and hence
+a primitive.
+
+@ |\expanddepth|. ({\sl integer parameter})\enskip
+The maximum of expansion nesting. It defaults to $10000$ (simply to take
+the current value in \TeX{}live) and can be set to any value by the
+normal integer parameter assignment.
+
+\enddiv % \eTeX\ missing
+
+\begindiv States
+
+@ |\shellescape|. ({\sl last\_item class})\enskip
+It expands to $1$ if (PDF\TeX) |\write18| is enabled, $2$ if it is 
+(PDF\TeX) restricted, and 0 otherwise. In \Prote, it hence always
+expands to $0$ because there is no such feature.
+
+\enddiv % States
+
+\vfil
+\break
+\begindiv Conditionals
+
+@ |\ifincsname|.\enskip
+The conditional is true if evaluated inside
+|\csname|\dots|\endcsname|, and false otherwise.
+
+@ |\ifprimitive <control sequence>|.\enskip
+The conditional is true if the following control sequence is a
+primitive and has its primitive meaning, and false otherwise.
+
+\enddiv % Conditionals
+
+\begindiv Changing definition or expansion
+
+@ |\primitive <control sequence>|. ({\sl expand\_after class})\enskip
+If the control sequence name corresponds to the name of a primitive,
+switches to the primitive meaning. If not, this is a no-op (the control
+sequence is executed as is).
+
+\extra{At the moment, the primitive indeed switches the meaning if the
+following token is a control sequence whose name corresponds to a
+primitive, but does not raise error if the following token is even not a
+control sequence. Should it? Furthermore, should the primitive be
+locked, made unredefinable, in order to always have the ability to go
+back to the primitive meaning?}
+
+@ |\expanded <general text>|. ({\sl expand\_after class})\enskip
+The |<balanced text>| is expanded except for (\eTeX\ feature) protected
+control sequences and the resulting token list is sent back for 
+scanning.
+
+\enddiv % Changing definition or expansion
+
+\begindiv Strings
+
+@ |\strcmp <general text> <general text>|. ({\sl convert class})\enskip
+The two |<balanced text>| arguments (expanded) are converted to \TeX\
+strings, i.e., |ASCII_code| strings. The primitive expands to a
+number indicating the relative |ASCII_code| encoding order of the
+first string relative to the second: $-1$ if the first one is ranked
+before; $0$ if the two strings are equal; $1$ if the first string is
+ranked after. Empty strings are allowed for either argument or both,
+and two empty strings are equal.
+
+\crux{The strings are \TeX\ internal strings, that is {\tt ASCII\_code}
+strings, i.e., the system encoding is not taken into account, the result
+is sorted according to the |xord| conversion. And the |<balanced text>|,
+being expanded (for spaces, it would be true even if not expanded),
+is not a verbatim copy of the input.}
+
+\enddiv % Strings
+
+\begindiv Random numbers
+
+@ |\randomseed|. ({\sl last\_item class})\enskip
+|randomseed| is an integer. Its value can be used as a |<number>| or its
+expansion obtained via |\the|. It is the value used for seeding an array
+of numbers for pseudo-random numbers generation.
+
+\crux{This is not an integer parameter precisely because
+assigning a new value has to trigger the redefinition of the array for
+pseudo-random numbers generation.}
+
+@ |\setrandomseed <integer>|. ({\sl convert class})\enskip
+Set the value of |\randomseed| to this specific value. This has the
+effect of regenerating an internal array of numbers that will
+serve as the source of pseudo-random numbers for the ``deviate''
+following primitives.
+
+@ |\normaldeviate|. ({\sl convert class})\enskip
+Expands to one pseudo-random normally-distributed integer according
+to a mean of $0$ and a standard deviation of $65536$. That is,
+numerous successive calls of the (underlying) function (with the
+same unchanged seed) will yield, 68\% of the time, an integer in
+the range $[-65536,65536]$ (one standard deviation away from the
+mean) and about 95\% of the time an integer within two standard
+deviations, and 99.7\% within three.
+
+@ |uniformdeviate <integer>|. ({\sl convert class})\enskip
+Expands to one pseudo-random integer between $0$ (inclusive) and the
+|<integer>| (exclusive)---the integer may be negative---, with a
+uniformly-distributed probability.
+
+\enddiv % Random numbers
+
+\begindiv Date and time
+
+@ |\creationdate|. ({\sl convert class})\enskip
+Expands to the date of creation corresponding at the moment when
+the routine |fix_date_and_time| was called.
+The format is |D:YYYYMMDDHHmmSSOHH'mm'|,
+`O' being the relationship of local time to UTC, that is `-' (minus),
+`+' or `Z'; HH followed by a single quote being the absolute value
+of the offset from UTC in hours (00--23), mm followed by a single
+quote being the absolute value of the offset from UTC in minutes
+(00--59). All fields after the year are optional and default to
+zero values. If the environment variable |FORCE_SOURCE_DATE| is $1$
+and |SOURCE_DATE_EPOCH| is set, the creation date has been set from
+the |SOURCE_DATE_EPOCH| definition and the date is in UTC.
+
+\extra{Because there is no support for date related routines in standard
+\PASCAL, the default implementation always sets the date and time
+relative to 4 July 1776, noon, local time.}
+
+@ |\elapsedtime|. ({\sl convert class})\enskip
+Expands to the scaled integer value of the elapsed time since the
+reference moment, the (not expressed) unit being the scaled second, i.e.,
+$1/65536$ second. It is a \TeX\ scaled integer in the defined range,
+that is the maximal value is $2^{31}-1$; the elapsed time can not
+reach $32767$ seconds and in this case, the maximal value of $2^{31}-1$
+is returned and shall be considered as invalid time.
+
+\crux{Because there is no support in standard \PASCAL\ for these time
+related routines, infinity is always returned in the default
+implementation, even if the reference moment is reset by
+resettimer---because there is no internal clock
+incrementing and the time is always computed and returned only on
+demand.}
+
+@ |\resettimer|. ({\sl extension class})\enskip
+Reset the elapsed time reference moment with the moment of the
+processing of the primitive,
+
+\crux{In the default implementation, because standard \PASCAL\ doesn't
+provide the necessary routine, the primitive is a no-op. There is no
+internal counter, so elapsedtime continues returning infinity.}
+
+\enddiv % Date and time
+
+\begindiv DVI related
+
+@ |\pageheight|. ({\sl dimen parameter})\enskip
+Specifies the height of the current DVI paper (the primitive is
+misnamed) on which the \TeX\ page will be printed. It is only
+DVI related and is used to compute the coordinates saved by |\savepos|
+in the integers |\lastxpos| and |\lastypos|. Defaults to $0$ and
+no verification is made and no error is raised if the value is
+nonsense.
+ 
+@ |\pagewidth|. ({\sl dimen parameter})\enskip
+{\it De dicto}.
+
+@ |\savepos|. ({\sl extension class})\enskip
+This primitive, when a vlist or hlist is shipped out and DVI produced,
+saves the x and y current position in the DVI page (paper) when called,
+this position being given, in scaled points, in a coordinate system
+with the origin set to the lower left corner of the paper, whose
+size should have been defined with the (misnamed) |\pagewidth| and
+|\pageheight|. In DVI, the upper left corner of the page is $1in$
+to the left and $1in$ up relative to the \TeX\ origin.
+
+\extra{\Prote\ adds a {\tt special} in the DVI file consisting in
+{\tt \_\_PROTE\_SAVEPOS=index XPOS=number YPOS=number}, index being the
+ordinal of the call, incremented each time the primitive is called,
+first being $1$. This permits the user to not be limited to one {\it
+hic} hint by using the utility {\tt dvitype} to retrieve all the saved
+positions. Note that the prefix {\tt \_\_PROTE\_} (case insensitive) shall
+be considered reserved.}
+
+@ |\lastxpos|. ({\sl last\_item class})\enskip
+Expands to the integer representation of the last DVI x saved value. The
+coordinates system is described above, and the value is relative to the
+non expressed unity: scaled point.
+
+@ |\lastypos|. ({\sl last\_item class})\enskip
+As the previous but for the y.
+
+\enddiv % DVI related
+
+\begindiv File-related primitives
+
+@ For these primitives, a |<balanced text>| (expanded) is converted
+to a string that is used as the name of the file to open. The
+handling is the same as for the |\input| primitive
+that is, it is subject to path searching (done by the implementation)
+and to the addition of the |.tex| extension is there is
+none (one can not input in \TeX\ a file without an extension). But,
+contrary to the |\input| primitive, no error is raised if the file can
+not be opened: the primitive is then a no-op (i.e. expands to the
+empty string).
+ 
+@ |\filemoddate <general text>|. ({\sl convert class})\enskip
+Expands to the modification date of file |<balanced text>| (expanded)
+in the same format as of |\creationdate| (see above).
+If the |SOURCE_DATE_EPOCH| and |FORCE_SOURCE_DATE| environment
+variables are both set, |\filemoddate| returns a value in UTC,
+ending in Z. The modification time is about the contents, not the
+metadata (|mtime| in Unix, not |ctime|).
+
+\crux{Because this information is not available in standard \PASCAL,
+a routine has to be provided by the system if it supports this. The
+default implementation returns nothing.}
+
+@ |\filesize <general text>|. ({\sl convert class})\enskip
+Expands to the size in bytes of file |<balanced text>| (expanded).
+
+\extra{If the file can not be opened, no error is raised and the
+primitive expands to nothing (empty string).}
+
+@ |\filedump [offset <integer>] [length <integer>] <general text>|.
+({\sl convert class})\enskip
+Expands to the dump of the first length bytes of the file |<balanced
+text>| (expanded), in uppercase hexadecimal format, starting at the
+offset specified or at the beginning of the file if offset is not given.
+If length is not given, the default is zero, so |\filedump| expands to
+nothing---the same is true for any file related error; but giving an
+improper offset or length value raises an error.
+
+@ |\mdfivesum [file] <general text>|. ({\sl convert class}).\enskip
+If the keyword |file| is given, expands to the
+MD5 of file |<balanced text>|; without |file|, expands to
+the MD5 of the |<balanced text>|. In both cases, |<balanced text>| is
+expanded. The MD5 is given as a 32 uppercase hexadecimal characters
+string. An empty text or an empty file are valid and lead to the
+MD5 hash of no data. This same value is returned, in |scroll_mode|,
+if there is an error with the file.
+
+\extra{Because the computing of MD5 involves bitwise operations, that
+\PASCAL\ doesn't---at least: easily---provide, the default code expands
+to nothing---the same happens if there is a problem with the file
+opening.}
+
+\enddiv % File-related primitives
+
+\enddiv % Added primitives
+
+\bye

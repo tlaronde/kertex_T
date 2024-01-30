@@ -1,0 +1,26 @@
+PROG = dvips
+
+XCFLAGS = -g
+
+LIBES = $(WEBLIB) $(PASCALLIB) $(MATHLIB)
+
+MAKE_STATIC=YES
+
+CFILES = dospecial.c dviinput.c fontdef.c loadfont.c main.c tfmload.c\
+	download.c prescan.c scanpage.c skippage.c output.c scalewidth.c\
+	dosection.c dopage.c resident.c subr.c unpack.c\
+	header.c makefont.c repack.c virtualfont.c dpicheck.c finclude.c\
+	pprescan.c papersiz.c color.c bbox.c t1part.c hps.c
+
+COBJ = dospecial.o dviinput.o fontdef.o loadfont.o main.o tfmload.o\
+	download.o prescan.o scanpage.o skippage.o output.o scalewidth.o\
+	dosection.o dopage.o resident.o subr.o unpack.o\
+	header.o makefont.o repack.o virtualfont.o dpicheck.o finclude.o\
+	pprescan.o papersiz.o color.o bbox.o t1part.o hps.o
+
+all : $(PROG) MAN
+
+$(COBJ) : dvips.h
+
+MAN: MAN.data
+	sed -e 's!##KERTEX_BINDIR##!$(KERTEX_BINDIR)!g' MAN.data >MAN

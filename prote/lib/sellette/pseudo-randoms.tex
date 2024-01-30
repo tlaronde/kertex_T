@@ -1,0 +1,17 @@
+\catcode`\{=1 \catcode`\}=2
+\def\space{ }
+\setrandomseed 4321
+\message{randomseed: \the\randomseed; should be 4321.}
+
+% First space is absorbed when delimiting primitive int parameter;
+% second to keep it explicitely in output.
+\setrandomseed 1234 
+\message{randomseed: \the\randomseed; should be 1234;\space
+  \uniformdeviate 1000; should be 555;\space 
+  \uniformdeviate 1000; should be 3;\space 
+  \uniformdeviate 1000; should be 641;\space 
+  \normaldeviate; should be 34071;\space 
+  \normaldeviate; should be -99169;\space  
+  \normaldeviate; should be 33759.
+}
+\end

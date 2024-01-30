@@ -1,0 +1,83 @@
+{ Pascal-H }
+@define procedure hbreak();
+@define procedure hbreakin();
+{ The Openin are variants depending on the PATH: declared in calling code. }
+
+{ Initializations via env variables. }
+@define const WEBPATHSSET;
+@define const MFPATHSSET;
+@define const TEXPATHSSET;
+@define const DVIPSPATHSSET;
+@define const FONTSPATHSSET;
+@define const MFTPATHSSET;
+@define const BIBTEXPATHSSET;
+@define const MPPATHSSET;
+@define const ETEXPATHSSET;
+@define const PROTEPATHSSET;
+
+{ Definitions of buffers to use and subdir. }
+@define const NOPATHSPEC;
+@define const POOLPATHSPEC;
+@define const INPUTSPATHSPEC;
+@define const DUMPPATHSPEC;
+@define const FONTSPATHSPEC;
+@define const MFPOOLPATHSPEC;
+@define const MFINPUTSPATHSPEC;
+@define const MFDUMPPATHSPEC;
+@define const TEXPOOLPATHSPEC;
+@define const TEXINPUTSPATHSPEC;
+@define const TEXDUMPPATHSPEC;
+@define const MFTTEXINPUTSPATHSPEC;
+@define const MFTMFINPUTSPATHSPEC;
+@define const MFPATHSPEC;
+@define const GFPATHSPEC;
+@define const PKPATHSPEC;
+@define const TFMPATHSPEC;
+@define const BIBPATHSPEC;
+@define const BSTPATHSPEC;
+
+@define function aopenout();
+@define procedure aclose();
+@define function bopenout();
+@define procedure bclose();
+@define function wopenout();
+@define procedure wclose();
+@define procedure setpaths();
+@define const filenamesize;
+@define var nameoffile;
+@define var namelength;
+@define var realnameoffile;
+@define var realnamelength;
+@define function amakenamestring();
+@define function bmakenamestring();
+@define function wmakenamestring();
+{ tangle and weave }
+@define procedure argfmt();
+{ auxiliary WEB like dvitype(1) etc. }
+@define procedure printstring();
+@define procedure printreal();
+{ common }
+@define function fabs();
+@define function getc();
+@define function toint();
+@define procedure decr();
+@define procedure incr();
+@define procedure cexit();
+@define function cinputln();
+@define procedure putbyte();
+@define procedure vstrcpy();
+@define procedure vstrncpy();
+@define function ftell();
+@define procedure zfseek();
+{ for WEB/Pascal, it's without parameters---they are known for C only }
+@define procedure getsystime();
+{ Prote extensions but needing to be defined commonly so in C code }
+@define function vreverse();
+@define var xchgbuffer;
+@define var xchgbufferlength;
+@define var datain;
+@define procedure getfilemtime;
+@define procedure getcreationdate;
+@define function getfilesize;
+@define procedure resettimer;
+@define function getelapsedtime;

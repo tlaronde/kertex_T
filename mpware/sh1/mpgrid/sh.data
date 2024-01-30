@@ -1,0 +1,151 @@
+#!@@TARGETSHELL@@
+# mpgrid: generate a grid, from (1cm,1cm) with step 1cm on a background
+# EPS file.
+#
+prog_version='$Id: sh.data,v 1.1 2022/04/23 18:57:18 tlaronde Exp $'
+version="$prog_version
+Written by Thierry Laronde.
+
+Copyright (c) 2022
+	Thierry Laronde <tlaronde@polynum.com>
+
+All rights reserved and NO warranties!"
+
+#------------------INITIALIZATIONS
+# Name by which this script was invoked.
+program=`echo "$0" | sed -e 's/[^\/]*\///g'`
+
+usage="usage:
+$program [-h] [-V] [-D] eps_file
+	Generates on stdout a mp file (to be processed with mp2ps(1)) with
+a grid starting with origin at the point whose coordinates are round cm
+values upper left within 1 cm from the bounding box lower left,
+coordinates given (placed upper right from the point), with horizontal
+and vertical lines every cm, with the EPS file taken as background. This
+is meant to help to write a MetaPost script to place drawing on this
+very background.
+
+Options:
+ -h	display this Help and exit
+ -D	Debug mode
+ -V	display Version information and exit
+"
+
+##BEGIN_ERRORS
+# EOPTION 1 "This option is unknown (use separate flags -f -p etc.):"
+# ENOENT 2 "This file or directory doesn't exist:"
+# EBBOX 3 "The EPS file has no bounding box comment."
+# EUSAGE 32 "$usage"
+# EINT 65 "Interrupted."
+##END_ERRORS
+
+#----- Subfunctions
+#
+#--- No storing subfunctions
+#
+log()
+{
+    echo "$@" >&2
+}
+
+logpart()
+{
+    echo "$@" | tr -d '\n' >&2
+}
+
+# Call:	error error_string_macro [args_to_fmt]
+# ex. : error "EOPTION" offending_option
+#
+error()
+{
+	logpart "Error $1: "
+
+    # Retrieving the error records.
+	record=$(sed -n "/^##BEGIN_ERRORS/,/^##END_ERRORS/s/^#[ 	]*$1[ 	]//p"\
+		"$fqscript")
+	if test "x$record" != x; then
+		errno=$(echo $record | sed 's/^\([0-9][0-9]*\).*/\1/')
+		fmt=$(echo $record | sed 's/^[0-9][0-9]*[ 	]*\(.*\)$/\1/')
+		shift
+		eval log $fmt "${@:-}"
+	fi
+
+	test "$errno"\
+		|| { log "Programmer error: error '$1' unknown!"; exit 127; }
+
+	test $errno -lt 32 && log "$usage"
+
+	exit $errno
+}
+
+#========== CHECKS (set env; maybe loads but no stores)
+#
+# We can be an executable, or a non executable (hence not a command)
+# fed to sh.
+#
+if test -s $0; then
+	fqscript="$0"
+	expr "$fqscript" : '/' >/dev/null 2>&1 || fqscript="$PWD/$fqscript"
+else
+	fqscript="$(command -v $0)"
+fi
+
+#==========PREPROCESSING
+
+# Getting the options
+test $# -ne 0 || error EUSAGE
+
+epsf=
+while [ $# -gt 0 ]; do
+	case "$1" in
+		-D) set -x; debug_mode=YES;;
+		-h|--help) echo "$usage"; exit 0;;
+		-V|--version) echo "$version"; exit 0;;
+		-*) error EOPTION "$1";;
+	 	*) epsf="$1";;
+	esac
+shift	
+done
+
+[ "$epsf" ] || error EUSAGE
+[ -f "$epsf" ] || error ENOENT "$epsf"
+
+# these are big points.
+scratch=`sed -n '/^%%BoundingBox: */s///p' $epsf`
+
+test "$scratch" || error EBBOX
+
+#========== PROCESSING (stores)
+#
+# From now on, error() shall be safe to call.
+#
+trap "error EINT" HUP INT QUIT ABRT TERM
+
+lx=`echo $scratch | awk '{ print $1;}'`
+ly=`echo $scratch | awk '{ print $2;}'`
+ux=`echo $scratch | awk '{ print $3;}'`
+uy=`echo $scratch | awk '{ print $4;}'`
+
+cat <<EOT
+u:=1cm;
+beginfig(0);
+picture la;
+special "%\\special{psfile=$epsf hoffset=0 voffset=0 hscale=100 vscale=100}";
+% Keep initial bounding box to display everything.
+draw ($lx,$ly)--($ux,$ly)--($ux,$uy)--($lx,$uy)--cycle;
+xmax:=floor($ux*2.54/72);
+ymax:=floor($uy*2.54/72);
+pickup pencircle scaled 2pt;
+ox:=ceiling($lx*2.54/72+.5); % Our x origin, cm: next cm right to lx
+oy:=ceiling($ly*2.54/72+.5); % Our y origin, cm: next cm above ly
+draw (ox*u,oy*u)--(xmax*u,oy*u);
+draw (ox*u,oy*u)--(ox*u,ymax*u);
+label.urt("("&decimal ox & "cm," & decimal oy & "cm)", (ox*u,oy*u));
+pickup pencircle scaled 0pt;
+for x=ox+1 upto xmax: draw (x*u,u)--(x*u,ymax*u); endfor
+for y=oy+1 upto ymax: draw (1u,y*u)--(xmax*u,y*u); endfor
+endfig;
+end
+EOT
+
+exit 0

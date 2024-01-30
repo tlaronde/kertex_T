@@ -1,0 +1,18 @@
+PROG = cwmerge
+
+MAKE_STATIC=YES
+
+COBJ = wmerge.o
+
+LIBES = $(WEBLIB)
+
+CWEBINPUTS = $(CWEB_SRC_DIR)
+
+CWEBEES = wmerge.c
+
+XCPPFLAGS = -I$(PROJECTDIR)/lib1/pascal
+
+all: $(PROG) 
+
+$(CWEBEES): $(CWEB_SRC_DIR)/examples/wmerge.w kertex.ch
+

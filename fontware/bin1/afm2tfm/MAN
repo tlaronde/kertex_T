@@ -1,0 +1,146 @@
+.\" man page for afm2tfm
+.TH AFM2TFM 1 "16 June 2011"
+.SH NAME
+afm2tfm \- convert Adobe font metrics to TeX font metrics
+.SH SYNOPSIS
+.B afm2tfm
+afmfile[.afm] [
+.I -O
+] [
+.I -u
+] [
+.I -v
+|
+.I -V
+vplfile[.vpl]] [
+.I -e 
+expansion] [
+.I -s
+slant] [
+.I -c
+capheight] [
+.I -p
+|
+.I -t
+|
+.I -T
+encodingfile] [tfmfile[.tfm]]
+.SH DESCRIPTION
+PostScript fonts are (or should be) accompanied by font metric files
+such as
+.B Times-Roman.afm,
+which describes the characteristics of the font called Times-Roman.
+To use such fonts with TeX, we need TFM files that contain similar
+information. This program does that conversion.
+.PP
+The name of the 
+.B afm
+file must be specified. The name of the
+.B tfm
+file is deduced from the afm one unless specified.
+.PP
+Here is a list of the environment variables affect the behavior of
+.IR afm2tfm :
+.TP
+.B KERTEXFONTS
+Search path for
+.I afm
+and
+.I encoding
+files. (The read-only input files.)
+It should be semicolon separated,
+and start with dot. The default is set according to the kerTeX
+installation.
+.SH OPTIONS
+.TP
+.B -O
+forces all character designations in the resultant
+.I vpl
+file be given as octal values; this is useful for symbol or other
+special-purposes fonts where character names such as `A' have no
+meaning.
+.TP
+.B -u
+do not include characters present in the font but not specified in the
+encoding. Normally,
+.B afm2tfm
+tries to include both characters that fit the output encoding and any
+additional characters that might exist in the font.
+.TP
+.B -v vplfile[.vpl]
+make a Virtual Property List file as well as the
+.I tfm
+.
+.TP
+.B -V vplfile[.vpl]
+same as 
+.B -v
+but the virtual property list generated is a for a small caps font 
+obtained by scaling uppercase letters by 0.8 to typeset lowercase.
+This font handles accented letters and retains proper kerning.
+.TP
+.B -c scale
+when creating a small caps font (see above), the scaling for the `lower'
+case will be changed from the default 0.8 to the fraction specified
+here.
+.TP
+.B -e ratio
+All characters are streched horizontally by the stated ratio. If it is
+less than 1.0, you get a condensed font.
+.TP
+.B -s slant
+All characters are slanted to the right by the stated slant. If it is
+negative, the letters slope to the left (or they might be upright if you
+start with an italic font).
+.TP
+.B -p encodingfile
+specifies a file to use for the PostScript encoding of the font. Note
+that this file must also be mentioned as a header file for the font in
+the map included in
+.I dvips.cnf
+, and that ligature and kern information in this file is ignored.
+.TP
+.B -t encoding
+specify the encoding for the target TeX encoding of the font. Ligature
+and kern information may also be specified in this file; the file is not
+needed once the vf file has been created.
+.TP
+.B -T encoding
+specify encoding for both PostScript and TeX encoding of the font.
+.SH FILES
+.I dvips.cnf
+in the config directory used by dvips (update this).
+.br
+.I conf/KERTEX_T.post-install
+in the kerTeX sources for examples of the use to generate the
+distributed tfm and vf files built from Adobe Core PostScript afm.
+.SH "SEE ALSO"
+dvips(1), tex(1), vptovf(1) and the dvips manual.
+.SH MODIFICATIONS FROM ORIGINAL
+This version of the program for kerTeX has suppressed the hard coded
+encoding used as a default for output if none was specified. It now
+takes
+.I default.enc
+in the kerTeX hierarchy. Ligatures are taken exclusively from the
+encoding used (whether the specified or the default if none), and no
+ligature is added implicitely if none was specified in the encoding
+given.
+.SH OVERVIEW
+A
+.I .tfm
+file is what is seen and used by TeX. A tfm file can be created
+from a Virtual Property List
+.I .vpl
+along with a binary version of this property list: a virtual font
+.I .vf
+. The virtual font is not used by TeX, but by a dvi driver (for example
+dvips(1)).
+.SH BUGS
+An option to add letterspacing to the virtual font (via the virtual
+property list) was rejected by Donald E. Knuth because it would make 
+the fi and fl ligatures break the normal rhythmic pattern.
+.SH AUTHORS
+Tomas Rokicki <rokicki@cs.stanford.edu> and Donald E. Knuth.
+
+Some modifications to the program for files searching, and this 
+man page completed for kerTeX by Thierry Laronde <tlaronde@polynum.com>.

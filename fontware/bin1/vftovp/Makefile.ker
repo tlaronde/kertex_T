@@ -1,0 +1,20 @@
+PROG = vftovp
+
+LIBES = $(WEBLIB) $(PASCALLIB)
+
+MAKE_STATIC=YES
+
+COBJ =	vftovp.o
+
+all: $(PROG)
+
+vftovp.p vftovp.pool:	$(KNUTH_SRC_DIR)/etc/vftovp.web vftovp.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/etc/vftovp.web vftovp.ch
+
+vftovp.c coerce.h: 	vftovp.p vftovp.h ppdef.data
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		ppdef.data vftovp.p \
+		| $(M_DIR)/pp2rc -h vftovp.h\
+		| $(M_DIR)/fixwrites >vftovp.c
+	

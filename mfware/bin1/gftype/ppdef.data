@@ -1,0 +1,3 @@
+@define function bopenin();
+
+@define const LONGMAX;

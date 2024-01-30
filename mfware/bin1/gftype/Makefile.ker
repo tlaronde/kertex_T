@@ -1,0 +1,20 @@
+PROG = gftype
+
+LIBES = $(WEBLIB) $(PASCALLIB)
+
+MAKE_STATIC=YES
+
+COBJ =	gftype.o
+
+all: $(PROG)
+
+gftype.p gftype.pool:	$(KNUTH_SRC_DIR)/mfware/gftype.web gftype.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/mfware/gftype.web gftype.ch
+
+gftype.c coerce.h: 	gftype.p gftype.h ppdef.data
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		ppdef.data gftype.p \
+		| $(M_DIR)/pp2rc -h gftype.h\
+		| $(M_DIR)/fixwrites >gftype.c
+	

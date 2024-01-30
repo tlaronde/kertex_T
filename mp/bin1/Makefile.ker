@@ -1,0 +1,6 @@
+DATA = MAN
+
+$(DATA): MAN.data
+	sed -e 's!##KERTEX_BINDIR##!$(KERTEX_BINDIR)!'\
+		-e 's!##KERTEX_LIBDIR##!$(KERTEX_LIBDIR)!'\
+		MAN.data >MAN

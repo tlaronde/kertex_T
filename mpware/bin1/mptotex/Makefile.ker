@@ -1,0 +1,8 @@
+PROG = mptotex
+
+COBJ = main.o
+
+MAKE_STATIC=YES
+
+all: $(PROG)
+

@@ -1,0 +1,8 @@
+DATA = mp2ps
+
+all: $(DATA)
+
+$(DATA): sh.data
+	sed	-e 's!@@TARGETSHELL@@!$(TARGETSHELL)!'\
+		-e 's!@@TARGETRMDIR@@!$(TARGETRMDIR)!'\
+    sh.data >$@

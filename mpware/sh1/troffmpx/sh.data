@@ -1,0 +1,67 @@
+#!@@TARGETSHELL@@
+
+. which_kertex
+
+# The PATH shall be set for echo, cat, rm, mv, as well as troff, eqn.
+# We add the path for the TeX instances.
+PATH="$KERTEX_BINDIR:$PATH"
+
+# MPLIB is where mptotr, and dmp are installed
+#
+MPLIB=$KERTEX_BINDIR/lib
+
+# TROFF can be set in the environment see mpost(1)
+#
+DOTR=${TROFF:-'eqn -d\$\$ | troff'}
+
+#####################################################
+# Everything below here should seldom need changing #
+#####################################################
+ERRLOG=mpxerr.log		# file for an error log, if necessary
+TRERR=mpxerr			# file for erroneous troff input, if any
+OUTERR=mpxerr.t			# file for troublesome troff output, if any
+MPFILE=$1			# input file
+MPXFILE=$2			# output file
+NL='
+'
+
+trap "rm -f mpx$$.* $ERRLOG; exit 4" 1 2 15
+
+newer="@@NEWER_STMT@@"
+
+if test -z "$newer"
+then
+    $MPLIB/mptotr $MPFILE >mpx$$.i 2>$ERRLOG
+    case $? in
+    0)	;;
+    *)	echo "$NL"'Command failed: ' $MPLIB/mptotr $MPFILE
+	cat $ERRLOG
+	rm -f mpx$$.i
+	exit 1
+	;;
+    esac
+
+    cat mpx$$.i | eval $DOTR >mpx$$.t
+    case $? in
+    0)	;;
+    *)	mv mpx$$.i $TRERR
+	echo "$NL"'Command failed:' cat $TRERR '|' $DOTR
+	rm -f mpx$$.t
+	exit 2
+	;;
+    esac
+
+    $MPLIB/dmp mpx$$.t $MPXFILE 2>$ERRLOG
+    case $? in
+    0)	;;
+    *)  mv mpx$$.t $OUTERR
+	mv mpx$$.i $TRERR
+	echo "$NL"'Command failed:' $MPLIB/dmp $OUTERR $MPXFILE
+	cat $ERRLOG
+	rm -f mpx$$.*
+	exit 3
+	;;
+    esac
+
+    rm -f $ERRLOG mpx$$.*
+fi

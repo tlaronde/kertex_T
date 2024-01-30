@@ -1,0 +1,73 @@
+#!@@TARGETSHELL@@
+
+. which_kertex
+
+# The PATH shall be set for echo, cat, rm, mv, as well as troff, eqn.
+# We add the path for the TeX instances.
+PATH="$KERTEX_BINDIR:$PATH"
+
+# MPLIB is where mptotex, and dvitomp are installed
+#
+MPLIB=$KERTEX_BINDIR/lib
+
+# TEX can be set in the environment see mpost(1).
+#
+DOTEX=${TEX:-tex}
+
+#####################################################
+# Everything below here should seldom need changing #
+#####################################################
+ERRLOG=mpxerr.log		# file for an error log if necessary
+TEXERR=mpxerr.tex		# file for erroneous TeX file if any
+DVIERR=mpxerr.dvi		# troublesome dvi file if any
+MPFILE=$1			# input file
+MPXFILE=$2			# output file
+NL='
+'
+
+trap "rm -f mpx$$.* $ERRLOG; exit 4" 1 2 15
+
+newer="@@NEWER_STMT@@"
+
+if test -z "$newer"
+then
+    $MPLIB/mptotex $MPFILE >mpx$$.tex 2>$ERRLOG
+    case $? in
+    0)	;;
+    *)	echo "$NL"'Command failed: ' $MPLIB/mptotex $MPFILE
+	cat $ERRLOG
+	rm -f mpx$$.tex
+	exit 1
+	;;
+    esac
+
+    if test -r ${MPTEXPRE:-mptexpre.tex}
+    then
+	cat ${MPTEXPRE:-mptexpre.tex} mpx$$.tex >mpx$$.tmp
+	mv mpx$$.tmp mpx$$.tex
+    fi
+
+    $DOTEX '\batchmode\input 'mpx$$ >/dev/null
+    case $? in
+    0)	;;
+    *)	mv mpx$$.tex $TEXERR
+	mv mpx$$.log $ERRLOG
+	echo "$NL"'Command failed:' $DOTEX $TEXERR $NL'See' $ERRLOG
+	rm -f mpx$$.*
+	exit 2
+	;;
+    esac
+
+    $MPLIB/dvitomp mpx$$.dvi $MPXFILE >$ERRLOG
+    case $? in
+    0)	;;
+    *)  mv mpx$$.dvi $DVIERR
+	echo "$NL"'Command failed:' $MPLIB/dvitomp $DVIERR
+	cat $ERRLOG
+	rm -f mpx$$.*
+	exit 3
+	;;
+    esac
+
+    rm -f $ERRLOG mpx$$.*
+fi

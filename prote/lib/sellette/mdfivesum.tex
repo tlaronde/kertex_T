@@ -1,0 +1,17 @@
+\catcode`\{=1 \catcode`\}=2
+\def\space{ }
+\scrollmode
+\message{mdfivesum of inexisting file (in square brackets): 
+[\mdfivesum FILE {/not_existing}]; should be: [].}
+\message{mdfivesum of empty string (in square brackets):
+[\mdfivesum {}]; should be: [D41D8CD98F00B204E9800998ECF8427E];\space} 
+\message{mdfivesum of existing but empty (in square brackets):
+[\mdfivesum FiLe {./mdfivesum0.dat}]; should be:
+[D41D8CD98F00B204E9800998ECF8427E];\space} 
+\message{mdfivesum of existing file not empty (in square brackets):
+[\mdfivesum file {./mdfivesum1.dat}]; should be:
+[6FEB8AC01A4400A728B482D0506C4BEB];\space} 
+\message{mdfivesum of the same string (in square brackets):
+[\mdfivesum  {ABCDEFGHI}]; should be:
+[6FEB8AC01A4400A728B482D0506C4BEB];\space} 
+\end

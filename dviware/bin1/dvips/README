@@ -1,0 +1,108 @@
+dvips kerTeX 5.77 notes [TL]:
+	- emtex support is dropped.
+	- tpic support is dropped.
+	- HyperTeX is added by default.
+	- No system commands embedded in files are allowed: if you know
+		what you are doing, you can create a script or preprocess.
+		Period.
+	- dvips(1) sends to stdout by default. One can redirect (pipe) to
+		a spool manager or a file etc. I aim for C89 support and no 
+		system assumptions. The '-o' parameter is still supported for
+		systems lacking redirection.
+	- the '-f' parameter is suppressed since the file must be seekable,
+	and since, by default, dvips(1) sends to stdout.
+	- the 'E' command in the config file for calling system(3) is
+	suppressed.
+	- in the dvips.cnf (was: config.ps) file, v, V, S, H, I, T, P are
+	removed since everything can be specified by environment variables.
+	(It was just to _not_ read environment PRINTER; but we _never_ read
+	it now...)
+	- reverse behavior: one specifies explicitely via '-G' (new option)
+	that dvips shall attempt to create missing fonts. ('-M' is not
+	supported anymore).
+	No file missfont.log is created but "comment" sent to stderr.
+	- searching is done with the very same routines used by other KerTeX
+	programs, i.e. the ones in libweb.
+
+dvips 5.74 notes:
+
+   The epsf.sty and epsf.tex files are now in the public domain.
+   The t1part.c has been updated to support binary files with
+   multiple binary sections.
+
+dvips 5.72 notes:
+
+   Bug fix in t1part.c???  I hope so!
+
+   Debugging now turned on by default.  No real reason to turn it off.
+   (Too many Linux versions of dvips without debugging have been
+   distributed, and it makes it very difficult to help the users with
+   their problems . . .)
+
+dvips 5.62 notes:
+
+   The makefile and config.ps and MakeTeXPK need to be modified to fit
+   your site!
+
+   dvips.tex needs updating.
+
+To document:
+   Landscape mfmode
+   HPS integration
+   Separate EPSF file generation
+   Better bbox support
+   Partial type 1 support
+   Comment elision now turned *off*
+   Upleveling of font requirements
+   Bitmap font descriptions
+
+Questions:
+   Should I eliminate PStfms/PSvfs/afm-extra?
+   Should I eliminate PSlatex?  (my guess is yes)
+   Partial type 1 downloading (Sergey Lesenko)
+   HyperTeX support (Mark Doyle)
+   Lots of little bugs/changes/fixes
+
+Still todo:
+
+- Make a better copyfile that handles Level 2 data better
+- Add landscape mode def and code to select it.
+- Sanitize; test on various systems
+- Improve makefile!!!  Goal:  on a standard C installation (with stdlib
+  and all) and a Unix machine using TDS, make it be just a `make' away.
+- Improve diagnostics, especially when files not found.
+- Eliminate `extern' declarations; use header files properly
+
+Despite the fact that I reference Mark and Sergey, bugs are mine, mine,
+all mine, so please bug me and not them.
+----------------------------------------------------------------------------
+All real documentation is now in the file dvips.tex.  There is also a file
+called test.tex that you can read and run to test some basic capabilities of
+dvips.  INSTALLATION has the primary installation instructions.
+
+If you enjoy using dvips, you will probably enjoy being a member of 
+the TeX Users Group.  To join or contribute to TUG, contact them at
+
+   TeX Users Group
+   1850 Union Street  #1637
+   San Francisco, CA  94123
+   Voice:  (415) 982-8449
+   FAX:  (415) 982-8559
+   Email:  TUG@tug.org
+   Web:  http://www.tug.org/
+
+This is a list of people who have contributed substantially to dvips.
+I'm sure I've forgotten many.  Thanks to all!
+
+Karl Berry
+Mark Doyle
+Edward J. Groth
+James Hafner
+John Hobby
+Donald E. Knuth
+Russell Lang
+Sergey Lesenko
+Art Ogawa
+Melissa O'Neill
+Sebastian Rahtz
+Andrew Trevorrow

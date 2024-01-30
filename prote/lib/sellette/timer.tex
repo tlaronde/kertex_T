@@ -1,0 +1,11 @@
+\catcode`\{=1 \catcode`\}=2
+\def\space{ }
+\message{elapsedtime:\space\the\elapsedtime;\space}
+\mdfivesum FILE {timer.tex}
+\mdfivesum FILE {timer.tex}
+\mdfivesum FILE {timer.tex}
+\mdfivesum FILE {timer.tex}
+\message{elapsedtime after some work:\space\the\elapsedtime;\space}
+\resettimer
+\message{elapsedtime after resetting:\the\elapsedtime.}
+\end

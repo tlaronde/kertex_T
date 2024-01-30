@@ -1,0 +1,33 @@
+@define function abs();
+@define function chr();
+@define function eof();
+@define function eoln();
+@define function odd();
+@define function ord();
+@define function pred();
+@define function round();
+@define function succ();
+@define function trunc();
+@define procedure get();
+{We can't do variadic read() because of assignments; C macros}
+@define procedure read();
+@define procedure read2();
+@define procedure readln();
+@define procedure reset();
+@define procedure rewrite();
+@define procedure write();
+@define procedure writeln();
+
+@define type boolean=0..1;
+@define type text;
+@define type ccharpointer;
+@define type char=0..255;
+@define type integer;
+@define type real;
+
+@define const false;
+@define const true;
+@define var argc;
+@define var argv;
+@define var stdin;
+@define var stdout;

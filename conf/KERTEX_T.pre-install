@@ -1,0 +1,40 @@
+# risk_comp pre-install program for the KerGIS project
+#
+# $Id: KERTEX_T.pre-install,v 1.5 2013/03/25 16:34:27 tlaronde Exp $
+#
+#  Copyright 2004 Thierry LARONDE <tlaronde@polynum.com>
+#  All rights reserved. 
+#  
+#  This work is under the KerGIS Public Licence v1.1
+# 
+#  See the COPYRIGHT file at the root of the source directory or see
+#  http://www.kergis.com/ for complete information.
+# 
+# !!!THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT ANY WARRANTIES!!! 
+#                      USE IT AT YOUR OWN RISK 
+
+if [ $# -gt 0 ]; then
+	case $1 in
+	  -d) set -x;;
+	esac
+fi
+
+# include admin commands risk_comp wrappers
+. install_bin/cmds
+
+#user=kertex
+#group=kertex
+#
+##========== CREATING group and KerGIS admin
+#rk_group_exists "$group" || rk_group_add $group
+#
+#rk_user_exists "$user" || {
+#	rk_user_add user=$user group=$group groups=operator home=$TARGETLIBDIR/kertex/kertex
+#	if [ $? -eq 0 ]; then
+#	  rk_passwd $user
+#	else
+#	  rk_log "Error when trying to create user"
+#	fi
+#}
+
+exit 0

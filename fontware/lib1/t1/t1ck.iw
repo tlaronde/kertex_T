@@ -1,0 +1,54 @@
+@* Vérification d'une fonte sous format Type 1.
+
+Le programme permet d'explorer une fonte sous format Type 1, en
+vérifiant qu'elle est conforme aux spécifications, et en affichant sous
+une forme humainement déchiffrable les informations contenues.
+
+Ce programme exploite la bibliothèque t1 décrite ci-dessus.
+
+@<Display t1ck usage@>=
+(void) fprintf(stderr, "Usage: %s type1_font_file\n", argv[0]);
+
+@ Par convention, les valeurs de retour en cas de succès ou d'échec
+suivent la convention kerTeX, quel que soit le système hôte.
+
+@(t1ck.c@>=
+#include <stdio.h>
+#include <stdlib.h>
+#include "kertex.h"
+#include "t1.h"
+extern unsigned long datasize; /* normally t1lib local */
+
+int
+main(int argc, char *argv[])
+{
+  int status;
+  FILE *fp;
+
+  if (argc != 2) {
+    @<Display t1ck usage@>@;
+    exit(KX_EXIT_FAILURE);
+  }
+  (void) fprintf(stderr, "Opening: `%s'.\n", argv[1]);
+  if ((fp = fopen(argv[1], "r")) == NULL) {
+    (void) perror(argv[0]);
+    exit(KX_EXIT_FAILURE);
+  }
+
+  t1flags = T1_FLAG_TRACE;
+  
+	(void) fprintf(stderr, "\n########## Just checking:\n");
+  if ( (status = pfbCk(fp)) != T1_SUCCESS)
+    exit(KX_EXIT_FAILURE);
+
+	(void) fprintf(stderr, "########## Checked OK.\n");
+
+	(void) fprintf(stderr, "\n########## Now sending on stdout:\n");
+  if ( (status = pfbSend(fp)) != T1_SUCCESS)
+    exit(KX_EXIT_FAILURE);
+  else {
+	  (void) fprintf(stderr, "########## Sent OK.\n");
+    exit(KX_EXIT_SUCCESS);
+	}
+}
+

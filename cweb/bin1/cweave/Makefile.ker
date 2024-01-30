@@ -1,0 +1,21 @@
+PROG = cweave
+
+MAKE_STATIC=YES
+
+CWEBEES = cweave.c
+
+CFILES = cweave.c $(OBJDIR)/cweb/bin1/common.c
+
+COBJ = cweave.o common.o
+
+CWEBINPUTS = $(CWEB_SRC_DIR)
+
+LIBES = $(WEBLIB)
+
+XCPPFLAGS = -I$(PROJECTDIR)/lib1/pascal
+
+all: $(PROG) 
+
+$(CWEBEES): $(CWEB_SRC_DIR)/cweave.w  $(CWEB_SRC_DIR)/common.h \
+	kertex.ch
+

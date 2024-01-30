@@ -1,0 +1,162 @@
+.TH mf 1 "2016-02-21" kerTeX
+.SH NAME
+mf, virm, inimf \- METAFONT interpreter, compiler
+.SH SYNOPSIS
+.B virmf
+[
+.I -w width
+]
+[
+.I -d depth
+]
+[
+.I first line
+]
+.PP
+.B inimf
+[
+.I first line
+]
+.SH DESCRIPTION
+.B METAFONT
+reads the program from the file input and outputs font rasters (in
+.I gf
+format) and font metrics (
+.I tfm
+files).
+.PP
+The definitive reference is Donald E. Knuth
+.I METAFONTbook
+, published by Addison-Wesley, and this manual page only sketches the
+call and the parameters of METAFONT in the
+.I kerTeX
+distribution, and not the language by itself.
+.PP
+There are two variants of the METAFONT interpreter/compiler:
+.I virmf
+and
+.I inimf
+.
+.PP
+.I virmf
+is the production interpreter. It is generally not called by this very
+name but by the name of the configuration (macros) to load before
+further processing. A huge set of predefined configurations and macros
+is usually, for efficiency, first precompiled (
+.I dumped
+) as a
+.I base
+file with another instance of METAFONT called
+.I inimf
+. Once this dump has been obtained, the huge set of predefined and
+compiled macros is loaded by
+.I virmf
+. This is the name given to 
+.I virmf
+that instructs virmf to load the corresponding precompiled set of
+macros.
+.PP
+For example, METAFONT virmf is generally called as
+.I mf
+indicating that
+.I virmf
+will be used with Donald E. Knuth's predefined set of configuration and
+macros, dumped as the binary
+.I plain.base
+file (this is already made by the kerTeX installation; hence
+.I mf
+is just another name of
+.I virmf
+but ensuring the load of the precompiled plain set).
+.PP
+.I virmf
+(METAFONT) (and not
+.I inimf
+) can have also the capability (if supported by the system) to
+display on the screen the pictures it is drawing.
+.SH OPTIONS
+For
+.I virmf
+only, it is possible to override the default size of the screen to
+create for online rendering (this can be specified by environment
+variables too; see below).
+.TP
+.B -w  width
+override the default Width of the METAFONT screen to create for online
+graphic output.
+.TP
+.B -d depth
+override the default Depth (height) of the METAFONT screen to create for
+online graphic output.
+.SH ENVIRONMENT
+All the environment variables below have a default definition
+including the current working directory, and the normalized
+directories in the kerTeX hierarchy. If you run the commands in
+the directory where your customized files live, and the system
+shared ones are in the dedicated and normalized kerTeX directories,
+you will generally not have to specifically overwrite the defaults.
+.TP
+.B KERTEXINPUTS
+a semicolon separated list of directories to search for the
+files to include.
+.TP
+.B KERTEXPOOL
+a semicolon separated list of directories to search for the string
+pools to customize METAFONT messages.
+.TP
+.B KERTEXDUMP
+a semicolon separated list of directories to search for the precompiled
+(dumped) macros (the
+.I base
+files).
+.PP
+These supplementary environment variables apply only to
+.I virmf
+and allow to set, via the environment, the prefered size of the screen
+for METAFONT online graphic output. These can be overriden on the
+command line by the
+.I -w
+and
+.I -d
+options.
+.TP
+.B MF_SCREEN_WIDTH
+the width of the screen to create.
+.TP
+.B MF_SCREEN_DEPTH
+the depth (height) of the screen to create.
+.SH EXAMPLE
+.TP
+.B mf '\input 6test'
+will generate 6 variants of the character specified in the
+.I test.mf
+file and, if online graphic output is supported, render them on the
+screen supplementary to creating a 
+.I mfput2602.gf
+file for hardcopy, to be processed with
+.I gftodvi
+for a dvi version to be rendered with, for example,
+.I dvips
+.
+.SH REFERENCES
+Donald E. Knuth,
+.I The METAFONTbook
+(Volume C of
+.I Computers and Typesetting
+), Addison-Wesley.
+.br
+Donald E. Knuth,
+.I METAFONT, the Program
+(Volume D of
+.I Computers and Typesetting
+), Addison-Wesley.
+.br
+Donald E. Knuth,
+.I Computer Modern Typefaces
+(Volume E of
+.I Computers and Typesetting
+), Addison-Wesley.
+.SH "SEE ALSO"
+gftodvi(1), gftopk(1), gftype(1), mft(1), pltotf(1), tftopl(1)
+.SH AUTHOR
+Thierry Laronde <tlaronde@polynum.com>.

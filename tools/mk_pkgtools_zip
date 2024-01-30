@@ -1,0 +1,37 @@
+#!/bin/sh
+# C) 2020, 2022 Thierry Laronde <tlaronde@polynum.com>
+#
+# Generating the pkg zip to current pkg related lib, packages and
+# tools.
+#
+
+: ${TMPDIR:=/tmp}
+
+: ${SRC_DIR:=/data/m/kertex_pkg/src}
+
+# It has to be run at the root of our sources.
+#
+test -s conf/KERTEX_T\
+	|| { echo "You must run me from KERTEX_T root dir!" >&2; exit 1; }
+
+mkdir "$TMPDIR/$$"
+cp pkg/sys/sh1/lib/lib.sh "$TMPDIR/$$"
+cp pkg/sys/sh1/lib/*.data "$TMPDIR/$$"
+mkdir -p "$TMPDIR/$$/lib/pkg/rcp"
+cp pkg/rcp/core/pkg.sh "$TMPDIR/$$/lib/pkg/rcp/core@pkg.sh"
+cp pkg/rcp/tools/pkg.sh "$TMPDIR/$$/lib/pkg/rcp/tools@pkg.sh"
+cp pkg/rcp/pkg.sh "$TMPDIR/$$/lib/pkg/rcp/rcp@pkg.sh"
+mkdir -p "$TMPDIR/$$/bin"
+find pkg/sh1/ -type d -mindepth 1 -maxdepth 1\
+	| sed 's!^pkg/sh1/!!'\
+	| sed '/^[^a-z]/d'\
+	| while read dir; do
+	test -s pkg/sh1/$dir/sh\
+		&& cp pkg/sh1/$dir/sh "$TMPDIR/$$/bin/pkg_$dir"
+done
+
+( cd "$TMPDIR/$$"; zip -r "$TMPDIR/$$.zip" .; )
+
+mv "$TMPDIR/$$.zip" "$SRC_DIR/pkgtools.zip" 
+
+rm -fr "$TMPDIR/$$"

@@ -1,0 +1,216 @@
+##BEGIN_SYS_CUSTOMIZED
+# These ones have to be customized depending on the remote transfer
+# clients on the target system. Let user be able to override ad hoc
+# in case of problem.
+#
+sys_ftpc=${sys_ftpc:-@@SYS_FTPC@@} # ftp client
+sys_httpc=${sys_httpc:-@@SYS_HTTPC@@}	# http client
+
+# This depends: root for Unices, Subsystem For Unix for previous
+# Windows version has another definition.
+#
+sys_root_id="@@SYS_ROOT_ID@@"
+sys_sudoing="@@SYS_SUDOING@@"
+##END_SYS_CUSTOMIZED
+
+PKG_RMDIR=rmdir
+PKG_SED=sed
+PKG_UNZIP=unzip
+PKG_NULL_FILE="/dev/null"
+
+# Unix implementation of the routine translating get requests in
+# executable commands.
+#
+pkg_stop_if_root()
+{
+	if test `id -u` -eq $sys_root_id; then
+		pkg_log "Don't run me as root now!"; # don't remove TMPDIR as root!
+    exit 2;
+	fi
+}
+
+pkg_user0_cmd()
+{
+	if test $(id -un) = "$KERTEX_USER0"; then
+    	$KERTEX_SHELL $@
+	else
+		pkg_log "Switching to $KERTEX_USER0:"
+		$sys_sudoing su "$KERTEX_USER0" -c "$KERTEX_SHELL $@"
+	fi
+}
+
+pkg_lstree()
+{
+	find . -print
+}
+
+# sys_$PKG_RPROTO_cnx_open() sends to stdout the cmds necessary to open
+# the cnx.
+# Must be called after pkg_setck_url().
+#
+sys_file_cnx_open()
+{
+	test -d "$PKG_RROOT" || pkg_error "file : $PKG_RROOT doesn't exist"
+}
+
+sys_http_cnx_open()
+{
+	return 0
+}
+
+sys_ftp_cnx_open()
+{
+	case $sys_ftpc in
+    	ftp) echo "cat <<\"EOFFTPSCRIPT\" | $sys_ftpc $PKG_URL"
+	  		echo binary
+	  		;;
+		# lftp(1) tries to cd to the trailing '/' present and to pwd
+		# and it is not possible with some ftp server that forbid
+		# publishing infos on the content. In this case (ex. ftp.ams.org)
+		# lftp(1) tries infinitely...
+		#
+    	lftp) echo "cat <<\"EOFFTPSCRIPT\" | $sys_ftpc ${PKG_URL%/}"
+	  		;;
+	curl) echo # Nothing: we retrieve file by file.
+	  		;;
+    	*) pkg_error "Unknown sys_ftpc: $sys_ftpc!"
+      		;;
+  	esac
+}
+
+# sys_$PKG_RPROTO_lcd(ldir)
+# Command to change to local dir.
+#
+sys_file_lcd()
+{
+	echo "cd $1"
+}
+
+sys_http_lcd()
+{
+	echo "cd $1"
+}
+
+sys_ftp_lcd()
+{
+	if test $sys_ftpc != curl; then
+		echo "lcd $1"
+	else
+		echo "cd $1"
+	fi
+}
+
+# sys_$PKG_RPROTO_ls(rdir)
+# list the remote dir.
+#
+sys_file_ls()
+{
+	echo "( cd $1; ls; )"
+}
+
+sys_http_ls()
+{
+cat <<EOT
+	( 
+		mkdir -p $TMPDIR/.sys
+		cd $TMPDIR/.sys
+EOT
+	case $sys_httpc in
+		ftp) echo "ftp -o list.html '$PKG_URL${1#$PKG_RROOT}'"
+	  		;;
+		lftp) echo "lftp -c 'get \"$PKG_URL${1#$PKG_RROOT}\" -o \"list.html\"'"
+	  		;;
+		curl) echo "curl -H \"User-Agent: cliRetriever/0.1\" -L '$PKG_URL${1#$PKG_RROOT}' -o 'list.html'"
+	  		;;
+		fetch) echo "fetch -o 'list.html' '$PKG_URL${1#$PKG_RROOT}'"
+			;;
+		*) pkg_error "sys_setck_http_getcmd(): unknown httpc '$sys_httpc'!"
+	  		;;
+  	esac
+cat <<EOT
+		cat "list.html"\\
+			| $PKG_SED -n 's!^.*<a[^>]*>\\([^<]*\\)</a>.*\$!\\1!p'\\
+			| $PKG_SED -e 's/^[ 	]*//' -e 's/[ 	]*\$//'
+		rm -f "list.html"
+	)
+EOT
+}
+
+sys_ftp_ls()
+{
+	if test $sys_ftpc != curl; then
+		cat <<EOT
+cd $1
+nlist
+EOT
+	else # curl
+		echo "curl -H \"User-Agent: cliRetriever/0.1\" -L --list-only $PKG_URL${1#$PKG_RROOT}"
+	fi
+}
+
+# sys_$PKG_RPROTO_get(rdir, rfile, lfile)
+# echoes the cmd to get the rpath/rfile to the lfile.
+#
+sys_file_get()
+{
+	echo "cp '$1$2' '$3'"
+}
+
+sys_http_get()
+{
+	echo "echo 'Getting $1$2. Please wait...'"
+	case $sys_httpc in
+		ftp) echo "ftp '$PKG_URL${1#$PKG_RROOT}$2' '$3'"
+	  		;;
+		lftp) echo "lftp -c 'get \"$PKG_URL${1#$PKG_RROOT}$2\" -o \"$3\"'"
+	  		;;
+		curl) echo "curl -H \"User-Agent: cliRetriever/0.1\" -L '$PKG_URL${1#$PKG_RROOT}$2' -o '$3'"
+	  		;;
+		fetch) echo "fetch -o '$3' '$PKG_URL${1#$PKG_RROOT}$2'"
+			;;
+		*) pkg_error "sys_setck_http_getcmd(): unknown httpc '$sys_httpc'!"
+	  		;;
+  	esac
+}
+
+sys_ftp_get()
+{
+	case $sys_ftpc in
+		ftp) echo "cd $1" 
+			echo "get $2 $3"
+	  		;;
+		lftp) echo "echo getting $3..." 
+	  		echo "cd $1"
+	  		echo "get $2 -o $3"
+	  		;;
+		curl) echo "curl -H \"User-Agent: cliRetriever/0.1\" -L '$PKG_URL${1#$PKG_RROOT}$2' -o '$3'"
+	  		;;
+    	*) pkg_error "Unknown sys_ftpc: $sys_ftpc!"
+      		;;
+  	esac
+}
+
+# sys_$PKG_RPROTO_cnx_close() echoes the command for closing the connection.
+#
+sys_file_cnx_close()
+{
+	return 0
+}
+
+sys_http_cnx_close()
+{
+	return 0
+}
+
+sys_ftp_cnx_close()
+{
+	case $sys_ftpc in
+    	ftp|lftp) echo "bye"
+	  		echo "EOFFTPSCRIPT"
+	  		;;
+		curl) echo # Nothing: we retrieve file by file (cmd by cmd).
+	  		;;
+    	*) pkg_error "Unknown sys_ftpc: $sys_ftpc!"
+      		;;
+	esac
+}

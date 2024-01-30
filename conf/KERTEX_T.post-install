@@ -1,0 +1,63 @@
+# rkcomp post-install program for the KerTeX_T.
+#
+# $Id: KERTEX_T.post-install,v 1.35 2012/03/22 13:58:40 tlaronde Exp $
+#
+#  Copyright 2010 Thierry LARONDE <tlaronde@polynum.com>
+#  All rights reserved. 
+#  
+#  This work is under the KerGIS Public Licence v1.1
+# 
+#  See the COPYRIGHT file at the root of the source directory or see
+#  http://www.kergis.com/ for complete information.
+# 
+# !!!THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT ANY WARRANTIES!!! 
+#                      USE IT AT YOUR OWN RISK 
+
+# include the config
+. install_data/rkinstall.cf
+
+cat <<EOT >&2
+
+==================================================================
+
+                        You're done!
+                Thank you for using KerTeX
+
+You must now, as an _unprivileged_ user build the fonts and compile
+the dump.
+
+Just run:
+
+	which_kertex
+
+to see where stuff is installed. And then run:
+
+             WARNING! WARNING! WARNING! CHANGED!!!!
+
+	\$KERTEX_SHELL \$KERTEX_LIBDIR/pkg/kertex.sh install
+
+Note too that now, for every kerTeX system on whatever host, the
+semicolon ';' is used instead of the colon ':' for path separator when
+specifying path alternative.
+
+Note that the man pages are put in kerTeX realm. So you will have to
+add the paths (man.conf(5) or man.config(5) for Unix like); for plan9, 
+the man pages appear as you have set the namespace (i.e. with bind(1) 
+options, you can redirect the writes where you want).
+
+The path is displayed by which_kertex(1), with comments about some
+administrative changes.
+
+You should probably also edit dvips config to be found here:
+
+\$KERTEX_LIBDIR/dvips/dvips.cnf
+
+to match the resolution and memory of your printer device, and to use
+or not T1 version of Donald E. Knuth's Computer Modern Fonts.
+
+==================================================================
+
+EOT
+
+exit 0
+

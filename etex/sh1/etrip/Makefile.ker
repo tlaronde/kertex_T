@@ -1,0 +1,9 @@
+DATA = ck_etex
+
+all: $(DATA)
+
+$(DATA): sh.data
+	sed -e 's!@@TARGETSHELL@@!$(TARGETSHELL)!'\
+		-e 's!@@KERTEX_LIBDIR@@!$(KERTEX_LIBDIR)!'\
+		-e 's!@@KERTEX_BINDIR@@!$(KERTEX_BINDIR)!' sh.data >$@
+

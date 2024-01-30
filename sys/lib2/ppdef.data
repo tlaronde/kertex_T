@@ -1,0 +1,14 @@
+{ Online Graphic Output declarations for pp2rc. }
+@define var screenOK;
+@define var screenwidth;
+@define var screendepth;
+@define type screenrow;
+@define type screencol;
+@define type pixelcolor;
+@define var rowtransition;
+
+@define function initscreen;
+@define procedure updatescreen;
+@define procedure blankrectangle();
+@define procedure paintrow();
+

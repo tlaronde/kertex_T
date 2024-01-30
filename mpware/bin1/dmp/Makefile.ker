@@ -1,0 +1,12 @@
+PROG = dmp
+
+COBJ = main.o
+
+LIBES = $(WEBLIB) $(MATHLIB)
+
+MAKE_STATIC=YES
+
+XCPPFLAGS = -I $(PROJECTDIR)/lib1/pascal/
+
+all: $(PROG)
+

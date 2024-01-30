@@ -1,0 +1,15 @@
+LIB = $(T1LIB)
+
+COBJ =	t1.o
+
+CWEBINPUTS = $(SRCDIR)
+
+CWEBEES = t1.h t1.c t1ck.c
+
+all: $(LIB)
+
+$(CWEBEES) : t1.w t1ck.iw role.iw
+
+t1ck: $(CWEBEES)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o t1ck t1.c t1ck.c
+

@@ -1,0 +1,44 @@
+{ These ones are modified via uniqids.sed. }
+@define @field b0field;
+@define @field b1field;
+@define @field b2field;
+@define @field b3field;
+@define @field qqqqfield;
+@define @field intfield;
+@define @field hhfield;
+@define @field lhfield;
+@define @field rhfield;
+
+{ These are macros expending to Openin with correct PATH spec. }
+@define function aopenin();
+@define function bopenin();
+@define function wopenin();
+
+@define procedure bwrite2bytes();
+@define procedure bwrite4bytes();
+@define procedure bwritebuf();
+@define procedure bwritebyte();
+@define procedure dumphh();
+@define procedure dumpint();
+@define procedure dumpqqqq();
+@define procedure dumpwd();
+@define procedure undumphh();
+@define procedure undumpint();
+@define procedure undumpqqqq();
+@define procedure undumpwd();
+
+{ floor half }
+@define function half();
+
+{ binary div and mod for two_to_the }
+@define function bdiv();
+@define function bmod();
+
+{ scan args indeed }
+@define procedure topenin;
+
+@define type fourquarters;
+@define type memoryword;
+@define type twohalves;
+@define type volatileinteger;
+

@@ -1,0 +1,67 @@
+		Here are the KerTeX_T definable values
+
+KNUTH_SRC_DIR	[default: "../knuth"]
+	The directory where are Donald E. Knuth released sources.
+
+BIBTEX_SRC_DIR	[default: "../bibtex"]
+	The directory where are Oren Patashnik's bibtex sources.
+
+ETEX_SRC_DIR	[default: "../etex"]
+	The directory where are NTS e-TeX sources.
+
+AMS_SRC_DIR		[default: "../ams"]
+	The directory where are AMS provided fonts.
+
+ADOBE_SRC_DIR	[default: "../adobe"]
+	The directory where are Adobe published AFM for the core PostScript
+	fonts.
+
+CWEB_SRC_DIR		[default: "../cweb"]
+	The directory where the CWEB utilities sources are.
+
+M_DIR	[default: substitute KERTEX_M to KERTEX_T objdir]
+	The directory where the KerTeX matrix tools compiled are.
+
+MAXPATHSPEC	[default: 4096]
+	Maximum length of the path defined in a KXPATH file.
+
+BIGTEX	[default: YES]
+	Set this to: "NO", if you don't want programs with more space for 
+	strings, fonts and so on.
+
+HUGETEX	[default: NO]
+	Set this to: "YES", if you want MetaPost (only affected one) to have
+	a huge amount of resources (for m3D use for example). The other
+	programs will be set to BIG.
+
+TARGETLIBDIR	[default: $TARGETLIBDIR/kertex]
+	Where the kerTeX hierarchy dir of machine independent data (macros,
+	fonts etc.) will be put. This is replaced in the map
+	describing the installation of components.
+
+TARGETBINDIR	[default: $TARGETBINDIR/kertex]
+	Where the kerTeX hierarchy dir of system dependent programs and
+	data  will be put. This is replaced in the map describing the 
+	installation of components.
+
+FIXPT [default: YES]
+	John Hobby has provided floating point flavor of arithmetic routines
+	(for scaled integers) used in METAFONT and, hence, MetaPOST. By
+	default, the original ones (integers) are used. If the
+	target floating support is correct and faster (can be almost a 12
+	times increase in speed if hardware supported), user can define this
+	to NO to use the floating point versions.
+
+WITH_2D_MF [default: YES]
+	Use the system 2D (windowing) facilities for METAFONT display.
+
+SYS_FTPC [default: "ftp"] ("ftp"|"ncftp")]
+	A TARGET ftp client handling user:passwd in url or on command
+	line. (For Unix system type.)
+
+SYS_HTTPC [default: "ftp"]
+	A TARGET http client. (For Unix system type.)
+
+KERTEX_FIXED_PATH [default: NO]
+	Don't take KERTEX_BINDIR and KERTEX_LIBDIR from environment.
+

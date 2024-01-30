@@ -1,0 +1,45 @@
+/* Config header for the whole kerTeX package. It includes what is
+   generally put in a cdefs.h.
+ */
+
+#ifndef KERTEX_H
+#define KERTEX_H
+
+#include "@@OBJDIR@@/.rkcomp/include/iconv_defs.h"
+
+/* 0. protect from not C89 names present in C89 headers and conflicting
+   with Web routines (hence the trailing '_').
+ */
+#define strtonum strtonum_	/* reported on BSD */
+#define remainder remainder_	/* reported on Mac */
+#define getline getline_	/* reported on Mac: stdio.h:getline() */
+
+/* 1. System dependant stuff.
+ */
+#define SYSTEM_ENCODING @@SYSTEM_ENCODING@@
+
+/* 2. kerTeX system.
+ */
+#define DIR_SEP "/"	/* can do for every system lib (not shell) */
+#define DIR_SEP_CHAR '/'
+#define CURDIR "./"
+#define PATH_SEP ";"	/* will do for every system */
+#define PATH_SEP_CHAR ';'
+#define PATH_SPEC_FILE "KXPATH"	/* the filename for path spec at root */
+#define PATH_ADD_DIRECTIVE "KERTEXSYS" /* magic string to add defaults */
+
+/* Define MAXPATHSPEC to be the maximum number of characters in a
+   KXPATH search path.  This is used to size the buffer.
+*/
+#define MAXPATHSPEC @@MAXPATHSPEC@@
+#define KERTEX_LIBDIR "@@KERTEX_LIBDIR@@"
+#define KERTEX_BINDIR "@@KERTEX_BINDIR@@"
+
+/* To have the very same behavior on whatever system, we can not
+   depend on EXIT_FAILURE and EXIT_SUCCESS since they are system
+	 dependent.
+ */
+#define KX_EXIT_SUCCESS 0
+#define KX_EXIT_FAILURE 1
+
+#endif /* KERTEX_H */

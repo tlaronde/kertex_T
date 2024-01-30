@@ -1,0 +1,14 @@
+\catcode`\{=1 \catcode`\}=2
+\def\space{ }
+\scrollmode
+\message{filedump of inexisting: "\filedump {/not_existing}"; should be
+"";\space} 
+\message{filedump without length: "\filedump {./filedump.dat}"; should be
+"";\space} 
+\message{filedump with length: \filedump LENGTH 3 {./filedump.dat}; 
+should be: 000102;\space} 
+\message{filedump with offset and length: \filedump OFFSET 2 LENGTH 3
+{./filedump.dat}; should be: 020304;\space} 
+\message{filedump with offset passing length: "\filedump OFFSET 10 LENGTH 3
+{./filedump.dat}"; should be: "";\space} 
+\end

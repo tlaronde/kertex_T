@@ -1,0 +1,1295 @@
+#========== THE COMPILED ONES
+# The core libraries.
+@ d * * $PROJECTDIR/include *
+@ d * * $PROJECTDIR/lib1/pascal *
+@ d * * $PROJECTDIR/lib1/web *
+@ d * * $PROJECTDIR/sys/lib2 *
+# The web programs for the target.
+@ d * * $PROJECTDIR/web/bin1/tangle *
+@ d * * $PROJECTDIR/web/bin1/weave *
+@ d * * $PROJECTDIR/webware/bin1/pooltype *
+# The different incarnations of 1D METAFONT.
+@ d * * $PROJECTDIR/mf/bin1/inimf *
+@ d * * $PROJECTDIR/mf/bin1/virmf *
+@ d * * $PROJECTDIR/mf/bin1/trapmf *
+@ d * * $PROJECTDIR/mf/sh1/trap *
+# aux METAFONT programs
+@ d * * $PROJECTDIR/mfware/bin1/gftype *
+@ d * * $PROJECTDIR/mfware/bin1/gftodvi *
+@ d * * $PROJECTDIR/mfware/bin1/mft *
+## The different incarnations of TeX.
+#@ d * * $PROJECTDIR/tex/bin1/initex *
+#@ d * * $PROJECTDIR/tex/bin1/virtex *
+#@ d * * $PROJECTDIR/tex/bin1/triptex *
+@ d * * $PROJECTDIR/tex/sh1/trip *
+# aux TeX programs
+@ d * * $PROJECTDIR/texware/bin1/tftopl *
+@ d * * $PROJECTDIR/texware/bin1/pltotf *
+@ d * * $PROJECTDIR/texware/bin1/bibtex *
+# Aux
+@ d * * $PROJECTDIR/dviware/bin1/dvitype *
+@ d * * $PROJECTDIR/fontware/bin1/afm2tfm *
+@ d * * $PROJECTDIR/fontware/bin1/vftovp *
+@ d * * $PROJECTDIR/fontware/bin1/vptovf *
+@ d * * $PROJECTDIR/fontware/bin1/gftopk *
+# no-op for now
+* d * * $PROJECTDIR/fontware/lib1/t1 *
+# dvips and related
+@ d * * $PROJECTDIR/dviware/bin1/dvips *
+@ d * * $PROJECTDIR/dviware/bin1/dvips/lib *
+# sys, used by MetaPost auxiliaries.
+# no-op for now
+* d * * $PROJECTDIR/sys/posix/bin1/newer *
+@ d * * $PROJECTDIR/sys/posix/bin1/testarithm *
+# mp and related
+@ d * * $PROJECTDIR/mp/bin1 *
+@ d * * $PROJECTDIR/mp/bin1/inimp *
+@ d * * $PROJECTDIR/mp/bin1/virmp *
+@ d * * $PROJECTDIR/mp/bin1/twistmp *
+@ d * * $PROJECTDIR/mp/sh1/twist *
+@ d * * $PROJECTDIR/mpware/bin1/dmp *
+@ d * * $PROJECTDIR/mpware/bin1/dvitomp *
+@ d * * $PROJECTDIR/mpware/sh1/texmpx *
+@ d * * $PROJECTDIR/mpware/sh1/troffmpx *
+@ d * * $PROJECTDIR/mpware/sh1/mp2ps *
+@ d * * $PROJECTDIR/mpware/sh1/mpgrid *
+@ d * * $PROJECTDIR/mpware/bin1/mptotex *
+@ d * * $PROJECTDIR/mpware/bin1/mptotr *
+# cweb
+@ d * * $PROJECTDIR/cweb/bin1 *
+@ d * * $PROJECTDIR/cweb/bin1/ctangle *
+@ d * * $PROJECTDIR/cweb/bin1/cweave *
+@ d * * $PROJECTDIR/cweb/bin1/cwmerge *
+## e-TeX
+#@ d * * $PROJECTDIR/etex/bin1/einitex *
+#@ d * * $PROJECTDIR/etex/bin1/evirtex *
+#@ d * * $PROJECTDIR/etex/bin1/etriptex *
+@ d * * $PROJECTDIR/etex/sh1/etrip *
+# Prote
+@ d * * $PROJECTDIR/prote/bin1/ini *
+@ d * * $PROJECTDIR/prote/bin1/vir *
+@ d * * $PROJECTDIR/prote/bin1/sellette *
+@ d * * $PROJECTDIR/prote/sh1/sellette *
+# Administration and packages stuff
+@ d * * $PROJECTDIR/sh1/which *
+@ d * * $PROJECTDIR/pkg/sys/sh1/lib *
+
+#========== THE MAIN DIR TREE
+# These two directories and this program are what kerTeX puts on the
+# host. That is, removing these three removes the whole kerTeX.
+# The "which" should be put in the normal PATH in order to be always i
+# accessible to the user (for adding packages for example).
+#
+# The following two will trigger a verif of the existence of 
+# $TARGETBINDIR/.. and $TARGETLIBDIR/.. . Ownership and
+# permissions of these upper level directories will not be altered and
+# if the subdirs exist, they will not be altered for permissions and
+# ownership.
+#
+# This is so to allow unprivileged installation in whatever directory
+# (without /bin or /share etc. at the beginning).
+#
+! D $USER0:$GROUP0 755 * $TARGETLIBDIR
+! D $USER0:$GROUP0 755 * $TARGETBINDIR
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex
++ d $USER0:$GROUP0 755 * $TARGETBINDIR/kertex
+#
++ f $USER0:$GROUP0 755 $OBJDIR/sh1/which/which $TARGETBINDIR/which_kertex
+#========== Our system
+#
+# Machine dependant stuff will be put there.
+# The prefix kertex is---at least for now---so that tex(1) and mf(1)
+# don't step on another distribution' toes.
+#
++ d $USER0:$GROUP0 755 * $TARGETBINDIR/kertex/lib
++ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/sys/sh1/lib/lib.sh $TARGETBINDIR/kertex/lib/pkglib.sh
++ f $USER0:$GROUP0 644 $OBJDIR/pkg/sys/sh1/lib/sys.sh $TARGETBINDIR/kertex/lib/sys.sh
+
+# Some utilities used by admin (some rarely used) are put in a
+# dedicated subdirectory.
+#
++ d $USER0:$GROUP0 755 * $TARGETBINDIR/kertex/adm
+
+# The pkg framework is meant to be shared: the same "scripts" for
+# every TeX kernel installed on whatever host. So pkg/ is in LIBDIR.
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/pkg
++ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/CID $TARGETLIBDIR/kertex/pkg/CID
+# The "recipes" are in a subdir.
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/pkg/rcp
++ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/rcp/tools/pkg.sh $TARGETLIBDIR/kertex/pkg/rcp/tools@pkg.sh
++ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/rcp/core/pkg.sh $TARGETLIBDIR/kertex/pkg/rcp/core@pkg.sh
++ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/rcp/pkg.sh $TARGETLIBDIR/kertex/pkg/rcp/rcp@pkg.sh
+# Pkg utilities
++ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/sh1/bulk_get/sh $TARGETBINDIR/kertex/pkg_bulk_get.sh
++ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/sh1/rcp_sketch/sh $TARGETBINDIR/kertex/pkg_rcp_sketch.sh
+
+# Keep the doc in the realm.
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/0 Tmandir
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/1 Tmandir
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/8 Tmandir
+
+# The path searching is done from the definition of a colon separated
+# alternatives, and testing also argv[0] as a subdir. Hence we group
+# related stuff, here messages that can be localized. This is machine
+# independant since text.
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/pool
+
+# This directory is for resulting fontes, that is METAFONT sources,
+# tfm metrics (mandatory for TeX use), and the strokes descriptions in
+# some of the supported format: gf and pk; or Adobe PostScript(R) or
+# virtual fonts that can be used by dvi driver (dvips(1) for the
+# moment).
+# We add an empty file .SYSLOCK for preventing removing of an empty
+# system directory.
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts
++ f $USER0:$GROUP0 644 $PROJECTDIR/fonts/CID $TARGETLIBDIR/kertex/fonts/CID
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/mf
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/mf/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/gf
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/gf/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/pk
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/pk/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/tfm
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/tfm/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/afm
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/afm/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/pfa
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/pfa/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/pfb
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/enc
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/vf
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/ams
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/ams/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/ams/gf
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/ams/gf/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/ams/pk
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/ams/pk/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/ams/doc
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/ams/doc/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/ams/mf
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/ams/mf/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/ams/tfm
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/ams/tfm/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/ams/afm
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/ams/afm/.SYSLOCK
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/ams/pfb
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/fonts/ams/pfb/.SYSLOCK
+# webmac.tex (for WEB system) goes there. Shall exist.
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/tex
+
+#===== Copyrights
++ f $USER0:$GROUP0 644 $PROJECTDIR/COPYRIGHTS $TARGETLIBDIR/kertex/COPYRIGHTS.kertex
+
+#========== The main intro man page
+#!!!TODO
+#+ f $USER0:$GROUP0 644 $PROJECTDIR/MAN  $TARGETLIBDIR/kertex/8/kertex Tman
+#========== Our system
+#
++ f $USER0:$GROUP0 755 $OBJDIR/web/bin1/tangle/tangle $TARGETBINDIR/kertex/tangle
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/tangle.1 $TARGETLIBDIR/kertex/1/tangle Tman
++ f $USER0:$GROUP0 755 $OBJDIR/web/bin1/weave/weave $TARGETBINDIR/kertex/weave
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/weave.1 $TARGETLIBDIR/kertex/1/weave Tman
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/webmac.tex $TARGETLIBDIR/kertex/tex/webmac.tex
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/web.1 $TARGETLIBDIR/kertex/1/web Tman
+
+#========== WEB auxiliaries
++ f $USER0:$GROUP0 755 $OBJDIR/webware/bin1/pooltype/pooltype $TARGETBINDIR/kertex/pooltype
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/pooltype.1 $TARGETLIBDIR/kertex/1/pooltype Tman
+
+#========== Donald E. Knuth's METAFONT.
+#
+# This is where we put Computer Modern _sources_ (parameters and drivers
+# METAFONT's files).
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/mf
++ f $USER0:$GROUP0 644 $PROJECTDIR/mf/CID $TARGETLIBDIR/kertex/mf/CID
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/mf/trap
++ f $USER0:$GROUP0 755 $OBJDIR/mf/bin1/inimf/inimf $TARGETBINDIR/kertex/inimf
+= f $USER0:$GROUP0 644 $OBJDIR/mf/bin1/inimf/mf.pool $TARGETLIBDIR/kertex/pool/mf.pool
++ f $USER0:$GROUP0 755 $OBJDIR/mf/bin1/virmf/virmf $TARGETBINDIR/kertex/virmf
+= f $USER0:$GROUP0 644 $PROJECTDIR/mf/MAN $TARGETLIBDIR/kertex/1/mf Tman
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/plain.mf $TARGETLIBDIR/kertex/mf/plain.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/null.mf $TARGETLIBDIR/kertex/mf/null.mf
+# modes contributed by METAFONT community (TUG etc.). Read file for details.
++ f $USER0:$GROUP0 644 $PROJECTDIR/mf/lib/modes.mf $TARGETLIBDIR/kertex/mf/modes.mf
+# TRAP stuff.
+# The special TRAPMF is machine dependent but not to be used in the
+# general case.
+#
++ f $USER0:$GROUP0 644 $OBJDIR/mf/bin1/trapmf/trapmf $TARGETBINDIR/kertex/lib/trapmf
++ f $USER0:$GROUP0 644 $OBJDIR/mf/bin1/trapmf/mf.pool $TARGETLIBDIR/kertex/mf/trap/trap.pool
++ f $USER0:$GROUP0 755 $OBJDIR/mf/sh1/trap/ck_mf $TARGETBINDIR/kertex/adm/ck_mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/mf/trap.mf $TARGETLIBDIR/kertex/mf/trap/trap.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/mf/trap.fot $TARGETLIBDIR/kertex/mf/trap/trap.fot
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/mf/trap.log $TARGETLIBDIR/kertex/mf/trap/trap.log
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/mf/trapin.log $TARGETLIBDIR/kertex/mf/trap/trapin.log
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/mf/trap.pl $TARGETLIBDIR/kertex/mf/trap/trap.pl
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/mf/trap.typ $TARGETLIBDIR/kertex/mf/trap/trap.typ
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/mf/trapman.tex $TARGETLIBDIR/kertex/mf/trap/trapman.tex
+# Effects (for GFtoDVI for example).
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/black.mf $TARGETLIBDIR/kertex/mf/black.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/blackaps.mf $TARGETLIBDIR/kertex/mf/blackaps.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/blackimagen.mf $TARGETLIBDIR/kertex/mf/blackimagen.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/blacklino.mf $TARGETLIBDIR/kertex/mf/blacklino.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/blacklj.mf $TARGETLIBDIR/kertex/mf/blacklj.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/gray.mf $TARGETLIBDIR/kertex/mf/gray.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/grayaps.mf $TARGETLIBDIR/kertex/mf/grayaps.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/grayf.mf $TARGETLIBDIR/kertex/mf/grayf.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/grayimagen.mf $TARGETLIBDIR/kertex/mf/grayimagen.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/grayimagen3.mf $TARGETLIBDIR/kertex/mf/grayimagen3.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/grayimagenlight.mf $TARGETLIBDIR/kertex/mf/grayimagenlight.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/graylj.mf $TARGETLIBDIR/kertex/mf/graylj.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/slant.mf $TARGETLIBDIR/kertex/mf/slant.mf
+# Local conventions.
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/waits.mf $TARGETLIBDIR/kertex/mf/waits.mf
+# Learning METAFONT
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/expr.mf $TARGETLIBDIR/kertex/mf/expr.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/io.mf $TARGETLIBDIR/kertex/mf/io.mf
+# Test scripts for METAFONT
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/3test.mf $TARGETLIBDIR/kertex/mf/3test.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/6test.mf $TARGETLIBDIR/kertex/mf/6test.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/rtest.mf $TARGETLIBDIR/kertex/mf/rtest.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/test.mf $TARGETLIBDIR/kertex/mf/test.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/ztest.mf $TARGETLIBDIR/kertex/mf/ztest.mf
+
+#========== METAFONT' auxiliaries
+#
++ f $USER0:$GROUP0 755 $OBJDIR/mfware/bin1/gftype/gftype $TARGETBINDIR/kertex/gftype
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/gftype.1 $TARGETLIBDIR/kertex/1/gftype Tman
++ f $USER0:$GROUP0 755 $OBJDIR/mfware/bin1/gftodvi/gftodvi $TARGETBINDIR/kertex/gftodvi
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/gftodvi.1 $TARGETLIBDIR/kertex/1/gftodvi Tman
++ f $USER0:$GROUP0 755 $OBJDIR/mfware/bin1/mft/mft $TARGETBINDIR/kertex/mft
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/mft.1 $TARGETLIBDIR/kertex/1/mft Tman
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/plain.mft $TARGETLIBDIR/kertex/tex/plain.mft
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/cmbase.mft $TARGETLIBDIR/kertex/tex/cmbase.mft
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/mftmac.tex $TARGETLIBDIR/kertex/tex/mftmac.tex
+
+#========== Donald E. Knuth's Computer Modern Typefaces.
+#
+# The drivers.
+#
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/accent.mf $TARGETLIBDIR/kertex/fonts/mf/accent.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/bigacc.mf $TARGETLIBDIR/kertex/fonts/mf/bigacc.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/bigdel.mf $TARGETLIBDIR/kertex/fonts/mf/bigdel.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/bigop.mf $TARGETLIBDIR/kertex/fonts/mf/bigop.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/calu.mf $TARGETLIBDIR/kertex/fonts/mf/calu.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbase.mf $TARGETLIBDIR/kertex/fonts/mf/cmbase.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cminch.mf $TARGETLIBDIR/kertex/fonts/mf/cminch.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/comlig.mf $TARGETLIBDIR/kertex/fonts/mf/comlig.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/csc.mf $TARGETLIBDIR/kertex/fonts/mf/csc.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cscspu.mf $TARGETLIBDIR/kertex/fonts/mf/cscspu.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/greekl.mf $TARGETLIBDIR/kertex/fonts/mf/greekl.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/greeku.mf $TARGETLIBDIR/kertex/fonts/mf/greeku.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/itald.mf $TARGETLIBDIR/kertex/fonts/mf/itald.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/italig.mf $TARGETLIBDIR/kertex/fonts/mf/italig.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/itall.mf $TARGETLIBDIR/kertex/fonts/mf/itall.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/italms.mf $TARGETLIBDIR/kertex/fonts/mf/italms.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/italp.mf $TARGETLIBDIR/kertex/fonts/mf/italp.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/italsp.mf $TARGETLIBDIR/kertex/fonts/mf/italsp.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/mathex.mf $TARGETLIBDIR/kertex/fonts/mf/mathex.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/mathit.mf $TARGETLIBDIR/kertex/fonts/mf/mathit.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/mathsy.mf $TARGETLIBDIR/kertex/fonts/mf/mathsy.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/olddig.mf $TARGETLIBDIR/kertex/fonts/mf/olddig.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/punct.mf $TARGETLIBDIR/kertex/fonts/mf/punct.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/roman.mf $TARGETLIBDIR/kertex/fonts/mf/roman.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/romand.mf $TARGETLIBDIR/kertex/fonts/mf/romand.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/romanl.mf $TARGETLIBDIR/kertex/fonts/mf/romanl.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/romanp.mf $TARGETLIBDIR/kertex/fonts/mf/romanp.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/romanu.mf $TARGETLIBDIR/kertex/fonts/mf/romanu.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/romlig.mf $TARGETLIBDIR/kertex/fonts/mf/romlig.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/romms.mf $TARGETLIBDIR/kertex/fonts/mf/romms.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/romspl.mf $TARGETLIBDIR/kertex/fonts/mf/romspl.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/romspu.mf $TARGETLIBDIR/kertex/fonts/mf/romspu.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/romsub.mf $TARGETLIBDIR/kertex/fonts/mf/romsub.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/sym.mf $TARGETLIBDIR/kertex/fonts/mf/sym.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/symbol.mf $TARGETLIBDIR/kertex/fonts/mf/symbol.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/texset.mf $TARGETLIBDIR/kertex/fonts/mf/texset.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/textit.mf $TARGETLIBDIR/kertex/fonts/mf/textit.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/title.mf $TARGETLIBDIR/kertex/fonts/mf/title.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/tset.mf $TARGETLIBDIR/kertex/fonts/mf/tset.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/tsetsl.mf $TARGETLIBDIR/kertex/fonts/mf/tsetsl.mf
+#
+# The parameters.
+#
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmb10.mf $TARGETLIBDIR/kertex/fonts/mf/cmb10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbsy10.mf $TARGETLIBDIR/kertex/fonts/mf/cmbsy10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbx10.mf $TARGETLIBDIR/kertex/fonts/mf/cmbx10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbx12.mf $TARGETLIBDIR/kertex/fonts/mf/cmbx12.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbx5.mf $TARGETLIBDIR/kertex/fonts/mf/cmbx5.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbx6.mf $TARGETLIBDIR/kertex/fonts/mf/cmbx6.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbx7.mf $TARGETLIBDIR/kertex/fonts/mf/cmbx7.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbx8.mf $TARGETLIBDIR/kertex/fonts/mf/cmbx8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbx9.mf $TARGETLIBDIR/kertex/fonts/mf/cmbx9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbxsl10.mf $TARGETLIBDIR/kertex/fonts/mf/cmbxsl10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmbxti10.mf $TARGETLIBDIR/kertex/fonts/mf/cmbxti10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmcsc10.mf $TARGETLIBDIR/kertex/fonts/mf/cmcsc10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmdunh10.mf $TARGETLIBDIR/kertex/fonts/mf/cmdunh10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmex10.mf $TARGETLIBDIR/kertex/fonts/mf/cmex10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmff10.mf $TARGETLIBDIR/kertex/fonts/mf/cmff10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmfi10.mf $TARGETLIBDIR/kertex/fonts/mf/cmfi10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmfib8.mf $TARGETLIBDIR/kertex/fonts/mf/cmfib8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmitt10.mf $TARGETLIBDIR/kertex/fonts/mf/cmitt10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmmi10.mf $TARGETLIBDIR/kertex/fonts/mf/cmmi10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmmi12.mf $TARGETLIBDIR/kertex/fonts/mf/cmmi12.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmmi5.mf $TARGETLIBDIR/kertex/fonts/mf/cmmi5.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmmi6.mf $TARGETLIBDIR/kertex/fonts/mf/cmmi6.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmmi7.mf $TARGETLIBDIR/kertex/fonts/mf/cmmi7.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmmi8.mf $TARGETLIBDIR/kertex/fonts/mf/cmmi8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmmi9.mf $TARGETLIBDIR/kertex/fonts/mf/cmmi9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmmib10.mf $TARGETLIBDIR/kertex/fonts/mf/cmmib10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmr10.mf $TARGETLIBDIR/kertex/fonts/mf/cmr10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmr12.mf $TARGETLIBDIR/kertex/fonts/mf/cmr12.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmr17.mf $TARGETLIBDIR/kertex/fonts/mf/cmr17.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmr5.mf $TARGETLIBDIR/kertex/fonts/mf/cmr5.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmr6.mf $TARGETLIBDIR/kertex/fonts/mf/cmr6.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmr7.mf $TARGETLIBDIR/kertex/fonts/mf/cmr7.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmr8.mf $TARGETLIBDIR/kertex/fonts/mf/cmr8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmr9.mf $TARGETLIBDIR/kertex/fonts/mf/cmr9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsl10.mf $TARGETLIBDIR/kertex/fonts/mf/cmsl10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsl12.mf $TARGETLIBDIR/kertex/fonts/mf/cmsl12.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsl8.mf $TARGETLIBDIR/kertex/fonts/mf/cmsl8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsl9.mf $TARGETLIBDIR/kertex/fonts/mf/cmsl9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsltt10.mf $TARGETLIBDIR/kertex/fonts/mf/cmsltt10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmss10.mf $TARGETLIBDIR/kertex/fonts/mf/cmss10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmss12.mf $TARGETLIBDIR/kertex/fonts/mf/cmss12.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmss17.mf $TARGETLIBDIR/kertex/fonts/mf/cmss17.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmss8.mf $TARGETLIBDIR/kertex/fonts/mf/cmss8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmss9.mf $TARGETLIBDIR/kertex/fonts/mf/cmss9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmssbx10.mf $TARGETLIBDIR/kertex/fonts/mf/cmssbx10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmssdc10.mf $TARGETLIBDIR/kertex/fonts/mf/cmssdc10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmssi10.mf $TARGETLIBDIR/kertex/fonts/mf/cmssi10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmssi12.mf $TARGETLIBDIR/kertex/fonts/mf/cmssi12.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmssi17.mf $TARGETLIBDIR/kertex/fonts/mf/cmssi17.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmssi8.mf $TARGETLIBDIR/kertex/fonts/mf/cmssi8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmssi9.mf $TARGETLIBDIR/kertex/fonts/mf/cmssi9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmssq8.mf $TARGETLIBDIR/kertex/fonts/mf/cmssq8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmssqi8.mf $TARGETLIBDIR/kertex/fonts/mf/cmssqi8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsy10.mf $TARGETLIBDIR/kertex/fonts/mf/cmsy10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsy5.mf $TARGETLIBDIR/kertex/fonts/mf/cmsy5.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsy6.mf $TARGETLIBDIR/kertex/fonts/mf/cmsy6.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsy7.mf $TARGETLIBDIR/kertex/fonts/mf/cmsy7.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsy8.mf $TARGETLIBDIR/kertex/fonts/mf/cmsy8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmsy9.mf $TARGETLIBDIR/kertex/fonts/mf/cmsy9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmtcsc10.mf $TARGETLIBDIR/kertex/fonts/mf/cmtcsc10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmtex10.mf $TARGETLIBDIR/kertex/fonts/mf/cmtex10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmtex8.mf $TARGETLIBDIR/kertex/fonts/mf/cmtex8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmtex9.mf $TARGETLIBDIR/kertex/fonts/mf/cmtex9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmti10.mf $TARGETLIBDIR/kertex/fonts/mf/cmti10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmti12.mf $TARGETLIBDIR/kertex/fonts/mf/cmti12.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmti7.mf $TARGETLIBDIR/kertex/fonts/mf/cmti7.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmti8.mf $TARGETLIBDIR/kertex/fonts/mf/cmti8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmti9.mf $TARGETLIBDIR/kertex/fonts/mf/cmti9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmtt10.mf $TARGETLIBDIR/kertex/fonts/mf/cmtt10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmtt12.mf $TARGETLIBDIR/kertex/fonts/mf/cmtt12.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmtt8.mf $TARGETLIBDIR/kertex/fonts/mf/cmtt8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmtt9.mf $TARGETLIBDIR/kertex/fonts/mf/cmtt9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmu10.mf $TARGETLIBDIR/kertex/fonts/mf/cmu10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/cmvtt10.mf $TARGETLIBDIR/kertex/fonts/mf/cmvtt10.mf
+#
+# The logos.
+#
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/logo.mf $TARGETLIBDIR/kertex/fonts/mf/logo.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/logo10.mf $TARGETLIBDIR/kertex/fonts/mf/logo10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/logo8.mf $TARGETLIBDIR/kertex/fonts/mf/logo8.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/logo9.mf $TARGETLIBDIR/kertex/fonts/mf/logo9.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/logobf10.mf $TARGETLIBDIR/kertex/fonts/mf/logobf10.mf
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/logosl10.mf $TARGETLIBDIR/kertex/fonts/mf/logosl10.mf
+
+#========== Donald E. Knuth's TeX.
+#
++ f $USER0:$GROUP0 644 $PROJECTDIR/tex/CID $TARGETLIBDIR/kertex/tex/CID
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/tex/trip
+#+ f $USER0:$GROUP0 755 $OBJDIR/tex/bin1/initex/initex $TARGETBINDIR/kertex/initex
+#= f $USER0:$GROUP0 644 $OBJDIR/tex/bin1/initex/tex.pool $TARGETLIBDIR/kertex/pool/tex.pool
+#+ f $USER0:$GROUP0 755 $OBJDIR/tex/bin1/virtex/virtex $TARGETBINDIR/kertex/virtex
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/tex.1 $TARGETLIBDIR/kertex/1/tex Tman
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/plain.tex $TARGETLIBDIR/kertex/tex/plain.tex
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/hyphen.tex $TARGETLIBDIR/kertex/tex/hyphen.tex
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/null.tex $TARGETLIBDIR/kertex/tex/null.tex
+# Plain TeX font
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/lib/manfnt.mf $TARGETLIBDIR/kertex/fonts/mf/manfnt.mf
+
+# Macro files not from D.E.K.
++ f $USER0:$GROUP0 644 $PROJECTDIR/tex/lib/hyperbasics.tex $TARGETLIBDIR/kertex/tex/hyperbasics.tex
+
+# TRIP stuff.
+# The special TRIPTEX is machine dependant but not to be used in the
+# general case.
+#
+#+ f $USER0:$GROUP0 644 $OBJDIR/tex/bin1/triptex/triptex $TARGETBINDIR/kertex/lib/triptex
+#+ f $USER0:$GROUP0 644 $OBJDIR/tex/bin1/triptex/tex.pool $TARGETLIBDIR/kertex/tex/trip/trip.pool
++ f $USER0:$GROUP0 755 $OBJDIR/tex/sh1/trip/ck_tex $TARGETBINDIR/kertex/adm/ck_tex
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/tex/trip.tex $TARGETLIBDIR/kertex/tex/trip/trip.tex
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/tex/tripos.tex $TARGETLIBDIR/kertex/tex/trip/tripos.tex
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/tex/trip.fot $TARGETLIBDIR/kertex/tex/trip/trip.fot
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/tex/trip.log $TARGETLIBDIR/kertex/tex/trip/trip.log
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/tex/tripin.log $TARGETLIBDIR/kertex/tex/trip/tripin.log
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/tex/trip.pl $TARGETLIBDIR/kertex/tex/trip/trip.pl
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/tex/trip.tfm $TARGETLIBDIR/kertex/tex/trip/trip.tfm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/tex/trip.typ $TARGETLIBDIR/kertex/tex/trip/trip.typ
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/tex/tripman.tex $TARGETLIBDIR/kertex/tex/trip/tripman.tex
+
+#========== TeX' auxiliaries
+#
++ f $USER0:$GROUP0 755 $OBJDIR/texware/bin1/tftopl/tftopl $TARGETBINDIR/kertex/tftopl
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/tftopl.1 $TARGETLIBDIR/kertex/1/tftopl Tman
++ f $USER0:$GROUP0 755 $OBJDIR/texware/bin1/pltotf/pltotf $TARGETBINDIR/kertex/pltotf
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/pltotf.1 $TARGETLIBDIR/kertex/1/pltotf Tman
+
+#========== FONTWARE
++ f $USER0:$GROUP0 755 $OBJDIR/fontware/bin1/afm2tfm/afm2tfm $TARGETBINDIR/kertex/afm2tfm
+= f $USER0:$GROUP0 644 $PROJECTDIR/fontware/bin1/afm2tfm/MAN $TARGETLIBDIR/kertex/1/afm2tfm Tman
++ f $USER0:$GROUP0 755 $OBJDIR/fontware/bin1/vftovp/vftovp $TARGETBINDIR/kertex/vftovp
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/vftovp.1 $TARGETLIBDIR/kertex/1/vftovp Tman
++ f $USER0:$GROUP0 755 $OBJDIR/fontware/bin1/vptovf/vptovf $TARGETBINDIR/kertex/vptovf
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/vptovf.1 $TARGETLIBDIR/kertex/1/vptovf Tman
++ f $USER0:$GROUP0 755 $OBJDIR/fontware/bin1/gftopk/gftopk $TARGETBINDIR/kertex/gftopk
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/gftopk.1 $TARGETLIBDIR/kertex/1/gftopk Tman
+
+#========== DVIWARE
++ f $USER0:$GROUP0 755 $OBJDIR/dviware/bin1/dvitype/dvitype $TARGETBINDIR/kertex/dvitype
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/man1/dvitype.1 $TARGETLIBDIR/kertex/1/dvitype Tman
+
+#========== DVIPS
++ f $USER0:$GROUP0 755 $OBJDIR/dviware/bin1/dvips/dvips $TARGETBINDIR/kertex/dvips
+= f $USER0:$GROUP0 644 $OBJDIR/dviware/bin1/dvips/MAN $TARGETLIBDIR/kertex/1/dvips Tman
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/dvips
+
+# Dvips(1) config. User configurable so precious (keep existing for
+# packages additions).
+#
+! f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/etc/dvips.cnf $TARGETLIBDIR/kertex/dvips/dvips.cnf
+# The psfonts.map, shared by dvips(1) and MetaPost is created/completed
+# at installation time by pkg/core.sh.
+#
++ f $USER0:$GROUP0 644 * $TARGETLIBDIR/kertex/dvips/psfonts.map
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/etc/lino.cnf $TARGETLIBDIR/kertex/dvips/lino.cnf
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/etc/post3x3.cnf $TARGETLIBDIR/kertex/dvips/post3x3.cnf
+
+# dvips(1) included chunks.
+#
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/lib/tex.data $TARGETLIBDIR/kertex/dvips/tex.ips
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/lib/texps.ips $TARGETLIBDIR/kertex/dvips/texps.ips
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/lib/special.ips $TARGETLIBDIR/kertex/dvips/special.ips
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/lib/finclude.ips $TARGETLIBDIR/kertex/dvips/finclude.ips
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/lib/hps.ips $TARGETLIBDIR/kertex/dvips/hps.ips
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/lib/color.ips $TARGETLIBDIR/kertex/dvips/color.ips
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/lib/crop.ips $TARGETLIBDIR/kertex/dvips/crop.ips
++ f $USER0:$GROUP0 644 $OBJDIR/dviware/bin1/dvips/lib/texc.ips $TARGETLIBDIR/kertex/dvips/texc.ips
+
+#
+# dvips related TeX macro. Usable for LaTeX with .sty extension.
+#
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/tex.mac/blackdvi.tex $TARGETLIBDIR/kertex/tex/blackdvi.tex
++ l $USER0:$GROUP0 555 $TARGETLIBDIR/kertex/tex/blackdvi.tex $TARGETLIBDIR/kertex/tex/blackdvi.sty
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/tex.mac/colordvi.tex $TARGETLIBDIR/kertex/tex/colordvi.tex
++ l $USER0:$GROUP0 555 $TARGETLIBDIR/kertex/tex/colordvi.tex $TARGETLIBDIR/kertex/tex/colordvi.sty
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/tex.mac/epsf.tex $TARGETLIBDIR/kertex/tex/epsf.tex
++ l $USER0:$GROUP0 555 $TARGETLIBDIR/kertex/tex/epsf.tex $TARGETLIBDIR/kertex/tex/epsf.sty
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/tex.mac/rotate.tex $TARGETLIBDIR/kertex/tex/rotate.tex
++ l $USER0:$GROUP0 555 $TARGETLIBDIR/kertex/tex/rotate.tex $TARGETLIBDIR/kertex/tex/rotate.sty
+
+#
+# dvips doc.
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/dvips/doc
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/doc/dvips.tex $TARGETLIBDIR/kertex/dvips/doc/dvips.tex
+= f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/doc/dvipsmac.tex $TARGETLIBDIR/kertex/dvips/doc/dvipsmac.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/doc/test.tex $TARGETLIBDIR/kertex/dvips/doc/test.tex
+
+#========== REENCODING VECTORS
+# Used by dvips(1) and afm2tfm(1).
+#
+# afm2tfm(1) default
++ f $USER0:$GROUP0 644 $PROJECTDIR/fonts/enc/default.enc $TARGETLIBDIR/kertex/fonts/enc/default.enc
+# "cork"
++ f $USER0:$GROUP0 644 $PROJECTDIR/fonts/enc/EC.enc $TARGETLIBDIR/kertex/fonts/enc/EC.enc
++ f $USER0:$GROUP0 644 $PROJECTDIR/fonts/enc/ps_standard.enc $TARGETLIBDIR/kertex/fonts/enc/ps_standard.enc
++ f $USER0:$GROUP0 644 $PROJECTDIR/fonts/enc/tex_tt.enc $TARGETLIBDIR/kertex/fonts/enc/tex_tt.enc
++ f $USER0:$GROUP0 644 $PROJECTDIR/fonts/enc/tex_text.enc $TARGETLIBDIR/kertex/fonts/enc/tex_text.enc
++ f $USER0:$GROUP0 644 $PROJECTDIR/fonts/enc/tex_mital.enc $TARGETLIBDIR/kertex/fonts/enc/tex_mital.enc
++ f $USER0:$GROUP0 644 $PROJECTDIR/fonts/enc/tex_mext.enc $TARGETLIBDIR/kertex/fonts/enc/tex_mext.enc
++ f $USER0:$GROUP0 644 $PROJECTDIR/fonts/enc/tex_msym.enc $TARGETLIBDIR/kertex/fonts/enc/tex_msym.enc
+
+# AMS provided type1 conversion of cm fonts.
+#
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmb10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmb10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbsy10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmbsy10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmbx10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx12.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmbx12.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx5.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmbx5.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx6.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmbx6.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx7.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmbx7.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmbx8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx9.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmbx9.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbxsl10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmbxsl10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbxti10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmbxti10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmcsc10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmcsc10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmdunh10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmdunh10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmex10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmex10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmff10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmff10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmfi10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmfi10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmfib8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmfib8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cminch.pfb $TARGETLIBDIR/kertex/fonts/pfb/cminch.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmitt10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmitt10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmmi10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi12.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmmi12.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi5.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmmi5.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi6.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmmi6.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi7.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmmi7.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmmi8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi9.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmmi9.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmib10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmmib10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmr10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr12.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmr12.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr17.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmr17.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr5.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmr5.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr6.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmr6.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr7.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmr7.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmr8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr9.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmr9.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsl10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsl10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsl12.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsl12.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsl8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsl8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsl9.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsl9.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsltt10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsltt10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmss10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmss10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmss12.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmss12.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmss17.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmss17.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmss8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmss8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmss9.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmss9.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssbx10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmssbx10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssdc10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmssdc10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssi10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmssi10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssi12.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmssi12.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssi17.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmssi17.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssi8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmssi8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssi9.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmssi9.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssq8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmssq8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssqi8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmssqi8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsy10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy5.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsy5.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy6.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsy6.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy7.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsy7.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsy8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy9.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmsy9.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtcsc10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmtcsc10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtex10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmtex10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtex8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmtex8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtex9.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmtex9.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmti10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmti10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmti12.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmti12.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmti7.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmti7.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmti8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmti8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmti9.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmti9.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtt10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmtt10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtt12.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmtt12.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtt8.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmtt8.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtt9.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmtt9.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmu10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmu10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmvtt10.pfb $TARGETLIBDIR/kertex/fonts/pfb/cmvtt10.pfb
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmb10.afm $TARGETLIBDIR/kertex/fonts/afm/cmb10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbsy10.afm $TARGETLIBDIR/kertex/fonts/afm/cmbsy10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx10.afm $TARGETLIBDIR/kertex/fonts/afm/cmbx10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx12.afm $TARGETLIBDIR/kertex/fonts/afm/cmbx12.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx5.afm $TARGETLIBDIR/kertex/fonts/afm/cmbx5.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx6.afm $TARGETLIBDIR/kertex/fonts/afm/cmbx6.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx7.afm $TARGETLIBDIR/kertex/fonts/afm/cmbx7.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx8.afm $TARGETLIBDIR/kertex/fonts/afm/cmbx8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbx9.afm $TARGETLIBDIR/kertex/fonts/afm/cmbx9.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbxsl10.afm $TARGETLIBDIR/kertex/fonts/afm/cmbxsl10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmbxti10.afm $TARGETLIBDIR/kertex/fonts/afm/cmbxti10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmcsc10.afm $TARGETLIBDIR/kertex/fonts/afm/cmcsc10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmdunh10.afm $TARGETLIBDIR/kertex/fonts/afm/cmdunh10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmex10.afm $TARGETLIBDIR/kertex/fonts/afm/cmex10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmff10.afm $TARGETLIBDIR/kertex/fonts/afm/cmff10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmfi10.afm $TARGETLIBDIR/kertex/fonts/afm/cmfi10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmfib8.afm $TARGETLIBDIR/kertex/fonts/afm/cmfib8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cminch.afm $TARGETLIBDIR/kertex/fonts/afm/cminch.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmitt10.afm $TARGETLIBDIR/kertex/fonts/afm/cmitt10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi10.afm $TARGETLIBDIR/kertex/fonts/afm/cmmi10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi12.afm $TARGETLIBDIR/kertex/fonts/afm/cmmi12.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi5.afm $TARGETLIBDIR/kertex/fonts/afm/cmmi5.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi6.afm $TARGETLIBDIR/kertex/fonts/afm/cmmi6.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi7.afm $TARGETLIBDIR/kertex/fonts/afm/cmmi7.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi8.afm $TARGETLIBDIR/kertex/fonts/afm/cmmi8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmi9.afm $TARGETLIBDIR/kertex/fonts/afm/cmmi9.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmmib10.afm $TARGETLIBDIR/kertex/fonts/afm/cmmib10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr10.afm $TARGETLIBDIR/kertex/fonts/afm/cmr10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr12.afm $TARGETLIBDIR/kertex/fonts/afm/cmr12.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr17.afm $TARGETLIBDIR/kertex/fonts/afm/cmr17.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr5.afm $TARGETLIBDIR/kertex/fonts/afm/cmr5.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr6.afm $TARGETLIBDIR/kertex/fonts/afm/cmr6.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr7.afm $TARGETLIBDIR/kertex/fonts/afm/cmr7.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr8.afm $TARGETLIBDIR/kertex/fonts/afm/cmr8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmr9.afm $TARGETLIBDIR/kertex/fonts/afm/cmr9.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsl10.afm $TARGETLIBDIR/kertex/fonts/afm/cmsl10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsl12.afm $TARGETLIBDIR/kertex/fonts/afm/cmsl12.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsl8.afm $TARGETLIBDIR/kertex/fonts/afm/cmsl8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsl9.afm $TARGETLIBDIR/kertex/fonts/afm/cmsl9.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsltt10.afm $TARGETLIBDIR/kertex/fonts/afm/cmsltt10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmss10.afm $TARGETLIBDIR/kertex/fonts/afm/cmss10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmss12.afm $TARGETLIBDIR/kertex/fonts/afm/cmss12.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmss17.afm $TARGETLIBDIR/kertex/fonts/afm/cmss17.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmss8.afm $TARGETLIBDIR/kertex/fonts/afm/cmss8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmss9.afm $TARGETLIBDIR/kertex/fonts/afm/cmss9.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssbx10.afm $TARGETLIBDIR/kertex/fonts/afm/cmssbx10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssdc10.afm $TARGETLIBDIR/kertex/fonts/afm/cmssdc10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssi10.afm $TARGETLIBDIR/kertex/fonts/afm/cmssi10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssi12.afm $TARGETLIBDIR/kertex/fonts/afm/cmssi12.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssi17.afm $TARGETLIBDIR/kertex/fonts/afm/cmssi17.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssi8.afm $TARGETLIBDIR/kertex/fonts/afm/cmssi8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssi9.afm $TARGETLIBDIR/kertex/fonts/afm/cmssi9.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssq8.afm $TARGETLIBDIR/kertex/fonts/afm/cmssq8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmssqi8.afm $TARGETLIBDIR/kertex/fonts/afm/cmssqi8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy10.afm $TARGETLIBDIR/kertex/fonts/afm/cmsy10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy5.afm $TARGETLIBDIR/kertex/fonts/afm/cmsy5.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy6.afm $TARGETLIBDIR/kertex/fonts/afm/cmsy6.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy7.afm $TARGETLIBDIR/kertex/fonts/afm/cmsy7.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy8.afm $TARGETLIBDIR/kertex/fonts/afm/cmsy8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmsy9.afm $TARGETLIBDIR/kertex/fonts/afm/cmsy9.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtcsc10.afm $TARGETLIBDIR/kertex/fonts/afm/cmtcsc10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtex10.afm $TARGETLIBDIR/kertex/fonts/afm/cmtex10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtex8.afm $TARGETLIBDIR/kertex/fonts/afm/cmtex8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtex9.afm $TARGETLIBDIR/kertex/fonts/afm/cmtex9.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmti10.afm $TARGETLIBDIR/kertex/fonts/afm/cmti10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmti12.afm $TARGETLIBDIR/kertex/fonts/afm/cmti12.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmti7.afm $TARGETLIBDIR/kertex/fonts/afm/cmti7.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmti8.afm $TARGETLIBDIR/kertex/fonts/afm/cmti8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmti9.afm $TARGETLIBDIR/kertex/fonts/afm/cmti9.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtt10.afm $TARGETLIBDIR/kertex/fonts/afm/cmtt10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtt12.afm $TARGETLIBDIR/kertex/fonts/afm/cmtt12.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtt8.afm $TARGETLIBDIR/kertex/fonts/afm/cmtt8.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmtt9.afm $TARGETLIBDIR/kertex/fonts/afm/cmtt9.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmu10.afm $TARGETLIBDIR/kertex/fonts/afm/cmu10.afm
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cmvtt10.afm $TARGETLIBDIR/kertex/fonts/afm/cmvtt10.afm
+
+# AMS provided fonts map for dvips(1).
+#
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cm/ps-type1/cm.map $TARGETLIBDIR/kertex/dvips/cm.map
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmextra.map $TARGETLIBDIR/kertex/dvips/cmextra.map
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/cyrillic.map $TARGETLIBDIR/kertex/dvips/cyrillic.map
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euler.map $TARGETLIBDIR/kertex/dvips/euler.map
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/latxfont.map $TARGETLIBDIR/kertex/dvips/latxfont.map
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/symbols.map $TARGETLIBDIR/kertex/dvips/symbols.map
+
+# Adobe Core 35 afm files, with 315 glyphes (extended).
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/afm/adobe
+# Tfm and virtual fonts created from the afm are differently encoded.
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/tfm/tex-latin1
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/vf/tex-latin1
+#=== 315 (extended)
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/afm/adobe/315
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Courier-Bold.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Courier-Bold.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Courier-BoldOblique.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Courier-BoldOblique.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Courier-Oblique.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Courier-Oblique.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Courier.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Courier.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Helvetica-Bold.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Helvetica-Bold.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Helvetica-BoldOblique.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Helvetica-BoldOblique.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Helvetica-Narrow.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Helvetica-Narrow.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Helvetica-NarrowBold.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Helvetica-NarrowBold.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Helvetica-NarrowBoldOblique.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Helvetica-NarrowBoldOblique.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Helvetica-NarrowOblique.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Helvetica-NarrowOblique.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Helvetica-Oblique.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Helvetica-Oblique.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Helvetica.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Helvetica.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/ITCAvantGarde-Book.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/ITCAvantGarde-Book.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/ITCAvantGarde-BookOblique.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/ITCAvantGarde-BookOblique.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/ITCAvantGarde-Demi.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/ITCAvantGarde-Demi.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/ITCAvantGarde-DemiOblique.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/ITCAvantGarde-DemiOblique.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/ITCBookman-Demi.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/ITCBookman-Demi.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/ITCBookman-DemiItalic.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/ITCBookman-DemiItalic.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/ITCBookman-Light.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/ITCBookman-Light.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/ITCBookman-LightItalic.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/ITCBookman-LightItalic.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/ITCZapfChancery-MediumItalic.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/ITCZapfChancery-MediumItalic.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/MustRead.html $TARGETLIBDIR/kertex/fonts/afm/adobe/315/MustRead.html
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/NewCenturySchlbk-Bold.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/NewCenturySchlbk-Bold.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/NewCenturySchlbk-BoldItalic.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/NewCenturySchlbk-BoldItalic.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/NewCenturySchlbk-Italic.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/NewCenturySchlbk-Italic.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/NewCenturySchlbk-Roman.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/NewCenturySchlbk-Roman.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Palatino-Bold.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Palatino-Bold.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Palatino-BoldItalic.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Palatino-BoldItalic.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Palatino-Italic.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Palatino-Italic.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Palatino-Roman.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Palatino-Roman.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Symbol.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Symbol.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Times-Bold.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Times-Bold.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Times-BoldItalic.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Times-BoldItalic.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Times-Italic.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Times-Italic.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/Times-Roman.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/Times-Roman.afm
++ f $USER0:$GROUP0 644 $ADOBE_SRC_DIR/ZapfDingbats.afm $TARGETLIBDIR/kertex/fonts/afm/adobe/315/ZapfDingbats.afm
+
+#=== BIBTEX
++ f $USER0:$GROUP0 755 $OBJDIR/texware/bin1/bibtex/bibtex $TARGETBINDIR/kertex/bibtex
+= f $USER0:$GROUP0 644 $PROJECTDIR/texware/bin1/bibtex/MAN $TARGETLIBDIR/kertex/1/bibtex Tman
+# The plain TeX macros are put in tex/ machine independent subdir
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/btxmac.tex $TARGETLIBDIR/kertex/tex/btxmac.tex
+# The BibTeX specific are put in a dedicated subdirectory.
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/bibtex
++ f $USER0:$GROUP0 644 $PROJECTDIR/texware/bin1/bibtex/CID $TARGETLIBDIR/kertex/bibtex/CID
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/README.txt $TARGETLIBDIR/kertex/bibtex/README.txt
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/abbrv.bst $TARGETLIBDIR/kertex/bibtex/abbrv.bst
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/acm.bst $TARGETLIBDIR/kertex/bibtex/acm.bst
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/alpha.bst $TARGETLIBDIR/kertex/bibtex/alpha.bst
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/apalike.bst $TARGETLIBDIR/kertex/bibtex/apalike.bst
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/apalike.sty $TARGETLIBDIR/kertex/bibtex/apalike.sty
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/apalike.tex $TARGETLIBDIR/kertex/bibtex/apalike.tex
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/btxbst.doc $TARGETLIBDIR/kertex/bibtex/btxbst.doc
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/btxdoc.bib $TARGETLIBDIR/kertex/bibtex/btxdoc.bib
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/btxdoc.tex $TARGETLIBDIR/kertex/bibtex/btxdoc.tex
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/ieeetr.bst $TARGETLIBDIR/kertex/bibtex/ieeetr.bst
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/plain.bst $TARGETLIBDIR/kertex/bibtex/plain.bst
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/siam.bst $TARGETLIBDIR/kertex/bibtex/siam.bst
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/unsrt.bst $TARGETLIBDIR/kertex/bibtex/unsrt.bst
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/xampl.bib $TARGETLIBDIR/kertex/bibtex/xampl.bib
++ f $USER0:$GROUP0 644 $BIBTEX_SRC_DIR/lib/btxhak.tex $TARGETLIBDIR/kertex/bibtex/btxhak.tex
+
+#=== SYS UTILS
+# used by MP auxiliaries
+#+ f $OBJDIR/sys/posix/bin1/newer/newer $TARGETBINDIR/kertex/newer $USER0:$GROUP0 755
++ f $USER0:$GROUP0 755 $OBJDIR/sys/posix/bin1/testarithm/testarithm $TARGETBINDIR/kertex/testarithm
+
+#========== John Hobby's MetaPost
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/CID $TARGETLIBDIR/kertex/mp/CID
++ f $USER0:$GROUP0 755 $OBJDIR/mp/bin1/inimp/inimp $TARGETBINDIR/kertex/inimp
+= f $USER0:$GROUP0 644 $OBJDIR/mp/bin1/inimp/mp.pool $TARGETLIBDIR/kertex/pool/mp.pool
++ f $USER0:$GROUP0 755 $OBJDIR/mp/bin1/virmp/virmp $TARGETBINDIR/kertex/virmp
+= f $USER0:$GROUP0 644 $OBJDIR/mp/bin1/MAN $TARGETLIBDIR/kertex/1/mpost Tman
+
+#=== MetaPost support files
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/plain.mp $TARGETLIBDIR/kertex/mp/plain.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/texnum.mp $TARGETLIBDIR/kertex/mp/texnum.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/string.mp $TARGETLIBDIR/kertex/mp/string.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/sarith.mp $TARGETLIBDIR/kertex/mp/sarith.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/rboxes.mp $TARGETLIBDIR/kertex/mp/rboxes.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/troffnum.mp $TARGETLIBDIR/kertex/mp/troffnum.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/mfplain.mp $TARGETLIBDIR/kertex/mp/mfplain.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/marith.mp $TARGETLIBDIR/kertex/mp/marith.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/graph.mp $TARGETLIBDIR/kertex/mp/graph.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/format.mp $TARGETLIBDIR/kertex/mp/format.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/boxes.mp $TARGETLIBDIR/kertex/mp/boxes.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/TEX.mp $TARGETLIBDIR/kertex/mp/TEX.mp
+# Proofing via TeX
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/mproof.tex $TARGETLIBDIR/kertex/tex/mproof.tex
+
+#=== MPWARE
++ f $USER0:$GROUP0 755 $OBJDIR/mpware/bin1/dmp/dmp $TARGETBINDIR/kertex/lib/dmp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/trfonts.map $TARGETLIBDIR/kertex/mp/trfonts.map
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/trchars.adj $TARGETLIBDIR/kertex/mp/trchars.adj
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/mp/charlib
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/sq $TARGETLIBDIR/kertex/mp/charlib/sq
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/rh $TARGETLIBDIR/kertex/mp/charlib/rh
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/ob $TARGETLIBDIR/kertex/mp/charlib/ob
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/lh $TARGETLIBDIR/kertex/mp/charlib/lh
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/ff $TARGETLIBDIR/kertex/mp/charlib/ff
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/ci $TARGETLIBDIR/kertex/mp/charlib/ci
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/bx $TARGETLIBDIR/kertex/mp/charlib/bx
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/ao $TARGETLIBDIR/kertex/mp/charlib/ao
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/Sl $TARGETLIBDIR/kertex/mp/charlib/Sl
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/Lb $TARGETLIBDIR/kertex/mp/charlib/Lb
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/LH $TARGETLIBDIR/kertex/mp/charlib/LH
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/L1 $TARGETLIBDIR/kertex/mp/charlib/L1
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/Fl $TARGETLIBDIR/kertex/mp/charlib/Fl
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/Fi $TARGETLIBDIR/kertex/mp/charlib/Fi
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/Ao $TARGETLIBDIR/kertex/mp/charlib/Ao
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/34 $TARGETLIBDIR/kertex/mp/charlib/34
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/14 $TARGETLIBDIR/kertex/mp/charlib/14
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/~= $TARGETLIBDIR/kertex/mp/charlib/~=
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/lib/charlib/12 $TARGETLIBDIR/kertex/mp/charlib/12
++ f $USER0:$GROUP0 755 $OBJDIR/mpware/bin1/dvitomp/dvitomp $TARGETBINDIR/kertex/lib/dvitomp
++ f $USER0:$GROUP0 755 $OBJDIR/mpware/sh1/texmpx/texmpx $TARGETBINDIR/kertex/lib/texmpx
++ f $USER0:$GROUP0 755 $OBJDIR/mpware/sh1/troffmpx/troffmpx $TARGETBINDIR/kertex/lib/troffmpx
++ f $USER0:$GROUP0 755 $OBJDIR/mpware/bin1/mptotex/mptotex $TARGETBINDIR/kertex/lib/mptotex
++ f $USER0:$GROUP0 755 $OBJDIR/mpware/bin1/mptotr/mptotr $TARGETBINDIR/kertex/lib/mptotr
++ f $USER0:$GROUP0 755 $OBJDIR/mpware/sh1/mp2ps/mp2ps $TARGETBINDIR/kertex/mp2ps
++ f $USER0:$GROUP0 755 $OBJDIR/mpware/sh1/mpgrid/mpgrid $TARGETBINDIR/kertex/mpgrid
+
+#=== TWIST test for MetaPost
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/mp/twist
+# twistmp is machine dependant but not to be used in the general case.
++ f $USER0:$GROUP0 644 $OBJDIR/mp/bin1/twistmp/twistmp $TARGETBINDIR/kertex/lib/twistmp
++ f $USER0:$GROUP0 644 $OBJDIR/mp/bin1/twistmp/mp.pool $TARGETLIBDIR/kertex/mp/twist/twist.pool
++ f $USER0:$GROUP0 755 $OBJDIR/mp/sh1/twist/ck_mpost $TARGETBINDIR/kertex/adm/ck_mpost
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.148 $TARGETLIBDIR/kertex/mp/twist/twist.148
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.149 $TARGETLIBDIR/kertex/mp/twist/twist.149
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.150 $TARGETLIBDIR/kertex/mp/twist/twist.150
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.151 $TARGETLIBDIR/kertex/mp/twist/twist.151
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.197 $TARGETLIBDIR/kertex/mp/twist/twist.197
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.200 $TARGETLIBDIR/kertex/mp/twist/twist.200
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.5 $TARGETLIBDIR/kertex/mp/twist/twist.5
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.6 $TARGETLIBDIR/kertex/mp/twist/twist.6
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.fot $TARGETLIBDIR/kertex/mp/twist/twist.fot
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.log $TARGETLIBDIR/kertex/mp/twist/twist.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.mp $TARGETLIBDIR/kertex/mp/twist/twist.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.mpx $TARGETLIBDIR/kertex/mp/twist/twist.mpx
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist.pl $TARGETLIBDIR/kertex/mp/twist/twist.pl
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist1.in $TARGETLIBDIR/kertex/mp/twist/twist1.in
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twist2.in $TARGETLIBDIR/kertex/mp/twist/twist2.in
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twistf.pl $TARGETLIBDIR/kertex/mp/twist/twistf.pl
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twistin.log $TARGETLIBDIR/kertex/mp/twist/twistin.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/twistman.txt $TARGETLIBDIR/kertex/mp/twist/twistman.txt
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/writeo $TARGETLIBDIR/kertex/mp/twist/writeo
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/writeo.2 $TARGETLIBDIR/kertex/mp/twist/writeo.2
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/testex.err $TARGETLIBDIR/kertex/mp/twist/testex.err
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/testex.mp $TARGETLIBDIR/kertex/mp/twist/testex.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/testex.tex $TARGETLIBDIR/kertex/mp/twist/testex.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/mtwist.0 $TARGETLIBDIR/kertex/mp/twist/mtwist.0
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/mtwist.mp $TARGETLIBDIR/kertex/mp/twist/mtwist.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/mtwist.1 $TARGETLIBDIR/kertex/mp/twist/mtwist.1
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/sh1/twist/lib/mtwist.log $TARGETLIBDIR/kertex/mp/twist/mtwist.log
+
+#
+# MetaPost doc.
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/mp/doc
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/NOTES $TARGETLIBDIR/kertex/mp/doc/NOTES
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/CHANGES $TARGETLIBDIR/kertex/mp/doc/CHANGES
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/mpintro.tex $TARGETLIBDIR/kertex/mp/doc/mpintro.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/mpintro.bib $TARGETLIBDIR/kertex/mp/doc/mpintro.bib
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/agepop91.d $TARGETLIBDIR/kertex/mp/doc/agepop91.d
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/mpgraph.mp $TARGETLIBDIR/kertex/mp/doc/mpgraph.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/agepopm.d $TARGETLIBDIR/kertex/mp/doc/agepopm.d
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/countries.d $TARGETLIBDIR/kertex/mp/doc/countries.d
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/energy.d $TARGETLIBDIR/kertex/mp/doc/energy.d
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/lead.d $TARGETLIBDIR/kertex/mp/doc/lead.d
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/matmul.d $TARGETLIBDIR/kertex/mp/doc/matmul.d
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/timepop.d $TARGETLIBDIR/kertex/mp/doc/timepop.d
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/figs.mp $TARGETLIBDIR/kertex/mp/doc/figs.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/VERSION $TARGETLIBDIR/kertex/mp/doc/VERSION
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/examples.mp $TARGETLIBDIR/kertex/mp/doc/examples.mp
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/DISCLAIMER $TARGETLIBDIR/kertex/mp/doc/DISCLAIMER
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/demo.ms $TARGETLIBDIR/kertex/mp/doc/demo.ms
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/README $TARGETLIBDIR/kertex/mp/doc/README
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/mperrors.txt $TARGETLIBDIR/kertex/mp/doc/mperrors.txt
++ f $USER0:$GROUP0 644 $PROJECTDIR/mp/doc/manfig.mp $TARGETLIBDIR/kertex/mp/doc/manfig.mp
+
+#========== AMS provided fonts.
+#
+# Documentation.
+#
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/OFL.txt $TARGETLIBDIR/kertex/OFL.txt
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/OFL-FAQ.txt $TARGETLIBDIR/kertex/OFL-FAQ.txt
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/euscript.pdf $TARGETLIBDIR/kertex/fonts/ams/doc/euscript.pdf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/eufrak.pdf $TARGETLIBDIR/kertex/fonts/ams/doc/eufrak.pdf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/cmmib57.pdf $TARGETLIBDIR/kertex/fonts/ams/doc/cmmib57.pdf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/amssymb.pdf $TARGETLIBDIR/kertex/fonts/ams/doc/amssymb.pdf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/amsfonts.pdf $TARGETLIBDIR/kertex/fonts/ams/doc/amsfonts.pdf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/amsfndoc.pdf $TARGETLIBDIR/kertex/fonts/ams/doc/amsfndoc.pdf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/README $TARGETLIBDIR/kertex/fonts/ams/doc/README
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/amsfonts.faq $TARGETLIBDIR/kertex/fonts/ams/doc/amsfonts.faq
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/amsfonts.bug $TARGETLIBDIR/kertex/fonts/ams/doc/amsfonts.bug
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/doc/manifest.txt $TARGETLIBDIR/kertex/fonts/ams/doc/manifest.txt
+
+#=== AMS METAFONT provided sources
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/cyrcsc.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cyrcsc.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/cyrfont.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cyrfont.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/cyrilu.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cyrilu.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/cyrital.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cyrital.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/cyrmax.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cyrmax.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/cyrpunc.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cyrpunc.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/cyrspl.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cyrspl.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/cyrspu.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cyrspu.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/cyrti.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cyrti.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/serb.mf $TARGETLIBDIR/kertex/fonts/ams/mf/serb.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/serbspu.mf $TARGETLIBDIR/kertex/fonts/ams/mf/serbspu.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyb10.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyb10.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyb5.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyb5.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyb6.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyb6.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyb7.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyb7.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyb8.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyb8.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyb9.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyb9.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyi10.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyi10.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyi5.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyi5.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyi6.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyi6.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyi7.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyi7.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyi8.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyi8.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyi9.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyi9.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyr10.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyr10.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyr5.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyr5.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyr6.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyr6.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyr7.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyr7.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyr8.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyr8.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyr9.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyr9.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncysc10.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncysc10.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyss10.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyss10.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyss8.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyss8.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyss9.mf $TARGETLIBDIR/kertex/fonts/ams/mf/wncyss9.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib9.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmmib9.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib8.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmmib8.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib7.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmmib7.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib6.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmmib6.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib5.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmmib5.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmex9.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmex9.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmex8.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmex8.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmex7.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmex7.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmcsc9.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmcsc9.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmcsc8.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmcsc8.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy9.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmbsy9.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy8.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmbsy8.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy7.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmbsy7.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy6.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmbsy6.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy5.mf $TARGETLIBDIR/kertex/fonts/ams/mf/cmbsy5.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/xbbold.mf $TARGETLIBDIR/kertex/fonts/ams/mf/xbbold.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/xbbase.mf $TARGETLIBDIR/kertex/fonts/ams/mf/xbbase.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm9.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msbm9.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm8.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msbm8.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm7.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msbm7.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm6.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msbm6.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm5.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msbm5.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm10.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msbm10.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam9.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msam9.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/xbcaps.mf $TARGETLIBDIR/kertex/fonts/ams/mf/xbcaps.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam7.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msam7.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam6.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msam6.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam5.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msam5.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam10.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msam10.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/bsymbols.mf $TARGETLIBDIR/kertex/fonts/ams/mf/bsymbols.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/asymbols.mf $TARGETLIBDIR/kertex/fonts/ams/mf/asymbols.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/amsyb.mf $TARGETLIBDIR/kertex/fonts/ams/mf/amsyb.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/amsya.mf $TARGETLIBDIR/kertex/fonts/ams/mf/amsya.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam8.mf $TARGETLIBDIR/kertex/fonts/ams/mf/msam8.mf
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/dummy.mf $TARGETLIBDIR/kertex/fonts/ams/mf/dummy.mf
+
+#=== AMS Euler have been corrected directly in the PostScript source,
+# hence there is no matching mf sources. Hence the use of the provided
+# tfm for Euler only.
+#
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex10.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/euex10.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm8.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusm8.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm7.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusm7.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm6.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusm6.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm5.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusm5.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm10.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusm10.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb9.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusb9.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb8.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusb8.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb7.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusb7.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb6.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusb6.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb5.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusb5.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb10.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusb10.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm9.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurm9.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm8.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurm8.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm7.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurm7.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm6.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurm6.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm5.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurm5.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm10.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurm10.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb9.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurb9.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb8.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurb8.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb7.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurb7.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb6.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurb6.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb5.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurb5.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb10.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eurb10.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm9.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufm9.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm8.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufm8.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm7.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufm7.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm6.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufm6.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm5.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufm5.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm10.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufm10.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb9.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufb9.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb8.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufb8.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb7.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufb7.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb6.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufb6.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb5.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufb5.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb10.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eufb10.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex9.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/euex9.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex8.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/euex8.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex7.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/euex7.tfm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm9.tfm $TARGETLIBDIR/kertex/fonts/ams/tfm/eusm9.tfm
+
+#=== AMS not D.E.K.'s CMR afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/line10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/line10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lcmssi8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lcmssi8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lcmssb8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lcmssb8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lcmss8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lcmss8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lcirclew.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lcirclew.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lcircle1.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lcircle1.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/linew10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/linew10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy9.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lasy9.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lasy8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lasy7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy6.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lasy6.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lasy5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lasy10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasyb10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/lasyb10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyss10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/wncyss10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncysc10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/wncysc10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyr10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/wncyr10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyi10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/wncyi10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyb10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/wncyb10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib9.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmmib9.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmmib8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmmib7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib6.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmmib6.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmmib5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmex9.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmex9.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmex8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmex8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmex7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmex7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmcsc8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmcsc8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy9.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmbsy9.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmbsy8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmbsy7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy6.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmbsy6.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmbsy5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmcsc9.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmcsc9.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmcsc8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/cmcsc8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msbm8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msbm7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm6.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msbm6.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msbm5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msbm10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm9.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msbm9.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msam8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msam7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam6.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msam6.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msam5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msam10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam9.afm $TARGETLIBDIR/kertex/fonts/ams/afm/msam9.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eusm5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eusm10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eusb7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eusb5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eusb10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eurm7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eurm5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eurm10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eurb7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eurb5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eusm7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eufm7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eufm5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eufm10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eufb7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb5.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eufb5.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eufb10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex9.afm $TARGETLIBDIR/kertex/fonts/ams/afm/euex9.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex8.afm $TARGETLIBDIR/kertex/fonts/ams/afm/euex8.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex7.afm $TARGETLIBDIR/kertex/fonts/ams/afm/euex7.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/euex10.afm
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb10.afm $TARGETLIBDIR/kertex/fonts/ams/afm/eurb10.afm
+
+#=== AMS not D.E.K.'s CMR pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/linew10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/linew10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/line10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/line10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lcmssi8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lcmssi8.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lcmssb8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lcmssb8.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lcmss8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lcmss8.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lcirclew.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lcirclew.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lcircle1.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lcircle1.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasyb10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lasyb10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy9.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lasy9.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lasy8.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lasy7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy6.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lasy6.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lasy5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/lasy10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/lasy10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyss10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/wncyss10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncysc10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/wncysc10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyi10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/wncyi10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyb10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/wncyb10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cyrillic/wncyr10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/wncyr10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy9.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmbsy9.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmbsy8.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmbsy7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy6.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmbsy6.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmbsy5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmbsy5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmcsc9.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmcsc9.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmcsc8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmcsc8.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmex9.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmex9.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmex8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmex8.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmex7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmex7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib9.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmmib9.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmmib8.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmmib7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib6.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmmib6.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/cmextra/cmmib5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/cmmib5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm9.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msbm9.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msbm8.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msbm7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm6.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msbm6.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msbm5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msbm10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msbm10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam9.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msam9.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msam8.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msam7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam6.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msam6.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msam5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/symbols/msam10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/msam10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eusm7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eusm5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusm10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eusm10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eusb7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eusb5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eusb10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eusb10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eurm7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eurm5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurm10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eurm10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eurb7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eurb5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eurb10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eurb10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eufm7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eufm5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufm10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eufm10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eufb7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb5.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eufb5.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/eufb10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/eufb10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex9.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/euex9.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex7.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/euex7.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex10.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/euex10.pfb
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/euler/euex8.pfb $TARGETLIBDIR/kertex/fonts/ams/pfb/euex8.pfb
+
+#=== AMS plain TeX related macro.
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/tex/cyracc.def $TARGETLIBDIR/kertex/tex/cyracc.def
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/tex/amssym.tex $TARGETLIBDIR/kertex/tex/amssym.tex
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/tex/amssym.def $TARGETLIBDIR/kertex/tex/amssym.def
+
+#=== AMS LaTeX related macro.
+#
+# LaTeX is NOT provided, but there are supplementary files needed by
+# LaTeX but not provided by LaTeX.
+#
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/euscript.dtx $TARGETLIBDIR/kertex/tex/euscript.dtx
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/eufrak.dtx $TARGETLIBDIR/kertex/tex/eufrak.dtx
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/cmmib57.dtx $TARGETLIBDIR/kertex/tex/cmmib57.dtx
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/amssymb.dtx $TARGETLIBDIR/kertex/tex/amssymb.dtx
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/amsfonts.ins $TARGETLIBDIR/kertex/tex/amsfonts.ins
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/amsfndoc.tex $TARGETLIBDIR/kertex/tex/amsfndoc.tex
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/amsfndoc.ins $TARGETLIBDIR/kertex/tex/amsfndoc.ins
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/amsfndoc.fnt $TARGETLIBDIR/kertex/tex/amsfndoc.fnt
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/amsfndoc.def $TARGETLIBDIR/kertex/tex/amsfndoc.def
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/amsfndoc.cyr $TARGETLIBDIR/kertex/tex/amsfndoc.cyr
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/amsfonts.dtx $TARGETLIBDIR/kertex/tex/amsfonts.dtx
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/umsa.fd $TARGETLIBDIR/kertex/tex/umsa.fd
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/ueus.fd $TARGETLIBDIR/kertex/tex/ueus.fd
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/ueur.fd $TARGETLIBDIR/kertex/tex/ueur.fd
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/ueuf.fd $TARGETLIBDIR/kertex/tex/ueuf.fd
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/ueuex.fd $TARGETLIBDIR/kertex/tex/ueuex.fd
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/umsb.fd $TARGETLIBDIR/kertex/tex/umsb.fd
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/eufrak.sty $TARGETLIBDIR/kertex/tex/eufrak.sty
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/eucal.sty $TARGETLIBDIR/kertex/tex/eucal.sty
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/cmmib57.sty $TARGETLIBDIR/kertex/tex/cmmib57.sty
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/amssymb.sty $TARGETLIBDIR/kertex/tex/amssymb.sty
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/amsfonts.sty $TARGETLIBDIR/kertex/tex/amsfonts.sty
++ f $USER0:$GROUP0 644 $AMS_SRC_DIR/latex/euscript.sty $TARGETLIBDIR/kertex/tex/euscript.sty
+
+#========== cweb
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/cweb
++ f $USER0:$GROUP0 755 $OBJDIR/cweb/bin1/ctangle/ctangle $TARGETBINDIR/kertex/ctangle
+= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/cweb.1 $TARGETLIBDIR/kertex/1/cweb Tman
+= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/c++lib.w $TARGETLIBDIR/kertex/cweb/c++lib.w
+= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/iso_types.w $TARGETLIBDIR/kertex/cweb/iso_types.w
++ f $USER0:$GROUP0 755 $OBJDIR/cweb/bin1/cweave/cweave $TARGETBINDIR/kertex/cweave
+= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/cwebmac.tex $TARGETLIBDIR/kertex/tex/cwebmac.tex
+= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/cwebman.tex $TARGETLIBDIR/kertex/cweb/cwebman.tex
+= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/prod.w $TARGETLIBDIR/kertex/cweb/prod.w
++ f $USER0:$GROUP0 755 $OBJDIR/cweb/bin1/cwmerge/cwmerge $TARGETBINDIR/kertex/cwmerge
+# The simplest example. Others are in the sources.
++ f $USER0:$GROUP0 644 $CWEB_SRC_DIR/examples/wc.w $TARGETLIBDIR/kertex/cweb/wc.w
+
+##========== NTS' e-TeX.
+##
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/etex
++ f $USER0:$GROUP0 644 $PROJECTDIR/etex/CID $TARGETLIBDIR/kertex/etex/CID
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/etex/etrip
+## doesn't have a man page
+#+ f $USER0:$GROUP0 755 $OBJDIR/etex/bin1/einitex/einitex $TARGETBINDIR/kertex/einitex
+#= f $USER0:$GROUP0 644 $OBJDIR/etex/bin1/einitex/tex.pool $TARGETLIBDIR/kertex/pool/etex.pool
+#= f $USER0:$GROUP0 755 $OBJDIR/etex/bin1/evirtex/evirtex $TARGETBINDIR/kertex/evirtex
+
+#===== e-TeX macro definitions.
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etex.src $TARGETLIBDIR/kertex/etex/etex.src
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etexdefs.lib $TARGETLIBDIR/kertex/etex/etexdefs.lib
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/language.def $TARGETLIBDIR/kertex/etex/language.def
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etex.sty $TARGETLIBDIR/kertex/etex/etex.sty
+
+#===== e-TeX util
+#
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/webmerge.tex $TARGETLIBDIR/kertex/tex/webmerge.tex
+
+#===== e-TeX ETRIP
+#
+# The special ETRIPTEX is machine dependant but not to be used in the
+# general case.
+#
+#+ f $USER0:$GROUP0 644 $OBJDIR/etex/bin1/etriptex/etriptex $TARGETBINDIR/kertex/lib/etriptex
+#+ f $USER0:$GROUP0 644 $OBJDIR/etex/bin1/etriptex/tex.pool $TARGETLIBDIR/kertex/etex/etrip/etrip.pool
++ f $USER0:$GROUP0 755 $OBJDIR/etex/sh1/etrip/ck_etex $TARGETBINDIR/kertex/adm/ck_etex
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etrip/etrip.fot $TARGETLIBDIR/kertex/etex/etrip/etrip.fot
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etrip/etripin.log $TARGETLIBDIR/kertex/etex/etrip/etripin.log
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etrip/etrip.typ $TARGETLIBDIR/kertex/etex/etrip/etrip.typ
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etrip/etrip.tex $TARGETLIBDIR/kertex/etex/etrip/etrip.tex
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etrip/etrip.pl $TARGETLIBDIR/kertex/etex/etrip/etrip.pl
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etrip/etrip.out $TARGETLIBDIR/kertex/etex/etrip/etrip.out
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etrip/etrip.log $TARGETLIBDIR/kertex/etex/etrip/etrip.log
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/etrip/etripman.tex $TARGETLIBDIR/kertex/etex/etrip/etripman.tex
+
+#===== e-TeX documentation
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/etex/doc
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/doc/etex_man.sty $TARGETLIBDIR/kertex/etex/doc/etex_man.sty
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/doc/etex_man.tex $TARGETLIBDIR/kertex/etex/doc/etex_man.tex
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/legal.html $TARGETLIBDIR/kertex/etex/doc/legal.html
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/nts-group.html $TARGETLIBDIR/kertex/etex/doc/nts-group.html
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/orthography.html $TARGETLIBDIR/kertex/etex/doc/orthography.html
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/doc/etex_gen.tex $TARGETLIBDIR/kertex/etex/doc/etex_gen.tex
+
+#===== e-TeX logo
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/fonts/mf/etex
++ f $USER0:$GROUP0 644 $ETEX_SRC_DIR/lib/mf/xbmc10.mf $TARGETLIBDIR/kertex/fonts/mf/etex/xbmc10.mf
+
+#========== Prote
+#
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/prote
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/CID $TARGETLIBDIR/kertex/prote/CID
++ d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/prote/sellette
+# doesn't have a man page
++ f $USER0:$GROUP0 755 $OBJDIR/prote/bin1/ini/iniprote $TARGETBINDIR/kertex/iniprote
+= f $USER0:$GROUP0 644 $OBJDIR/prote/bin1/ini/tex.pool $TARGETLIBDIR/kertex/pool/prote.pool
+= f $USER0:$GROUP0 755 $OBJDIR/prote/bin1/vir/virprote $TARGETBINDIR/kertex/virprote
+
+# SELLETTE stuff.
+# The special SELLETTE is machine dependant but not to be used in the
+# general case.
+#
++ f $USER0:$GROUP0 644 $OBJDIR/prote/bin1/sellette/sellette $TARGETBINDIR/kertex/lib/sellette
++ f $USER0:$GROUP0 644 $OBJDIR/prote/bin1/sellette/tex.pool $TARGETLIBDIR/kertex/prote/sellette/sellette.pool
++ f $USER0:$GROUP0 755 $OBJDIR/prote/sh1/sellette/ck_prote $TARGETBINDIR/kertex/adm/ck_prote
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/Prote_id.log $TARGETLIBDIR/kertex/prote/sellette/Prote_id.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/Prote_id.tex $TARGETLIBDIR/kertex/prote/sellette/Prote_id.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/creationdate.log $TARGETLIBDIR/kertex/prote/sellette/creationdate.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/creationdate.pre.sh $TARGETLIBDIR/kertex/prote/sellette/creationdate.pre.sh
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/creationdate.tex $TARGETLIBDIR/kertex/prote/sellette/creationdate.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/dvipos.log $TARGETLIBDIR/kertex/prote/sellette/dvipos.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/dvipos.tex $TARGETLIBDIR/kertex/prote/sellette/dvipos.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/expanddepth.log $TARGETLIBDIR/kertex/prote/sellette/expanddepth.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/expanddepth.tex $TARGETLIBDIR/kertex/prote/sellette/expanddepth.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/expanded.log $TARGETLIBDIR/kertex/prote/sellette/expanded.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/expanded.tex $TARGETLIBDIR/kertex/prote/sellette/expanded.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/filedump.log $TARGETLIBDIR/kertex/prote/sellette/filedump.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/filedump.pre.sh $TARGETLIBDIR/kertex/prote/sellette/filedump.pre.sh
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/filedump.tex $TARGETLIBDIR/kertex/prote/sellette/filedump.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/filemoddate.log $TARGETLIBDIR/kertex/prote/sellette/filemoddate.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/filemoddate.pre.sh $TARGETLIBDIR/kertex/prote/sellette/filemoddate.pre.sh
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/filemoddate.tex $TARGETLIBDIR/kertex/prote/sellette/filemoddate.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/filesize.log $TARGETLIBDIR/kertex/prote/sellette/filesize.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/filesize.pre.sh $TARGETLIBDIR/kertex/prote/sellette/filesize.pre.sh
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/filesize.tex $TARGETLIBDIR/kertex/prote/sellette/filesize.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/ifincsname.log $TARGETLIBDIR/kertex/prote/sellette/ifincsname.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/ifincsname.tex $TARGETLIBDIR/kertex/prote/sellette/ifincsname.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/ifprimitive.log $TARGETLIBDIR/kertex/prote/sellette/ifprimitive.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/ifprimitive.tex $TARGETLIBDIR/kertex/prote/sellette/ifprimitive.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/mdfivesum.log $TARGETLIBDIR/kertex/prote/sellette/mdfivesum.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/mdfivesum.pre.sh $TARGETLIBDIR/kertex/prote/sellette/mdfivesum.pre.sh
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/mdfivesum.tex $TARGETLIBDIR/kertex/prote/sellette/mdfivesum.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/pseudo-randoms.log $TARGETLIBDIR/kertex/prote/sellette/pseudo-randoms.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/pseudo-randoms.tex $TARGETLIBDIR/kertex/prote/sellette/pseudo-randoms.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/shellescape.log $TARGETLIBDIR/kertex/prote/sellette/shellescape.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/shellescape.tex $TARGETLIBDIR/kertex/prote/sellette/shellescape.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/strcmp.log $TARGETLIBDIR/kertex/prote/sellette/strcmp.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/strcmp.tex $TARGETLIBDIR/kertex/prote/sellette/strcmp.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/timer.log $TARGETLIBDIR/kertex/prote/sellette/timer.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/timer.tex $TARGETLIBDIR/kertex/prote/sellette/timer.tex
+

@@ -1,0 +1,412 @@
+#!@@TARGETSHELL@@
+# mp2ps : generate a complete PostScript file (with fonts and encoding)
+# from a MetaPost program.
+# 
+prog_version='$Id: sh.data,v 1.39 2022/05/26 17:01:11 tlaronde Exp $'
+version="$prog_version
+Written by Thierry Laronde.
+
+Copyright (c) 2005--2012, 2018--2020, 2022
+	Thierry Laronde <tlaronde@polynum.com>
+
+All rights reserved and NO warranties!"
+
+
+#========== DEFINITIONS (set and define; neither loads nor stores)
+
+#----- Extern settable.
+
+: ${TMPDIR:=/tmp} # can be customized, including hardcoded.
+
+# We let TeX(1) add the informations and dvips(1) complete the PS file
+# for the fonts.
+# Hence:
+#	- No "prologues" (since even encoding is not handled);
+#	- No defaultfont.
+#
+
+. which_kertex
+
+#------------------INITIALIZATIONS
+# Name by which this script was invoked.
+program=`echo "$0" | sed -e 's/[^\/]*\///g'`
+
+usage="
+Usage: [TEX=sometex] $program [-h] [-q] [-V] [-D] [-f] [-p]\\\\
+         [-t papersize] [-r range] [-l] mp_file
+Make a complete PostScript file containing images from a MetaPost one.
+Optionally, converts the PostScript generated file to PDF too (needs 
+gs(1)).
+(Set TEX in the environment with the TeX flavour expected for proceeding
+MetaPost labels: ex. TEX=latex mp2ps ...)
+
+Options:
+ -h	display this Help and exit
+ -f	force continue and overwrite of existing intermediary MetaPost generated files
+ -l	landscape
+ -p	converts PS to PDF too (needs gs(1))
+ -q	Quiet mode: do not print info msg on stderr
+ -r range
+	only consider the figures in range. Range is specified as a single
+	argument as 'm[,n]' from number m to number n (n == m if not
+	specified).
+ -t	Type of paper (A4 or A3). If not specified, maximum size of the
+	images will be taken
+ -D	Debug mode
+ -V	display Version information and exit
+
+This program is part of kerTeX."
+
+##BEGIN_ERRORS
+# EOPTION 1 "This option is unknown (use separate flags -f -p etc.):"
+# ENOENT 2 "This file or directory doesn't exist:"
+# EPAPERTYPE 3 "Incorrect paper type."
+# ELANDSCAPE 4 "You must specify paper type with landscape switch!"
+# ERANGE 5 "Incorrect range specification : '$2'."
+# EUSAGE 32 "$usage"
+# EEXIST 63 "This file or directory already exists:"
+# ETMPCREATE 64 "Unable to create this tmpdir:"
+# EINT 65 "Interrupted."
+# EMPOST 66 "MetaPost failed to process: "
+# EDIRNOTCLEAN 67"Existing *.[0-9] in dir. Clean first !"
+# ENOGS 68 "gs(1) not found for PDF conversion!"
+# EGS 69 "gs(1) failed to convert to PDF!"
+##END_ERRORS
+
+#----- Subfunctions
+#
+#--- No storing subfunctions
+#
+log()
+{
+    echo "$@" >&2
+}
+
+logpart()
+{
+    echo "$@" | tr -d '\n' >&2
+}
+
+#--- Storing subfunctions
+#
+# Protect from trying to remove a not verified and not newly created
+# tmpdir via ?.
+#
+clean_tmp()
+{
+  test "$tmpdir" -a -d "$tmpdir" || return 0 # Safety; set and existing
+  ( cd "$tmpdir"; rm -f .[_a-zA-Z0-9-]* *; )
+  @@TARGETRMDIR@@ "$tmpdir"
+}
+
+# Call:	error error_string_macro [args_to_fmt]
+# ex. : error "EOPTION" offending_option
+#
+error()
+{
+	logpart "Error $1: "
+
+    # Retrieving the error records.
+	record=$(sed -n "/^##BEGIN_ERRORS/,/^##END_ERRORS/s/^#[ 	]*$1[ 	]//p"\
+		"$fqscript")
+	if test "x$record" != x; then
+		errno=$(echo $record | sed 's/^\([0-9][0-9]*\).*/\1/')
+		fmt=$(echo $record | sed 's/^[0-9][0-9]*[ 	]*\(.*\)$/\1/')
+		shift
+		eval log $fmt "${@:-}"
+	fi
+
+	test "$errno"\
+		|| { log "Programmer error: error '$1' unknown!"; exit 127; }
+
+	test $errno -lt 32 && log "$usage"
+	test $errno -gt 65 && test $debug_mode = NO && clean_tmp # more than ETMPCREATE
+
+	exit $errno
+}
+
+# In order to not overflow MetaPost capacities (and because this is
+# useless), an eps file included in MetaPost is only referenced via
+# a "special", inserting a PS commentary (all the specials are put
+# at the beginning of the produced file). We simply output TeX
+# \special commands by removing the leading '%'.
+#
+# call: do_special "$file"
+#
+# The uncommented lines are sent to output (redirected to the texfile
+# when called).
+#
+# No other processing is done so the special have to be correct from
+# the beginning.
+#
+do_special ()
+{
+	sed -n '/^%\\special{/s//\\special{/p' "$1"
+}
+
+#========== CHECKS (set env; maybe loads but no stores)
+
+unset tmpdir || true # Safety for clean_tmp().
+
+# We can be an executable, or a non executable (hence not a command)
+# fed to sh.
+#
+if test -s $0; then
+	fqscript="$0"
+	expr "$fqscript" : '/' >/dev/null 2>&1 || fqscript="$PWD/$fqscript"
+else
+	fqscript="$(command -v $0)"
+fi
+
+#==========PREPROCESSING
+
+# Getting the options
+test $# -ne 0 || error EUSAGE
+
+phsize=0
+pvsize=0
+has_papersize=NO
+do_landscape=NO
+debug_mode=NO
+force=NO
+do_pdf=NO
+mpfile=
+has_range=NO
+fig_from=
+fig_to=
+while [ $# -gt 0 ]; do
+	case "$1" in
+		-f) force=YES;;
+		-l) do_landscape=YES;;
+		-p) do_pdf=YES;;
+		-q) # Quiet
+			exec 2>/dev/null;;
+		-r) shift;
+			range="$1"
+			test ! -z "$range" || error ERANGE "none"
+			junk=$(echo "$range" | sed 's/[0-9]//g')
+			test -z "$junk" -o "$junk" = ',' || error ERANGE "$range"
+			fig_from=$(echo $range | sed 's/\([0-9][0-9]*\).*$/\1/')
+			fig_to=$(echo $range | sed 's/^.*,\([0-9][0-9]*\)$/\1/')
+			test "x$fig_to" != x || fig_to=$fig_from
+			has_range=YES;;
+		-t) shift;
+		  case $1 in
+			# in bp
+			A3) phsize=842; pvsize=1191;;
+			A4) phsize=595; pvsize=842;;
+			*) error EPAPERTYPE;;
+		  esac;
+		  has_papersize=YES;;
+		-D) set -x; debug_mode=YES;;
+		-h|--help) echo "$usage"; exit 0;;
+		-V|--version) echo "$version"; exit 0;;
+		-*) error EOPTION "$1";;
+	 	*) mpfile="$1";;
+	esac
+shift	
+done
+
+[ "$mpfile" ] || error EUSAGE
+[ -f "$mpfile" ] || error ENOENT "$mpfile"
+[ "$do_landscape" = NO -o "$has_papersize" = YES ] || error ELANDSCAPE
+
+bookname=$(basename $mpfile)
+bookname=${bookname%.*}
+existing=`ls | sed -n "/$bookname\.[0-9][0-9]*\$/p"`
+test -z "$existing" -o "$force" = YES || error EDIRNOTCLEAN
+
+if [ $do_landscape = YES ]; then
+	scratch=$phsize
+	phsize=$pvsize
+	pvsize=$scratch
+fi
+
+tmpdir="$TMPDIR/$$"
+readonly tmpdir
+
+test ! -d "$tmpdir" || error EEXIST "$tmpdir"
+
+#========== PROCESSING (stores)
+#
+# From now on, error() shall be safe to call.
+
+mkdir -p "$tmpdir" || error ETMPCREATE "$tmpdir"
+trap "error EINT" HUP INT QUIT ABRT TERM
+
+logpart "1. Calling MetaPost ["
+if $KERTEX_BINDIR/mpost $mpfile >&2; then
+	log "[OK]"
+elif test $force = YES; then
+	log "[OK]"
+else
+	log "[FAILED]"
+	error EMPOST
+fi
+
+log "2. Generating the TeX file."
+psskels="$tmpdir/files"
+ls $bookname.* | sed -e 's/  */ /g' -e 's/ /\
+/g'\
+	| sed -n "s/^$bookname\\.\\([0-9][0-9]*\\)\$/\\1/p"\
+	| sort -n\
+	| sed "s,^,$bookname.,"\
+	>"$psskels"
+
+texfile=$tmpdir/tex
+# paper size will be fixed afterwards.
+# We will use virprote as a raw TeX. Hence we have to defined grouping
+# char for the \special command.
+#
+cat <<"EOT" >"$texfile"
+\hsize @@phsize@@ bp
+\vsize @@pvsize@@ bp
+\catcode`\{=1 % left brace is begin-group character
+\catcode`\}=2 % right brace is end-group character
+\special{papersize=@@phsize@@ bp, @@pvsize@@ bp}
+EOT
+
+log "\t2.1 Treating each EPS file."
+# for each eps, we insert the whatsits and compute the "real" size
+# taking into account the shifts of the origin so that the image takes
+# place in the viewport.
+# Hence, the offset impact back the maximum size since an image fitting
+# in a previous size will exceed the viewport if shifted by an increased
+# offset.
+
+i=0
+fig_num=
+while read file; do
+	# skipping if range requested and outside of range
+	#
+	if test $has_range = YES; then
+		fig_num=${file#$bookname.}
+		test $fig_num -ge $fig_from -a $fig_num -le $fig_to \
+		|| continue
+	fi
+
+	# these are big points.
+	scratch=`sed -n '/^%%BoundingBox: */s///p' $file`
+	lx=`echo $scratch | awk '{ print $1;}'`
+	ly=`echo $scratch | awk '{ print $2;}'`
+	ux=`echo $scratch | awk '{ print $3;}'`
+	uy=`echo $scratch | awk '{ print $4;}'`
+	
+# We need to compute the origin so that the whole picture holds on the
+# page. What is fixed, is the final size of the page---big enough for
+# every picture. What we will change, is the position of the origin,
+# in the page, so that every picture will fit in the page. That is
+# the "left most" drawing will start at the left edge of the page, and
+# the "right most" drawing will fall on the right edge of the page.
+#
+# The coordinates in MetaPost are "mathematical" ones: origin at the
+# lower left. So we will need to put this origin, in the page, so
+# that the pictures fit (appear) in the page. A "blank" page is
+# generally produced when the origin is so that the drawing is outside
+# the paper.
+#
+	#initialisations.
+	if [ $i -eq 0 ]; then
+		xmin=$lx
+		xmax=$ux
+		ymin=$ly
+		ymax=$uy
+	fi
+
+	test $lx -ge $xmin || xmin=$lx
+	test $ly -ge $ymin || ymin=$ly
+	test $uy -le $ymax || ymax=$uy
+	test $ux -le $xmax || xmax=$ux
+
+	# TeX proper commands.
+	#
+	if test $i -ne 0; then
+		printf '\\shipout\n' >>"$texfile"
+	fi
+	printf '\\vbox{\n' >>"$texfile"
+	do_special "$file" >>"$texfile"
+	printf '\\special{PSfile=%s}\n' "$file" >>"$texfile"
+	printf '}\n\n' >>"$texfile"
+
+	i=$(($i + 1))
+done <$psskels
+
+log "\ttreated $i images"
+
+printf '\\end\n' >>"$texfile"
+
+log "\t2.2 Fixing the paper size"
+
+if [ $has_papersize = YES ]; then
+  if [ $(($xmax - $xmin)) -gt $phsize -o $(($ymax - $ymin)) -gt $pvsize ]; then
+	log
+	log "WARNING! Some images do not fit in page size!"
+  fi
+else
+	phsize=$(($xmax - $xmin))
+	pvsize=$(($ymax - $ymin))
+fi
+
+ed -s "$texfile" <<EOT
+g/@@phsize@@/s//$phsize/
+g/@@pvsize@@/s//$pvsize/
+w
+q
+EOT
+
+log "3. Invocation of raw tex on the resulting TeX file"
+cat "$texfile" | $KERTEX_BINDIR/virprote >&2
+
+log "4. Translating dvi into ps."
+
+# We need to instruct dvips(1) of the place of our computed origin,
+# taking into account that the geom given is relative to dvips(1) own
+# origin, that is 1 inch at the left, 1 inch bottom from the
+# left upper corner of the page and that MetaPost draws with an
+# origin left bottom contrary to PS that is origin left top.
+#
+# We correct default CMR10 downward insertion(?)---ghostscript doesn't
+# seem to be at fault here; dvips makes a lot of insertions (and
+# coordinates manipulations) and it should be traced... (this is the
+# y "-10bp" correction made).
+#
+$KERTEX_BINDIR/dvips \
+	-O "$((-1 * $xmin - 72))bp,$(($ymax - 72 - 10))bp" texput.dvi\
+	>"$bookname.ps"
+
+if test $do_pdf = YES; then
+	log "5. Translating ps into pdf."
+  junk=$(command -v gs)
+  if test "x$junk" != x; then
+    # There may be EPS so this is the first occurrence of bbox spec that
+    # has to be used.
+    # gs/pdfwrite uses the default page dimension and doesn't take into
+    # account the actual document dimension if it is not specified
+    # explicitely. It has some heuristics about text flows and by
+    # default rotate the pages in order for the majority of text to be
+    # read from left to right. We want "as is" to we instruct it to do
+    # nothing about this.
+    #
+	# See too the file /usr/pkg/share/ghostscript/9.55.0/lib/align.ps
+	# (or likely place in the ghostscript distribution) for possible
+	# enhancements/customizations of eventual printing.
+	#
+    dim=$(sed -n '/%%BoundingBox:/p' "$bookname.ps"| sed 1q)
+    cols=$(echo $dim | sed -n 's/%%BoundingBox: *[^ ][^ ]*  *[^ ][^ ]* *\([^ ][^ ]*\)  *[^ ][^ ]* *$/\1/p')
+    rows=$(echo $dim | sed -n 's/%%BoundingBox: *[^ ][^ ]*  *[^ ][^ ]* *[^ ][^ ]*  *\([^ ][^ ]*\) *$/\1/p')
+    
+    gs -q -dSAFER -dNOPAUSE -dBATCH \
+	  -dAutoRotatePages=/None \
+      -sOutputFile="$bookname.pdf" \
+      -sDEVICE=pdfwrite \
+      -c "<</PageSize [$cols $rows] /PageOffset [0 0]>> setpagedevice" \
+	  -f "$bookname.ps" \
+      || error EGS
+  else
+    error ENOGS
+  fi
+fi
+
+test $debug_mode = NO && clean_tmp
+
+exit 0

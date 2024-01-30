@@ -1,0 +1,20 @@
+PROG = mft
+
+LIBES = $(WEBLIB) $(PASCALLIB)
+
+MAKE_STATIC=YES
+
+COBJ =	mft.o extra.o
+
+all: $(PROG)
+
+mft.p mft.pool:	$(KNUTH_SRC_DIR)/mfware/mft.web mft.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/mfware/mft.web mft.ch
+
+mft.c coerce.h: 	mft.p mft.h ppdef.data extra.c
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		ppdef.data mft.p \
+		| $(M_DIR)/pp2rc -h mft.h\
+		| $(M_DIR)/fixwrites >mft.c
+	

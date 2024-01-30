@@ -1,0 +1,15 @@
+@define function strlen();
+
+{ This is a macro expending to Openin with correct PATH spec. }
+@define function aopenin();
+
+@define procedure lineread();
+
+{ This is a macro for coercing (casting) the parameter. }
+@define function cstrlen();
+
+{ This one is defined as a macro to pass the address to the real one. }
+@define procedure buildin();
+@define procedure poplitstk();
+@define procedure inttoASCII();
+@define procedure adddatabasecite();

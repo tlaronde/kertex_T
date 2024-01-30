@@ -1,0 +1,21 @@
+PROG = testarithm
+
+COBJ = mathtest.o pmath.o main.o
+
+LIBES = $(WEBLIB)
+
+MAKE_STATIC=YES
+
+XCPPFLAGS = -I $(PROJECTDIR)/lib1/pascal/
+
+# (Original comment from J. Hobby)
+# This is only for testing arithmetic routines.  Run $(PROG)
+# with no arguments and use the results printed on standard output
+# to decide if the external routines used when `FIXPT' is not
+# defined in site.h work properly and run faster than the standard
+# arithmetic routines.
+
+all: $(PROG)
+
+$(COBJ): prog.h
+

@@ -1,0 +1,66 @@
+#!@@TARGETSHELL@@
+#
+# This is a POSIX shell (Bourne shell) script sending to stdout the
+# critical values about this installation. It can be interpreted with
+# whatever KERTEX_SHELL in a heterogeneous installation (distributed
+# system).
+#
+# Used for importing packages to the TeX kernel system.
+#
+# C) 2011, 2012, 2014, 2020 Thierry Laronde <tlaronde@polynum.com>
+# All rights reserved and absolutely no warranty! Use at your own 
+# risks.
+#
+# We ensure the maximal "portability" even with non Bourne shell
+# interpreters by not using _here_ readonly or trailing ';'. Quoting
+# is necessary because on some hosts, whites may appear in dirnames, but
+# restricted to single quotes for the assignments.
+#
+
+KERTEX_VERSION='@@PROJECT_VERSION@@'
+KERTEX_HOST='@@TARGET@@-@@TARGET_MACHINE@@-@@TARGET_RELEASE@@'
+KERTEX_HOST_TYPE='@@TARGET_TYPE@@'
+KERTEX_HOST_2D_TYPE='@@TARGET_2D_TYPE@@'
+KERTEX_SHELL='@@TARGETSHELL@@'
+KERTEX_BINDIR='@@KERTEX_BINDIR@@'
+KERTEX_LIBDIR='@@KERTEX_LIBDIR@@'
+KERTEX_USER0='@@USER0@@'
+KERTEX_GROUP0='@@GROUP0@@'
+
+
+# Display important changes information as comments before key values.
+# Send to stderr in order to not polluate stdout for scripts calling
+# which_kertex before knowing the value of PKG_NULL_FILE.
+#
+cat <<EOT
+
+#                       THE FUNDAMENTALS
+#
+# 1) The path separator is now, everywhere, semicolon ';' and not
+#	colon ':'.
+# 2) The pkg recipes are in '$KERTEX_LIBDIR/pkg/rcp/'. If it hasn't
+#	been done at installation time, install the core (tex, etex, cm pk,
+#	etc.) by running:
+#
+# 	'$KERTEX_SHELL' '$KERTEX_LIBDIR/pkg/rcp/core@pkg.sh' install
+#
+# 3) One can update the pkg stuff by running:
+#
+# 	'$KERTEX_SHELL' '$KERTEX_LIBDIR/pkg/rcp/tools@pkg.sh' install
+#	
+#	and get all the "recipes" (pkg builder/installer) by running:
+#
+# 	'$KERTEX_SHELL' '$KERTEX_LIBDIR/pkg/rcp/rcp@pkg.sh' install
+#
+
+KERTEX_VERSION='$KERTEX_VERSION'
+KERTEX_HOST='$KERTEX_HOST'
+KERTEX_HOST_TYPE='$KERTEX_HOST_TYPE'
+KERTEX_HOST_2D_TYPE='$KERTEX_HOST_2D_TYPE'
+KERTEX_SHELL='$KERTEX_SHELL'
+KERTEX_BINDIR='$KERTEX_BINDIR'
+KERTEX_LIBDIR='$KERTEX_LIBDIR'
+KERTEX_USER0='$KERTEX_USER0'
+KERTEX_GROUP0='$KERTEX_GROUP0'
+
+EOT

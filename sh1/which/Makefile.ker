@@ -1,0 +1,18 @@
+DATA = which
+
+all: $(DATA)
+
+$(DATA): sh.data
+	sed -e 's!@@TARGETSHELL@@!$(TARGETSHELL)!'\
+		-e 's!@@PROJECT_VERSION@@!$(PROJECT_VERSION)!'\
+		-e 's!@@TARGET@@!$(TARGET)!'\
+		-e 's!@@TARGET_MACHINE@@!$(TARGET_MACHINE)!'\
+		-e 's!@@TARGET_RELEASE@@!$(TARGET_RELEASE)!'\
+		-e 's!@@TARGET_TYPE@@!$(TARGET_TYPE)!'\
+		-e 's!@@TARGET_2D_TYPE@@!$(TARGET_2D_TYPE)!'\
+		-e 's!@@KERTEX_LIBDIR@@!$(KERTEX_LIBDIR)!'\
+		-e 's!@@KERTEX_MANDIR@@!$(KERTEX_MANDIR)!'\
+		-e 's!@@KERTEX_BINDIR@@!$(KERTEX_BINDIR)!'\
+		-e 's!@@USER0@@!$(USER0)!'\
+		-e 's!@@GROUP0@@!$(GROUP0)!' sh.data >$@
+

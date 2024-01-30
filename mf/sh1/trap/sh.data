@@ -1,0 +1,138 @@
+#!@@TARGETSHELL@@
+#
+# Trap'ping METAFONT. This is just a sh(1) transcription of the
+# procedure described in Donald E. Knuth's ``A torture Test for
+# METAFONT''.
+
+# These ones are set at config time.
+#
+: ${KERTEX_LIBDIR:=@@KERTEX_LIBDIR@@}
+: ${KERTEX_BINDIR:=@@KERTEX_BINDIR@@}
+
+#========== NOTHING SHOULD HAVE TO BE CHANGED BELOW
+: ${TMPDIR:=/tmp}
+
+KERTEXINPUTS=".;$KERTEX_LIBDIR/mf/trap"
+export KERTEXINPUTS
+
+cat <<EOT
+# inimf has been prepared according to A.1, is machine dependant but is
+# for a very special use: it is not installed as executable in the 
+# kerTeX hierarchy.
+# We copy it in $TMPDIR under the "inimf" name, with its pool.
+#
+EOT
+
+cd $TMPDIR
+cp $KERTEX_BINDIR/lib/trapmf inimf
+chmod 755 inimf
+cp $KERTEX_LIBDIR/mf/trap/trap.pool mf.pool
+
+
+cat <<EOT
+
+# A.1 has been done at compilation time: trapmf
+
+# A.0 has been done at # installation time...
+
+=> Doing A.2.
+# The results:
+#	1) trap.log (to compare afterwards against trapin.log)
+#	2) trap.base (the dump that will be loaded in the second step)
+#
+=> Calling inimf with "\n\input trap"
+EOT
+cat <<EOT | ./inimf >/dev/null
+
+\input trap
+EOT
+
+cat <<EOT
+# The result shall not be different (except for constants or messages)
+# from trapin.log
+#
+#BEGINDIFF TRAPIN.LOG
+EOT
+diff trap.log $KERTEX_LIBDIR/mf/trap/trapin.log
+echo "#ENDDIFF TRAPIN.LOG"
+
+cat <<EOT
+
+# Doing A.3.
+# The results:
+#	1) On stdout, same as TRAP.FOT.
+#	2) A similar TRAP.LOG.
+#	3) A TRAP.72270GF and a TRAP.TFM used in A.5 and A.6.
+#
+=> Calling inimf with " &trap  trap " 
+EOT
+cat <<"EOT" | ./inimf >trap.fot
+ &trap  trap 
+EOT
+
+cat <<EOT
+
+# Doing A.4.
+#
+# The result shall not be different (except for constants or messages)
+# from trap.log
+#
+#BEGINDIFF TRAP.FOT
+EOT
+diff trap.fot $KERTEX_LIBDIR/mf/trap/trap.fot
+echo "#ENDDIFF TRAP.FOT"
+
+echo
+echo "#BEGINDIFF TRAP.LOG"
+diff trap.log $KERTEX_LIBDIR/mf/trap/trap.log
+echo "#ENDDIFF TRAP.LOG"
+
+cat <<"EOT"
+
+# Doing A.5
+=> Calling gftype -im trap.72270gf
+EOT
+$KERTEX_BINDIR/gftype -im trap.72270gf >trap.typ
+echo
+echo "#BEGINDIFF TRAP.TYP"
+diff trap.typ $KERTEX_LIBDIR/mf/trap/trap.typ
+echo "#ENDDIFF TRAP.TYP"
+
+cat <<"EOT"
+
+# Doing A.6
+=> Calling tftopl
+EOT
+$KERTEX_BINDIR/tftopl trap.tfm trap.pl
+echo
+echo "#BEGINDIFF TRAP.PL"
+diff trap.pl $KERTEX_LIBDIR/mf/trap/trap.pl
+echo "#ENDDIFF TRAP.PL"
+
+# Cleaning.
+#
+rm -f inimf mf.pool trap.*
+
+cat <<EOT
+
+========== DONE
+
+The full document explaining the test and the results is in:
+
+$KERTEX_LIBDIR/mf/trap/trapman.tex.
+
+In brief, the only divergences acceptable are:
+	1) The banner (kerTeX C version etc.), the name and the dates.
+	2) The total number and length of strings at the end and/or
+		"still untouched" may well be different.
+	3) The memory usage statistics.
+	4) The %CAPSULE# may be different, but there shall be a uniq mapping
+	between the numbers, the corresponding %CAPSULE# appearing in the
+	same places and exhibiting the same dependencies.
+
+In other words: some "comments" or "CAPSULE names" may diverge; the 
+processing and results shall not!
+
+EOT
+
+exit

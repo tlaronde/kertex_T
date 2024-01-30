@@ -1,0 +1,14 @@
+DATA = troffmpx
+
+all: $(DATA)
+
+$(DATA): sh.data
+	if test $(TARGET) = plan9; then\
+		NEWER_STMT='$$(test $$MPFILE -nt $$MPXFILE || echo $$MPXFILE)';\
+	else\
+		NEWER_STMT='$$(find $$MPXFILE -newer $$MPFILE -print 2>/dev/null)';\
+	fi;\
+	sed	-e 's!@@KERTEX_BINDIR@@!$(KERTEX_BINDIR)!'\
+		-e 's!@@TARGETSHELL@@!$(TARGETSHELL)!'\
+		-e "s!@@NEWER_STMT@@!$$NEWER_STMT!"\
+		sh.data >$@

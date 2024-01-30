@@ -1,0 +1,160 @@
+@* Rôle.
+
+Une fonte de Type 1 est un programme indépendant PostScript
+décrivant une collection de figures particulières au moyen des
+routines permettant de les tracer. Généralement, ces figures
+présentent un aspect commun (un style), et sont les représentations
+correspondant aux symboles graphiques d'un langage.
+
+Parce qu'il est indépendant, il peut être télécharger à n'importe quel
+moment dans le cours du programme PostScript interprété, mais, bien
+évidemment, avant d'être utilisé.
+
+@ Comme le programme PostScript complété par les fontes utilisées forme
+un tout qui est la tâche d'impression en elle-même, une fin de fichier
+ne doit pas être envoyée à la fin de l'envoi des fontes en préambule. De
+plus, l'envoi doit être suffisamment continu, pour ne pas générer de
+|timeout|.
+
+@ Les fontes résidentes dans un interpréteur peuvent être déterminées en
+envoyant un programme PostScript à l'interpréteur, ou en lisant le
+fichier |PPD| s'il existe.
+
+@ En tant que programme PostScript, la fonte doit être fournie à
+l'interprèteur sous forme de flot ASCII. Mais les fichiers
+peuvent être entreposés dans une forme différente, occupant moins de
+place. Il s'agit donc alors de convertir du format d'entrepôt au format
+ASCII attendu par l'interpréteur.
+
+@ Une fonte comporte des instructions en clair et des instructions
+encryptées que l'interpréteur décrypte à la réception. La conversion du
+format d'entrepôt en un flot ASCII conforme aux attentes de
+l'interpréteur n'est pas un décryptage des portions encryptées, mais
+seulement une conversion d'informations, dont les informations
+encryptées, en une autre représentation.
+
+{\it De facto}, le format d'entrepôt est souvent un mélange de
+texte en clair et de compression des définitions encodées.
+
+Rien n'empêcherait de développer un format d'entreposage différent de
+ceux documentés par Adobe ou d'autres. Mais la présente bibliothèque ne
+gère que le format IBM PC.
+
+@ Le format Type 1 proprement dit est décrit dans {\sl Adobe Type 1 Font
+Format}. L'encodage des fichiers de fonte téléchargeables (dans un
+interpréteur PostScript) est décrit, quant à lui, dans {\sl Supporting
+Downloadable PostScript Language Fonts --- Technical Note $#5040$}.
+
+@ Cette bibliothèque n'a, dans un premier temps, que l'objectif de
+permettre de télécharger des fontes T1 conservées sur un noeud
+informatique dans le format IBM PC (PFB), c'est-à-dire de transcrire le
+format d'entreposage en un flot ASCII compatible avec PostScript,
+et d'effectuer les manipulations sur l'encodage.
+
+AppleTalk et {\it Mac data fork} ne sont pas supportés par la présente
+implémentation.
+
+@ L'entête public ne reprend que l'interface pour la manipulation. Les
+valeurs magiques etc. relèvent de l'espace privé.
+
+@(t1.h@>=
+#ifndef T1_H
+#define T1_H
+
+@<Exported declarations@>@;
+@<Exported prototypes@>@;
+
+#endif /* T1_H */
+
+@ Il n'y a que des procédures, retournant |T1_SUCCESS| en cas de succès,
+une valeur strictement négative en cas d'erreur système (|-errno|), une
+valeur strictement positive en cas d'inconsistance des données.
+
+@<Exported declarations@>=
+#define T1_SUCCESS 0
+
+@ Les erreurs pourront être transcrites en une chaîne.
+
+@<Exported prototypes@>=
+extern void t1perror(int errnum);
+
+@ Pour permettre l'affichage, sur le canal standard d'erreur, des
+informations en clair, on introduit un drapeau.
+
+D'autres drapeaux sont décrits, dans leur contexte, plus bas.
+
+@<Exported declarations@>=
+#define T1_FLAG_TRACE 1
+extern int t1flags;
+
+@ Une fonte est entreposée sous forme de fichier. On peut avoir à
+manipuler plusieurs fontes pour un même tracé.
+
+@ Le format pour IBM PC est PFB. Ce format n'est pas le format de fonte
+en lui-même, mais un format d'entrepôt du fichier.
+
+La procédure de base consiste à vérifier la conformité du format en
+général, et la conformité à la présente implémentation (AppleTalk et
+{\it Mac data fork} ne sont pas supportés). La procédure permet de
+vérifier les fichiers avant de les utiliser (lors du traitement ou avant
+le traitement si l'on souhaite utiliser des {\sl pipes}).
+
+\beginlistt
+
+En entrée : un pointeur sur un flot.
+
+En retour : |T1_SUCCESS| ou la valeur d'erreur.
+
+Effets secondaires : le curseur sur |fp| est modifié.
+
+\endlistt
+
+@<Exported prototypes@>=
+extern int pfbCk(FILE *fp);
+
+@ Le programme PostScript définissant la fonte doit être envoyé sur un
+flot. Par défaut, c'est |stdout|, mais cela peut être défini autrement
+par l'utilisateur.
+
+@<Exported declarations@>=
+extern FILE *t1fpout;
+
+@ On peut également envoyer sur le flot de sortie la fonte convertie à
+partir du fichier PFB. 
+
+\beginlistt
+
+En entrée : un pointeur sur un flot.
+
+En retour : |T1_SUCCESS| ou la valeur d'erreur. Le programme de la fonte
+est envoyé sur |t1fpout|.
+
+Effets secondaires : le curseur sur |fp| est modifié. Le traitement est
+séquentiel et si un type de segment non supporté est rencontré ({\sl Mac
+data fork} le flot sera interrompu ; il n'y a pas de vérification
+préventive --- pour cela utiliser |pfbCk|).
+
+\endlistt
+
+@<Exported prototypes@>=
+extern int pfbSend(FILE *fp);
+
+@ La première procédure consiste donc à prendre un pointeur sur un flot,
+et à renseigner une structure de gestion ajoutée à la liste
+des structures. La valeur renvoyée est l'indice de la fonte dans la
+série de structures. Le fichier est manipulé en lecture seule.
+
+\beginlistt
+
+En entrée : un pointeur sur un flot.
+
+En retour : |T1_SUCCESS| ou la valeur d'erreur. En cas de succès, 
+fntidx est renseigné avec l'indice de la fonte ajoutée à la liste de
+structures.
+
+Effets secondaires : le curseur sur |fp| est modifié.
+
+\endlistt
+
+@<Exported declarations@>=
+extern int t1Open(FILE *fp, int *fntidx);

@@ -1,0 +1,20 @@
+PROG = dvitype
+
+LIBES = $(WEBLIB) $(PASCALLIB)
+
+MAKE_STATIC=YES
+
+COBJ =	dvitype.o
+
+all: $(PROG)
+
+dvitype.p dvitype.pool:	$(KNUTH_SRC_DIR)/texware/dvitype.web dvitype.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/texware/dvitype.web dvitype.ch
+
+dvitype.c coerce.h: 	dvitype.p dvitype.h ppdef.data
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		ppdef.data dvitype.p \
+		| $(M_DIR)/pp2rc -h dvitype.h\
+		| $(M_DIR)/fixwrites >dvitype.c
+	

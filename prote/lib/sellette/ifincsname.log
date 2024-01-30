@@ -1,0 +1,7 @@
+This is Prote, Version kerTeX C 3.141592653-2.6-1.1.0 (INITEX)  1 AUG 2023 16:09
+entering extended mode
+entering Prote mode
+****./ifincsname
+(./ifincsname.tex ifincsname: In test: \IN ; should be: backslash IN
+ifincsname: Out test: OUT; should be OUT  )
+No pages of output.

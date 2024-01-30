@@ -1,0 +1,8 @@
+PROG = mptotr
+
+COBJ = main.o
+
+MAKE_STATIC=YES
+
+all: $(PROG)
+

@@ -1,0 +1,7 @@
+NAME: fonts
+AUTHOR: Donald E. Knuth; [AMS; Adobe (standard PostScript(R) afm metrics only)]
+LICENCE: resp.: see D.E.K.'s C&T volume 5; [LPPL v1.3c for AMS; see
+	afm/adobe/315/MustRead.html for Adobe afm.]
+BIN_FILES:
+LIB_FILES:
+END:

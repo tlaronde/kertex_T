@@ -1,0 +1,60 @@
+PROG = virmp
+
+COBJ =	imp.o\
+	mp0.o\
+	mp1.o\
+	mp2.o\
+	mp3.o\
+	mp4.o\
+	mp5.o\
+	mp6.o\
+	mp7.o\
+	mp8.o\
+	mp9.o\
+	mp10.o\
+	mp11.o\
+	mp12.o\
+	extra.o
+
+CPRODUCTS = imp.c\
+	mp0.c\
+	mp1.c\
+	mp2.c\
+	mp3.c\
+	mp4.c\
+	mp5.c\
+	mp6.c\
+	mp7.c\
+	mp8.c\
+	mp9.c\
+	mp10.c\
+	mp11.c\
+	mp12.c
+
+CFILES = $(CPRODUCTS)\
+	extra.c
+
+LIBES = $(PASCALLIB) $(WEBLIB)
+
+MAKE_STATIC=YES
+
+XCPPFLAGS = -DSTAT -I$(PROJECTDIR)/mp/bin1
+
+all: $(PROG)
+
+$(COBJ): $(CFILES) ../mp.h
+
+mp.p mp.pool:	../mp.web ../webmerged$(BIGMP).ch
+	$(M_DIR)/tangle ../mp.web ../webmerged$(BIGMP).ch
+
+$(COBJ): $(CFILES) ../ppdef.data ../memory.h
+
+$(CPRODUCTS) coerce.h mpd.h temp.c: mp.p ../ppdef.data
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		$(M_DIR)/ppdef.data\
+		../ppdef.data mp.p\
+		| sed -f $(M_DIR)/uniqids.sed\
+		| $(M_DIR)/pp2rc -m -h ../mp.h\
+		| $(M_DIR)/fixwrites\
+		| $(M_DIR)/splitup mp

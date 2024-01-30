@@ -1,0 +1,8 @@
+PROG = newer
+
+COBJ =	main.o
+
+MAKE_STATIC=YES
+
+all: $(PROG)
+

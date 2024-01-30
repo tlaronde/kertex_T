@@ -1,0 +1,198 @@
+#!@@TARGETSHELL@@
+#
+# Trip'ping TeX. This is just a sh(1) transcription of the
+# procedure described in Donald E. Knuth's ``A torture Test for TeX''.
+#
+# Thierry Laronde, 2010-04-08, 2021-10-09.
+#
+
+# These ones are set at config time and optionally via environment.
+#
+: ${KERTEX_LIBDIR:=@@KERTEX_LIBDIR@@}
+: ${KERTEX_BINDIR:=@@KERTEX_BINDIR@@}
+
+#========== NOTHING SHOULD HAVE TO BE CHANGED BELOW
+: ${TMPDIR:=/tmp}
+
+usage="Usage:
+
+$(basename $0) [-h] [-e] [-p]
+	-e run TRIP test for e-TeX.
+	-h print Help
+	-p run TRIP test for Prote.
+
+"
+
+test $# -eq 0 || test $# -eq 1\
+	|| { echo "Incorrect arguments. $usage" >&2; exit 1; }
+
+engine=tex
+if test $# -eq 1; then
+	case $1 in
+		-h) echo "$usage"; exit 0;;
+		-e) engine=etex;;
+		-p) engine=prote;;
+		*) echo "$(basename $0): unknown option '$1'. $usage" >&2
+			exit 1;;
+	esac
+fi
+
+
+cat <<EOT
+# The version of initex (TeX, e-TeX or Prote) has been prepared
+# according to A.1, is machine dependant but of special use (this very
+# same use indeed): it is not executable in the kerTeX hierarchy.
+# We copy it in $TMPDIR under the "initex" name, with its pool.
+#
+EOT
+
+cd $TMPDIR
+
+case $engine in
+	tex) cp $KERTEX_BINDIR/lib/triptex initex
+		chmod 755 initex
+		cp $KERTEX_LIBDIR/tex/trip/trip.pool tex.pool
+		nmode=1
+		;;
+	etex) cp $KERTEX_BINDIR/lib/etriptex initex
+		chmod 755 initex
+		cp $KERTEX_LIBDIR/etex/etrip/etrip.pool etex.pool
+		nmode=2
+		;;
+	prote) cp $KERTEX_BINDIR/lib/sellette initex
+		chmod 755 initex
+		cp $KERTEX_LIBDIR/prote/sellette/sellette.pool prote.pool
+		nmode=3
+		;;
+esac
+
+KERTEXINPUTS=".;$KERTEX_LIBDIR/tex/trip"
+export KERTEXINPUTS
+
+cat <<"EOT"
+# A.0 has been done at # installation time...
+
+# Doing A.1: pltotf <=> tftopl
+# pltotf(1) and tftopl(1) shall lead to identity.
+#
+=> Calling tftopl
+EOT
+#
+$KERTEX_BINDIR/pltotf $KERTEX_LIBDIR/tex/trip/trip.pl trip.tfm
+$KERTEX_BINDIR/tftopl trip.tfm trip.pl
+#
+echo
+echo "#BEGINDIFF TRIP.PL" 
+diff trip.pl $KERTEX_LIBDIR/tex/trip/trip.pl
+echo "#ENDDIFF TRIP.PL" 
+
+imode=0
+mode=
+while test $imode -lt $nmode; do
+
+cat <<"EOT"
+
+# A.2. has been done at compilation time.
+
+# Doing A.3.
+# Input: trip.tex and trip.tfm must be in the search path.
+# The results:
+#	1) trip.log (to compare afterwards against tripin.log)
+#	2) trip.{fmt|dgst} (the dump that will be loaded in the second step)
+#
+EOT
+echo '=> Calling initex with "'$mode'\n\input trip"'
+
+cat <<EOT | ./initex >/dev/null
+${mode:-}
+\input trip
+EOT
+
+if test $imode -gt 0; then
+	mv texput.dgst trip.dgst || true
+	mv texput.log trip.log || true
+fi
+ 
+cat <<EOT
+
+# The result shall not be different (except for constants or messages)
+# from tripin.log
+#
+#BEGINDIFF TRAPIN.LOG
+EOT
+diff trip.log $KERTEX_LIBDIR/tex/trip/tripin.log
+echo "#ENDDIF TRAPIN.LOG"
+
+cat <<"EOT"
+
+# Doing A.4.
+#
+# The results:
+#	1) On stdout, same as TRIP.FOT.
+#	2) A similar TRIP.LOG.
+#	3) A TRIP.DVI and TRIPOS.TEX.
+#	4) An empty 8TERMINAL.TEX.
+#
+=> Calling initex with " &trip  trip "
+EOT
+
+cat <<EOT | ./initex >trip.fot
+ &trip  trip 
+EOT
+
+cat <<EOT
+
+# Doing A.5.
+#
+# The result shall not be different (except for constants or messages)
+# from trip.log
+#
+#BEGINDIFF TRIP.FOT
+EOT
+diff trip.fot $KERTEX_LIBDIR/tex/trip/trip.fot
+echo "#ENDDIF TRIP.FOT"
+
+echo
+echo "#BEGINDIFF TRIP.LOG"
+diff trip.log $KERTEX_LIBDIR/tex/trip/trip.log
+echo "#ENDDIFF TRIP.LOG"
+
+echo
+if test -s 8terminal.tex; then
+	echo "8terminal.tex should be empty and is not!"
+else
+	echo "8terminal.tex: OK, it's empty."
+fi
+
+# Cleaning.
+#
+rm -f  trip*.log trip.fmt trip.dgst trip.dvi trip.fot 8terminal.tex tripos.tex
+
+imode=$(($imode + 1))
+mode="${mode}*"
+done
+
+rm -f initex *.pool
+
+cat <<EOT
+
+========== DONE
+
+The full manual explaining the test and the reading of results is in:
+
+$KERTEX_LIBDIR/tex/trip/tripman.tex.
+
+In brief, the only divergences acceptable are:
+	1) The banner (kerTeX C version etc.), the name and the dates.
+	2) The total number and length of strings at the end and/or
+		"still untouched" may well be different.
+	3) The memory usage statistics.
+	4) Some supplementary log messages ('(Opening tfm file)',
+		'(Reading tfm size fields)' etc.).
+
+In other words: some "comments" may diverge; the processing and
+results shall not!
+
+EOT
+
+exit

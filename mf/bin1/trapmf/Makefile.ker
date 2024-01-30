@@ -1,0 +1,66 @@
+PROG = trapmf
+
+COBJ =	imf.o\
+	mf0.o\
+	mf1.o\
+	mf2.o\
+	mf3.o\
+	mf4.o\
+	mf5.o\
+	mf6.o\
+	mf7.o\
+	mf8.o\
+	mf9.o\
+	mf10.o\
+	mf11.o\
+	mf12.o\
+	extra.o
+
+CPRODUCTS = imf.c\
+	mf0.c\
+	mf1.c\
+	mf2.c\
+	mf3.c\
+	mf4.c\
+	mf5.c\
+	mf6.c\
+	mf7.c\
+	mf8.c\
+	mf9.c\
+	mf10.c\
+	mf11.c\
+	mf12.c
+
+CFILES = $(CPRODUCTS)\
+	../inimf/extra.c
+
+LIBES = $(PASCALLIB) $(WEBLIB)
+
+MAKE_STATIC=YES
+
+# TRAP, appendix A: init, debug and stats code used.
+#
+XCPPFLAGS = -DINIMF -DDEBUG -DSTAT -I$(PROJECTDIR)/mf/bin1
+
+all: $(PROG)
+
+# Keep the pool of messages strings.
+#
+.PRECIOUS: mf.pool
+
+$(COBJ): $(CFILES) ../mf.h
+
+mf.p mf.pool:	$(KNUTH_SRC_DIR)/mf/mf.web ../webmergedTRAP.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/mf/mf.web ../webmergedTRAP.ch
+
+$(COBJ): $(CFILES) ../ppdef.data ../memory.h
+
+$(CPRODUCTS) coerce.h mfd.h temp.c: mf.p ../ppdef.data
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		$(M_DIR)/ppdef.data\
+		../ppdef.data mf.p\
+		| sed -f $(M_DIR)/uniqids.sed\
+		| $(M_DIR)/pp2rc -m -h ../mf.h\
+		| $(M_DIR)/fixwrites\
+		| $(M_DIR)/splitup mf

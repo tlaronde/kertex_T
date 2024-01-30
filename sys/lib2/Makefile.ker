@@ -1,0 +1,14 @@
+LIB = $(OGOLIB)
+
+# The flavour is selected on configuration time.
+#
+COBJ = $(TARGET_2D_TYPE).o
+
+LIBES = $(TARGET_2D_LIBES)
+
+XCPPFLAGS = -I$(PROJECTDIR)/lib1/pascal
+
+all: $(LIB)
+
+$(TARGET_2D_TYPE).c: $(SRCDIR)/$(TARGET_2D_TYPE).w
+

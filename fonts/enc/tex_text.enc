@@ -1,0 +1,290 @@
+% TeX Text compatible encoding, for fontes substituted to the first
+% eight of the Computer Modern fonts listed in appendix F of the 
+% TeXbook. [TL]
+%
+%   The only ligs in the Times-Roman.afm file are the fi and fl 
+%	ligatures.
+%	We suppress what is not in the convention, and add the Computer 
+% Modern roman conventions (see TeXbook, chapter 9) so that a plain 
+% ASCII text file compatible with plain TeX and the CM fonts will work,
+% including if the CM character encoding is directly used in the file.
+%   This means that some ASCII visible glyphes are neither present in 
+% this font: the <, >, {, |, }. It is not to be mistaken for the 
+% _input_ encoding: one can use << and >> in the _input_ text to yield 
+% the french guillemets. But the < and > are not present in the "output"
+% result hence in the font...
+%
+%	Suppressions.
+%
+%   We blow away kerns to and from spaces (TeX doesn't have a
+%   space) and also remove any kerns from the numbers (although
+%   the only kern pair that mentions a number in Times-Roman.afm
+%   is one one.)
+%
+% LIGKERN space {} * ; * {} space ; zero {} * ; * {} zero ;
+% LIGKERN one {} * ; * {} one ; two {} * ; * {} two ;
+% LIGKERN three {} * ; * {} three ; four {} * ; * {} four ;
+% LIGKERN five {} * ; * {} five ; six {} * ; * {} six ;
+% LIGKERN seven {} * ; * {} seven ; eight {} * ; * {} eight ;
+% LIGKERN nine {} * ; * {} nine ;
+%
+%	Additions.
+%
+%	Since the space is not used as a glyph by TeX, and since there is no 
+% diacritic	slash in the PostScript core fonts, we use "space" as the 
+% definition of the (unused) glyph, and put it in the position expectedi
+% for the	diacritic slash in the Computer Roman. Hence this, at first, 
+% queer	ligature. [TL]
+%
+% LIGKERN space l =: lslash ; space L =: Lslash ;
+%
+% LIGKERN question quoteleft =: questiondown ; exclam quoteleft =: exclamdown ;
+% LIGKERN hyphen hyphen =: endash ; endash hyphen =: emdash ;
+% LIGKERN quoteleft quoteleft =: quotedblleft ;
+% LIGKERN quoteright quoteright =: quotedblright ;
+%
+%	Kern accented characters the same way as their base.
+% LIGKERN Aacute <> A ; aacute <> a ;
+% LIGKERN Acircumflex <> A ; acircumflex <> a ;
+% LIGKERN Adieresis <> A ; adieresis <> a ;
+% LIGKERN Agrave <> A ; agrave <> a ;
+% LIGKERN Aring <> A ; aring <> a ;
+% LIGKERN Atilde <> A ; atilde <> a ;
+% LIGKERN Ccedilla <> C ; ccedilla <> c ;
+% LIGKERN Eacute <> E ; eacute <> e ;
+% LIGKERN Ecircumflex <> E ; ecircumflex <> e ;
+% LIGKERN Edieresis <> E ; edieresis <> e ;
+% LIGKERN Egrave <> E ; egrave <> e ;
+% LIGKERN Iacute <> I ; iacute <> i ;
+% LIGKERN Icircumflex <> I ; icircumflex <> i ;
+% LIGKERN Idieresis <> I ; idieresis <> i ;
+% LIGKERN Igrave <> I ; igrave <> i ;
+% LIGKERN Ntilde <> N ; ntilde <> n ;
+% LIGKERN Oacute <> O ; oacute <> o ;
+% LIGKERN Ocircumflex <> O ; ocircumflex <> o ;
+% LIGKERN Odieresis <> O ; odieresis <> o ;
+% LIGKERN Ograve <> O ; ograve <> o ;
+% LIGKERN Oslash <> O ; oslash <> o ;
+% LIGKERN Otilde <> O ; otilde <> o ;
+% LIGKERN Scaron <> S ; scaron <> s ;
+% LIGKERN Uacute <> U ; uacute <> u ;
+% LIGKERN Ucircumflex <> U ; ucircumflex <> u ;
+% LIGKERN Udieresis <> U ; udieresis <> u ;
+% LIGKERN Ugrave <> U ; ugrave <> u ;
+% LIGKERN Yacute <> Y ; yacute <> y ;
+% LIGKERN Ydieresis <> Y ; ydieresis <> y ;
+% LIGKERN Zcaron <> Z ; zcaron <> z ;
+%
+%	These next are only included for deficient afm files that
+%	have the lig characters but not the lig commands.
+%
+% LIGKERN f i =: fi ; f l =: fl ; f f =: ff ; ff i =: ffi ;
+% LIGKERN ff l =: ffl ;
+%
+%	These supplementary ligs are for quoting, using the not ASCII
+%	french guillemet, and allowing too the use of ,,citation''. [TL]
+%
+% LIGKERN comma comma =: quotedblbase ;
+% LIGKERN exclamdown exclamdown =: guillemotleft ;
+% LIGKERN questiondown questiondown =: guillemotright ;
+%
+/TeXTextEncoding [          % now 256 chars follow
+
+% 0x0
+/Gamma
+/Delta
+/Theta
+/Lambda
+/Xi
+/Pi
+/Sigma
+/Upsilon
+
+% 0x8
+/Phi
+/Psi
+/Omega
+/ff
+/fi
+/fl
+/ffi
+/ffl
+
+% 0x10
+/dotlessi
+/dotlessj
+/grave
+/acute
+/caron
+/breve
+/macron
+/ring
+
+% 0x18
+/cedilla
+/germandbls
+/ae
+/oe
+/oslash
+/AE
+/OE
+/Oslash
+
+% 0x20
+/space
+/exclam
+/quotedblright
+/numbersign
+/dollar
+/percent
+/ampersand
+/quoteright
+
+% 0x28
+/parenleft
+/parenright
+/asterisk
+/plus
+/comma
+/hyphen
+/period
+/slash
+
+% 0x30
+/zero
+/one
+/two
+/three
+/four
+/five
+/six
+/seven
+
+% 0x38
+/eight
+/nine
+/colon
+/semicolon
+/exclamdown
+/equal
+/questiondown
+/question
+
+% 0x40
+/at
+/A
+/B
+/C
+/D
+/E
+/F
+/G
+
+% 0x48
+/H
+/I
+/J
+/K
+/L
+/M
+/N
+/O
+
+% 0x50
+/P
+/Q
+/R
+/S
+/T
+/U
+/V
+/W
+
+% 0x58
+/X
+/Y
+/Z
+/bracketleft
+/quotedblleft
+/bracketright
+/circumflex
+/underscore
+
+% 0x60
+/quoteleft
+/a
+/b
+/c
+/d
+/e
+/f
+/g
+
+% 0x68
+/h
+/i
+/j
+/k
+/l
+/m
+/n
+/o
+
+% x070
+/p
+/q
+/r
+/s
+/t
+/u
+/v
+/w
+
+% 0x78
+/x
+/y
+/z
+/endash
+/emdash
+/hungarumlaut
+/tilde
+/dieresis
+
+%	Here we add the latin1 encoding of supplementary glyphes.
+%	Note that some entries have no sense in a font so can be used for
+%	supplementary glyphes.
+%
+%	The control indices are not used in this base version.
+% 0x80
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+% 0x90
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+% Some glyphes present in the CM encoding in the ASCII range are
+% duplicated in the latin1 range. Hence, a text compatible with CM will
+% be compatible with a font derived from this encoding. But the reverse
+% is not true.
+%
+% 0xA0
+/space /exclamdown /cent /pound /currency /yen /brokenbar /section
+/dieresis /copyright /ordfeminine /guillemotleft 
+/logicalnot /hyphen /registered /macron
+% 0xB0
+/degree /plusminus /twosuperior /threesuperior
+/acute /mu /paragraph /periodcentered
+/cedilla /onesuperior /ordmasculine /guillemotright
+/onequarter /onehalf /threequarters /questiondown
+% 0xC0
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis
+% 0xD0
+/Dcroat /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls
+% 0xE0
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis
+% 0xF0
+/dcroat /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis
+] def

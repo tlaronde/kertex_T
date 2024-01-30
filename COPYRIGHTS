@@ -1,0 +1,294 @@
+/* FRENCH version follows */
+
+    EXTERNAL SOURCES (reorganised for link with kerTeX), USED
+    BUT NEITHER DIRECTLY INCLUDED NOR COVERED BY THE LICENCE
+
+Donald E. Knuth's whole system for digital typesetting (METAFONT, CM,
+TeX) and utilities, plus WEB. This software
+is still maintained by the author; but the licence permits the use, the
+compilation and the distribution of named results mf(1) and tex(1) if
+the implementation passes the torture tests. They do. [in "knuth"
+sources]
+
+Silvio Levy for CWEB with Donald E. Knuth (Andreas Scherer now
+maintaining; only an extract of the sources are included). 
+["cweb" sources]
+
+Oren Patashnik for BibTeX (0.99d). (same type of licence as the one 
+covering D.E. Knuth's work). Still maintained by author as far as I
+know. [bibtex sources]
+
+The NTS team for e-TeX (v2.1) : Joachim Lammarsch, Philip Taylor,
+Peter Breitenlohner, Jiri Zlatuska, Bernd Raichle, Friedhelm Sowa.
+Licence TeX one like; and Peter Breitenlohner for v2.6. [etex "sources"]
+
+The AMS provided supplementary fonts and/or font formats (i.e. the CM 
+related pfb files), version 3.04, are included here and are covered
+by the SIL licence. See OFL.txt. [ams "sources"]
+
+The Adobe .afm files for PostScript(R) base fonts were published
+by Adobe (retrieved from CTAN: Adobe-Core35_AFMs-315.tar.gz). The
+licence allow use, distribution etc. with the copyright. [adobe
+"sources"].
+
+			    BULK WORK OF WHAT IS DIRECTLY INCLUDED
+
+The main authors of the original code _included here_ were:
+
+Tomas Rokicki for dvips (5.76, was Public Domain) and dvips auxiliary
+programs.
+
+John Hobby from ATT for MetaPost (public domain 0.641).
+
+Donald E. Knuth for programs _included here_ with Tomas Rokicki for
+dvips auxiliary tools.
+
+Tanmoy Bhattacharya for the hyperbasics.tex macro file (public domain).
+
+Alexander Peslyak for MD5 hash code in the libweb (public domain).
+
+                     OUR AIM WITH THIS WORK
+
+The aim of this framework is to allow the compilation of D. E.  Knuth's
+digital typography tools, mainly METAFONT and TeX, but also a bunch of
+auxiliary tools in a WEB source form. The sources for these are _not_
+included here: just the framework to convert from WEB to Pascal, and to
+Pascal to C before compiling.
+
+The present work is built starting from Web2C version 5.0C. Here is an
+extract from the README:
+
+	web2c is primarily the product of Tim Morgan <morgan@ics.uci.edu>.
+	Tomas Rokicki wrote the original TeX to C program.  Pierre
+	Mackay <mackay@cs.washington.edu> wrote the original change
+	files for most of the Metafontware programs.  Karl Berry
+	<karl@cs.umb.edu> made everything work with the new ``8-bit''
+	release, and is probably to blame for things that don't
+	work now, but used to.  And over a hundred more people have
+	contributed in other ways.
+
+ This derived work is NOT identical to the original, and is NOT in 
+ the public domain and the following licence holds: 
+
+The AUTHORS stands for:
+	- The original authors listed above, for credits. But they have no
+	responsability for the present resulting work.
+	- Thierry LARONDE <tlaronde@polynum.com>.
+
+
+	                 KerTEX PUBLIC LICENCE
+					     version 1.0 
+
+ Copyright 2010--2023 The AUTHORS.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+
+ 1. Redistributions of source code must retain the above 
+	copyright notice, this list of conditions and the following 
+	disclaimer.
+ 2. Redistributions in binary form must reproduce the above 
+	copyright notice, this list of conditions and the following 
+	disclaimer in the documentation and/or other materials provided 
+	with the distribution.
+3.  All advertising materials mentioning features or use of 
+	this software must display the following acknowledgement:
+
+ This product includes software developed for kerTeX by the AUTHORS.
+ 
+ This advertisement must be conspicuous but can be made by directing the
+ user to an easily accessible file listing the AUTHORS. 
+ For example, the generic sentence:
+
+This product includes software developed by third parties. See the file
+THE_AUTHORS for details.
+
+is OK.
+
+ 4. Neither the name of kerTeX nor the names of the 
+AUTHORS may be used to endorse or promote products derived from 
+this software without specific prior written permission.
+ 
+
+ THIS SOFTWARE IS PROVIDED BY THE AUTHORS ``AS IS'' 
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED.  IN NO EVENT SHALL THE KERGIS PROJECT OR THE AUTHORS BE 
+ LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+ CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ ARISING IN ANY WAY FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ ITS USE OR DEALING, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ 
+ YOU USE THIS SOFTWARE AT YOUR OWN RISK AND UNDER YOUR OWN
+ RESPONSABILITY AND USING IT IMPLIES ACCEPTATION OF THE TERMS OF THIS
+ LICENCE.
+
+ THIS AGREEMENT IS GOVERNED BY THE LAWS OF FRANCE.
+
+RATIONAL: This present alinea is just informal. The licence has two main
+goals: give credit to the ones who have made the work; forbid the
+stealing of the credits from the authors, and of the work for the users,
+making what has been given mainly by Donald E. Knuth hard to find or to
+use. In clear: this licence is against ``mob programming''.
+========================================================================
+
+          SOURCES EXTERNES (réorganisées pour les liens
+           avec kerTeX), UTILISÉES MAIS NI DIRECTEMENT
+         INCLUSES DANS LE PROGICIEL, NI COUVERTES PAR LA
+                        LICENCE QUI SUIT
+
+Donald E. Knuth pour l'ensemble de son système de typographie digitale
+(METAFONT, CM et TeX) ainsi que certains utilitaires et WEB.
+Ces logiciels sont toujours maintenus
+par l'auteur et sont donc placés dans un paquet source détaché. Leur
+licence permet cependant l'usage, la compilation et la distribution du
+résultat sous les noms mf(1) et tex(1) si l'implémentation passe
+correctement les épreuves. C'est le cas. [sources "knuth"]
+
+Silvio Levy pour CWEB avec Donald E. Knuth (Andreas Scherer assure
+désormais la maintenance; et nous ne fournissons qu'un extrait des
+sources). [sources "cweb"]
+
+Oren Patashnik pour BibTeX (0.99d). (même type de licence que celle
+couvrant les programmes de D.E. Knuth) [sources "bibtex"]
+
+L'équipe NTS pour e-TeX (v2.1) : Joachim Lammarsch, Philip Taylor,
+Peter Breitenlohner, Jiri Zlatuska, Bernd Raichle, Friedhelm Sowa.
+Licence semblable à celle de TeX ; et Peter Breitenlohner pour la
+version v2.6. [sources "etex"]
+
+Des fontes supplémentaires et/ou dans des formats alternatifs (i.e 
+les fichiers pfb correspondant aux fontes CM) publiées par l'AMS,
+version 3.04, sont incluses dans ce progiciel et sont couvertes
+par la licence SIL. Voyez le fichier OFL.txt. [sources "ams"]
+
+Les fichiers .afm des fontes de base PostScript(R) ont été publiés
+par Adobe. La licence autorise l'utilisation, la distribution tant que
+le Copyright est inclus. [sources "adobe"]
+
+            MAJORITÉ DU PROGICIEL DIRECTEMENT INCLUS
+
+Les principaux auteurs du code original _inclus_ dans le présent
+progiciel sont :
+
+Tomas Rokicki pour dvips (5.76, dans le domaine public), et des
+programmes auxiliaires de la suite dvips.
+
+John Hobby, alors chez ATT, pour MetaPost (domaine public, version 0.641).
+Donald E. Knuth pour des programmes _inclus ici_, écrits en
+collaboration avec Tomas Rokicki et ayant trait à la suite dvips.
+
+Tanmoy Bhattacharya pour le fichier de macro. hyperbasics.tex (domaine
+public).
+
+Alexander Peslyak pour le code de génération de signature MD5 dans la
+libweb (public domain).
+
+                    L'OBJECTIF DE CE TRAVAIL
+
+L'objectif de cette infrastructure est de permettre la compilation des
+outils de typographie digitale développés par Donald E. Knuth, à savoir
+principalement METAFONT et TeX, mais également une foule de programmes
+auxilaires, écrits à l'aide de son système WEB. Les sources _ne_ sont 
+pas incluses (elles doivent être fournies à part) : seule
+l'infrastructure permettant l'extraction du Pascal à partir du fichier
+WEB, puis la traduction du Pascal en C pour la compilation est incluse.
+
+Le présent travail est un redémarrage à partir de la version 5.0C de
+Web2C. Voici un extrait du fichier README :
+
+	web2c is primarily the product of Tim Morgan <morgan@ics.uci.edu>.
+	Tomas Rokicki wrote the original TeX to C program.  Pierre
+	Mackay <mackay@cs.washington.edu> wrote the original change
+	files for most of the Metafontware programs.  Karl Berry
+	<karl@cs.umb.edu> made everything work with the new ``8-bit''
+	release, and is probably to blame for things that don't
+	work now, but used to.  And over a hundred more people have
+	contributed in other ways.
+
+Ce travail dérivé N'est PAS identique à l'original, et N'est PAS dans 
+le domaine public. La licence suivante le régit :
+
+Dans ce qui suit AUTEURS est mis à la place de :
+	- Les auteurs originaux indiqués ci-dessus, pour les crédits. Mais
+	ces auteurs n'ont pas de responsabilité dans le présent travail.
+	- Thierry LARONDE <tlaronde@polynum.com>.
+
+			     LICENCE PUBLIQUE DE KerTEX
+				        version 1.0
+
+Copyright 2010--2023 les AUTEURS.
+
+La redistribution et l'utilisation du présent progiciel, sous formes
+d'exécutables ou de fichiers sources, avec ou sans modification, sont
+autorisées dès lors que les conditions suivantes sont réunies :
+
+ 1. Les redistributions du code source doivent conserver la
+ notice de propriété intellectuelle ci-après explicitée ainsi que la
+ liste des conditions et le refus de garanties qui suivent ;
+
+2. Les redistributions sous forme d'exécutables doivent
+reproduire la notice de propriété intellectuelle ci-après explicitée,
+la liste des conditions et le refus de garanties qui suivent, et ceci
+dans la documentation et/ou les autres documents fournis avec la
+distribution ;
+
+ 3. Tous les supports de publicité mentionnant des
+ fonctionnalités tirées du présent progiciel doivent afficher la
+ reconnaissance du travail effectué sous la forme suivante :
+
+	Ce produit inclut du logiciel développé dans le cadre du projet
+	kerTeX par les AUTEURS.
+
+Cette reconnaissance doit être clairement visible, mais peut
+légitimement prendre la forme d'un renvoi vers un document aisément
+accessible. Par exemple, la formule générique :
+
+Ce produit contient du logiciel développé par des tiers. Consultez le
+fichier LES_AUTEURS pour plus de détail.
+
+ne pose pas de problème.
+
+4. Ni le nom de kerTeX, ni le nom des auteurs ne doivent être utilisés
+afin de les présenter comme soutiens ou promoteurs des produits
+dérivés sans avoir auparavant obtenu des intéressés l'autorisation
+écrite de le faire.
+ 
+
+CE PROGICIEL EST FOURNI PAR LES AUTEURS ``EN L'ÉTAT''
+ET NOUS DÉNIONS TOUTE GARANTIE DE QUELQUE SORTE QUE CE
+SOIT, TANT EXPLICITE QU'IMPLICITE CONCERNANT ENTRE AUTRES MAIS PAS 
+UNIQUEMENT TOUTE GARANTIE DE COMMERCIALISATION OU D'ADÉQUATION À UN
+USAGE PARTICULIER. EN AUCUN CAS NI LE PROJET kerTeX NI LES AUTEURS
+NE POURRONT ÊTRE TENUS POUR RESPONSABLES OU REDEVABLES DE TOUT DOMMAGE
+DIRECT, INDIRECT, FORTUIT, PARTICULIER, EXEMPLAIRE OU CONSÉCUTIF 
+(Y COMPRIS, MAIS NE SE LIMITANT PAS À : L'ACQUISITION DE
+MARCHANDISES OU DE SERVICES DE REMPLACEMENT ; LES PERTES D'USAGE, DE 
+TEMPS, DE DONNÉES OU DE REVENUS ; OU L'INTERRUPTION D'ACTIVITÉ) QUI
+POURRAIT RÉSULTER DE L'USAGE DU PRÉSENT PROGICIEL, ET NOUS RÉFUTONS
+TOUTE PRÉSOMPTION DE RESPONSABILITÉ QUEL QUE SOIT LE MOTIF INVOQUÉ, QUE
+CE SOIT DANS LE CADRE D'UN CONTRAT, POUR DES RESPONSABILITÉS STRICTES
+OU DES PRÉJUDICES (Y COMPRIS DÛS À UNE NÉGLIGENCE OU AUTRE) SE 
+PRODUISANT DE QUELQUE MANIÈRE QUE CE SOIT DIRECTEMENT, INDIRECTEMENT OU
+EN DEHORS DU LOGICIEL, DE SON USAGE OU DE SES UTILISATIONS, MÊME EN CAS
+D'AVERTISSEMENT DE LA POSSIBILITÉ DE TELS DOMMAGES.
+
+VOUS UTILISEZ CE PROGICIEL ENTIÈREMENT À VOS RISQUES ET PÉRILS ET SOUS
+VOTRE ENTIÈRE RESPONSABILITÉ, ET CETTE UTILISATION VAUT ACCEPTATION DE 
+CETTE LICENCE.
+
+CET ACCORD EST RÉGI PAR LES LOIS FRANÇAISES.
+
+PROPOS : ce présent alinéa est seulement informel. La licence a deux
+objectifs principaux : donner crédit à ceux qui ont réalisé le travail ;
+interdire de s'approprier le crédit à la place des auteurs, et de
+dérober la disponibilité et l'emploi des outils aux utilisateurs, en
+faisant en sorte que ce qui a été donné principalement par
+Donald E.  Knuth, soit très difficile à trouver ou à utiliser. 
+En clair : cette licence est une protection contre les saccages de la
+``programmation en bande'' (plus ou moins organisée...).

@@ -1,0 +1,3 @@
+@define function bopenin();
+{reset takes a pathname and we have perhaps changed it. Go C on this.}
+@define procedure rewind();

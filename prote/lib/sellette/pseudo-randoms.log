@@ -1,0 +1,9 @@
+This is Prote, Version kerTeX C 3.141592653-2.6-1.1.0 (INITEX)  1 AUG 2023 16:09
+entering extended mode
+entering Prote mode
+****./pseudo-randoms
+(./pseudo-randoms.tex randomseed: 4321; should be 4321.
+randomseed: 1234; should be 1234; 555; should be 555; 3; should be 3; 64
+1; should be 641; 34071; should be 34071; -99169; should be -99169; 3375
+9; should be 33759.  [0] )
+Output written on pseudo-randoms.dvi (1 page, 128 bytes).

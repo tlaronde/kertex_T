@@ -1,0 +1,5 @@
+# La documentation sur l'utilisation de troff(1) à la place de TeX
+# pour les labels.
+#
+groff -mms  -Tps demo.ms  >demo.ps
+troff -mms  -Tpost demo.ms >demo.ps

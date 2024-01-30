@@ -1,0 +1,70 @@
+PROG = sellette
+
+COBJ =	itex.o\
+	tex0.o\
+	tex1.o\
+	tex2.o\
+	tex3.o\
+	tex4.o\
+	tex5.o\
+	tex6.o\
+	tex7.o\
+	tex8.o\
+	tex9.o\
+	tex10.o\
+	tex11.o\
+	tex12.o\
+	tex13.o\
+	tex14.o\
+	extra.o
+
+CPRODUCTS = itex.c\
+	tex0.c\
+	tex1.c\
+	tex2.c\
+	tex3.c\
+	tex4.c\
+	tex5.c\
+	tex6.c\
+	tex7.c\
+	tex8.c\
+	tex9.c\
+	tex10.c\
+	tex11.c\
+	tex12.c\
+	tex13.c\
+	tex14.c
+
+CFILES = $(CPRODUCTS)\
+	../../../tex/bin1/initex/extra.c
+
+LIBES = $(PASCALLIB) $(WEBLIB)
+
+MAKE_STATIC=YES
+
+# According to ``How to test TeX'' appendix A.2.
+#
+XCPPFLAGS = -DINITEX -DSTAT -I$(PROJECTDIR)/tex/bin1
+
+all: $(PROG)
+
+# Keep the pool of messages strings.
+#
+.PRECIOUS: tex.pool
+
+$(COBJ): $(CFILES) ../../../tex/bin1/tex.h
+
+tex.p tex.pool:	$(KNUTH_SRC_DIR)/tex/tex.web ../webmergedSELLETTE.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/tex/tex.web ../webmergedSELLETTE.ch
+
+$(COBJ): $(CFILES) ../../../tex/bin1/ppdef.data ../../../tex/bin1/memory.h
+
+$(CPRODUCTS) coerce.h texd.h temp.c: tex.p ../../../tex/bin1/ppdef.data
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		$(M_DIR)/ppdef.data\
+		../../../tex/bin1/ppdef.data tex.p\
+		| sed -f $(M_DIR)/uniqids.sed\
+		| $(M_DIR)/pp2rc -t -h ../../../tex/bin1/tex.h\
+		| $(M_DIR)/fixwrites\
+		| $(M_DIR)/splitup

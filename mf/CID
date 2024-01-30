@@ -1,0 +1,7 @@
+NAME: METAFONT
+AUTHOR: Donald E. Knuth
+LICENCE: The program for METAFONT is in the public but see D.E.K.'s books.
+VERSION: 2.71828182
+BIN_FILES:
+LIB_FILES:
+END:

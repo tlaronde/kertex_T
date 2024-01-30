@@ -1,0 +1,87 @@
+This is TeX, Version 3.141592653 (TeX Live 2021) (preloaded format=tex 2022.2.5)  23 FEB 2022 17:02
+**input.tex
+(./input.tex
+>> Basics (l. 15):
+(./filea.tex I'm file A)
+>> Missing file (l. 18):
+! I can't find file `filex'.
+l.19 \input{filex}
+                  
+(Press Enter to retry, or Control-D to exit)
+Please type another input file name: y
+(./y.tex ignored)
+>> Quotes in error messages (l. 23):
+! I can't find file `"file x"'.
+l.24 \input{file x}
+                   
+(Press Enter to retry, or Control-D to exit)
+Please type another input file name: y
+(./y.tex ignored)
+>> Expansion and fillers (l. 29):
+(./filea.tex I'm file A)
+>> Space-delimited (l. 34):
+(./filea.tex I'm file A)
+>> Backwards incompatibility (l. 41):
+(./filea.tex I'm file A)
+>> Nesting (l. 46):
+(./fileb.tex) (./filea.tex I'm file A)
+>> Nesting again (l. 50):
+(./fileb.tex) (./filea.tex I'm file A)
+>> Implicit bgroup (l. 54):
+(./filea.tex I'm file A)
+>> Non-expandable tokens (l. 58):
+! I can't find file `"file\relax a"'.
+l.59 \input{file\relax a}
+                         
+(Press Enter to retry, or Control-D to exit)
+Please type another input file name: y
+(./y.tex ignored)
+>> Braces (l. 62):
+! I can't find file `f{i{l}e}a'.
+l.63 \input{f{i{l}e}a}
+                      
+(Press Enter to retry, or Control-D to exit)
+Please type another input file name: y
+(./y.tex ignored)
+>> Quotes in braced file name (l. 67):
+(./filea.tex I'm file A)
+>> Line breaks (l. 71):
+! I can't find file `"file a"'.
+l.73 a}
+       
+(Press Enter to retry, or Control-D to exit)
+Please type another input file name: y
+(./y.tex ignored)
+>> Blank line (l. 76):
+! I can't find file `"file \par a"'.
+l.79 a}
+       
+(Press Enter to retry, or Control-D to exit)
+Please type another input file name: y
+(./y.tex ignored)
+>> \outer (l. 82):
+Runaway text?
+file
+! Forbidden control sequence found while scanning text of \input.
+<inserted text> 
+                }
+<to be read again> 
+                   \bye 
+l.83 \input{file\bye
+                    
+I suspect you have forgotten a `}', causing me
+to read past where you wanted me to stop.
+I'll try to recover; but if the error is serious,
+you'd better type `E' or `X' now and fix your file.
+
+! I can't find file `"file "'.
+<inserted text> }
+                 
+<to be read again> 
+                   \bye 
+l.83 \input{file\bye
+                    
+(Press Enter to retry, or Control-D to exit)
+Please type another input file name: y
+(./y.tex ignored) )
+No pages of output.

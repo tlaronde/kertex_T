@@ -1,0 +1,54 @@
+#!/bin/sh
+# Bulk downloading the src for all the recipes.
+version='$Header: /data/cvs/priv/2/23/pkg/sh1/bulk_get/sh,v 1.3 2024/01/27 18:26:13 tlaronde Exp $
+C) 2024
+	Thierry Laronde <tlaronde@kergis.com>
+All rights reserved and no warranty of any kind! Use at your own risk!
+KerTeX PUBLIC LICENCE version 1.0
+'
+
+set -e
+
+usage="$(basename $0) [-h] local_dir
+
+download all the sources for the recipes in in \$KERTEX_PKG_RCP_DIR,
+(except the *@pkg.sh) ones, from the server specified in
+\$KERTEX_PKG_SRC_SRV as specified in the environment (getting a
+default if not) in local_dir.
+
+If KERTEX_PKG_RCP_DIR is not set, it defaults to
+\$KERTEX_LIBDIR/pkg/rcp.
+
+The package name is echoed on stdout with 'OK ' prefix if download was
+successful; 'PB ' prefix if not, allowing to restart just what
+failed."
+
+test $# -eq 1 || { echo "$usage" >&2; exit 1; }
+
+if test $1 = "-h"; then
+	echo "$usage"
+	exit 0
+fi
+
+test "${local_dir#/} != "$local_dir || local_dir="$PWD/$local_dir"
+
+test -d "$1" || {
+	echo "The local_dir '$1' has to exist!" >&2
+	exit 2
+}
+
+. which_kertex >&2
+
+: ${KERTEX_PKG_RCP_DIR:=$KERTEX_LIBDIR/pkg/rcp}
+
+cd $KERTEX_PKG_RCP_DIR
+gstatus=0
+ls  *.sh | sed '/@pkg.sh$/d'\
+	| while read -r rcp; do
+	status="PB"
+	$KERTEX_SHELL "$rcp" download "$1" >&2 && status="OK"
+	test $status = "OK" || gstatus=1
+	printf "%s %s\n" $status $rcp
+done
+
+exit 0

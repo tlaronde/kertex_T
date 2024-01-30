@@ -1,0 +1,11 @@
+This is Prote, Version kerTeX C 3.141592653-2.6-1.1.0 (INITEX)  1 AUG 2023 16:09
+entering extended mode
+entering Prote mode
+****./filedump
+(./filedump.tex
+filedump of inexisting: ""; should be ""; 
+filedump without length: ""; should be ""; 
+filedump with length: 000102; should be: 000102; 
+filedump with offset and length: 020304; should be: 020304; 
+filedump with offset passing length: ""; should be: "";  )
+No pages of output.

@@ -1,0 +1,19 @@
+\catcode`\{=1 \catcode`\}=2
+% DVI
+\font\tenrm=cmr10 at 10pt
+\tenrm
+\pageheight=29.7cm
+\pagewidth=21cm
+\def\space{ }
+\message{pageheight: \the\pageheight; should be 845.04675pt;\space}
+\message{pagewidth: \the\pagewidth; should be 597.50787pt;\space}
+
+\hbox{\vbox{\hbox{An alinea.}}
+	\vbox{\hbox{Second alinea and first savepos\savepos\ with
+	(\the\lastxpos,\the\lastypos). Second savepos\savepos\ in the same
+	page.}}}
+\vfill
+
+\message{lastxpos: \the\lastxpos; should be 25636848;\space}
+\message{lastypos: \the\lastypos; should be 50153178;\space}
+\end

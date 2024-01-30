@@ -1,0 +1,21 @@
+PROG = gftodvi
+
+LIBES = $(WEBLIB) $(PASCALLIB)
+
+MAKE_STATIC=YES
+
+COBJ =	gftodvi.o
+
+all: $(PROG)
+
+gftodvi.p gftodvi.pool:	$(KNUTH_SRC_DIR)/mfware/gftodvi.web gftodvi.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/mfware/gftodvi.web gftodvi.ch
+
+gftodvi.c coerce.h: 	gftodvi.p gftodvi.h ppdef.data
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		ppdef.data gftodvi.p \
+		| sed -f $(M_DIR)/uniqids.sed\
+		| $(M_DIR)/pp2rc -h gftodvi.h\
+		| $(M_DIR)/fixwrites >gftodvi.c
+	

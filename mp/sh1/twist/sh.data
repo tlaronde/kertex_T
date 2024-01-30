@@ -1,0 +1,159 @@
+#!@@TARGETSHELL@@
+#
+# Twist'ing MetaPost. This is just a sh(1) transcription of the
+# procedure described by John Hobby in the original files of
+# MetaPost.
+
+# twistmp
+# These ones are set at config time.
+#
+MPXCOMMAND=touch	# essentially a no-op
+export MPXCOMMAND
+
+# These are set at config time but can be overwritten by env.
+#
+: ${KERTEX_LIBDIR:=@@KERTEX_LIBDIR@@}
+: ${KERTEX_BINDIR:=@@KERTEX_BINDIR@@}
+
+#========== NOTHING SHOULD HAVE TO BE CHANGED BELOW
+: ${TMPDIR:=/tmp}
+
+KERTEXINPUTS=".;$KERTEX_LIBDIR/mp/twist"
+export KERTEXINPUTS
+
+cat <<EOT
+# The twisted inimp has been prepared according to A.0 and is not
+# installed as an # executable, but as "data" in the kerTeX binary
+# dependant directory.
+# We copy it in $TMPDIR under the "inimp" name, with its pool, as well
+# mtwist.mp, twist.mp, twist.mpx and twistf.pl.
+EOT
+
+cd $TMPDIR
+cp $KERTEX_BINDIR/lib/twistmp inimp
+chmod 755 inimp
+cp $KERTEX_LIBDIR/mp/twist/twist.pool mp.pool
+for file in mtwist.mp twist.mp twist.mpx twistf.pl; do
+	cp $KERTEX_LIBDIR/mp/twist/$file .
+done
+
+cat <<EOT
+
+=> Doing A.1: creating twistf.tfm from twistf.pl.
+
+EOT
+$KERTEX_BINDIR/pltotf twistf.pl twistf.tfm
+ 
+
+cat <<EOT
+
+#                          Doing A.2.
+#
+#
+#=> Calling inimp with "\n\input mtwist"
+EOT
+cat <<EOT | ./inimp >/dev/null
+
+\input mtwist
+EOT
+
+for file in mtwist.log mtwist.0 mtwist.1 writeo writeo.2; do
+	test -f $file || { echo "$file does not exist!"; exit 2; }
+done
+
+cat <<EOT
+# The 5 resulting files shall not be different (except for constants 
+# or messages) from the reference ones.
+#
+EOT
+for file in mtwist.log mtwist.0 mtwist.1 writeo writeo.2; do
+	echo
+	echo "#BEGINDIFF $file"
+	diff $file $KERTEX_LIBDIR/mp/twist/$file
+	echo "#ENDDIFF $file"
+done
+
+cat <<EOT
+
+#                          Doing A.3.
+#
+# MAKEMPXCOMMAND is almost a no-op but we need twist.mpx copied from
+# reference.
+#
+# The results:
+#	1) Lots of error messages (sent to /dev/null) and a mem file:
+#		'twist.mem'.
+#	1) The resulting twist.log should almost match the reference 
+#		'twistin.log' one.
+#
+#=> Calling inimp with " twist1.in " 
+EOT
+touch twist.mpx
+cat $KERTEX_LIBDIR/mp/twist/twist1.in | ./inimp >/dev/null
+
+mv twist.log twistin.log
+echo "#BEGINDIFF twistin.log"
+diff twistin.log $KERTEX_LIBDIR/mp/twist/twistin.log
+echo "#ENDDIFF twist.log"
+
+cat <<EOT
+
+#                          Doing A.4.
+#
+# We input twist2.in and the output should almost match the reference
+# 'twist.fot'.
+#
+EOT
+
+cat $KERTEX_LIBDIR/mp/twist/twist2.in | ./inimp >twist.fot
+for file in twist.log twist.fot twist.5 twist.6\
+	twist.148 twist.149 twist.150 twist.151 twist.197 twist.200; do
+	echo
+	echo "#BEGINDIFF $file"
+	diff $file $KERTEX_LIBDIR/mp/twist/$file
+	echo "#ENDDIFF $file"
+done
+
+cat <<"EOT"
+
+#                          Doing A.5.
+#
+#=> Calling tftopl on the produced twist.tfm.
+EOT
+
+$KERTEX_BINDIR/tftopl twist.tfm twist.pl
+echo
+echo "#BEGINDIFF twist.pl"
+diff twist.pl $KERTEX_LIBDIR/mp/twist/twist.pl
+echo "#ENDDIFF twist.pl"
+
+# Cleaning.
+#
+rm -f inimp mp.pool mtwist.* twist.* twistf.* writeo* twistin.log
+
+cat <<EOT
+
+========== DONE
+
+The full document explaining the test and the results is in:
+
+$KERTEX_LIBDIR/mpost/twist/twistman.txt.
+
+In brief, the only divergences acceptable are:
+	1) The banner (kerTeX C version etc.), the name and the dates.
+	2) The total number and length of strings at the end and/or
+		"still untouched" may well be different.
+	3) The memory usage statistics.
+	4) If integer division with negative numbers does not truncate
+		toward zero in your implementation, numeric results will be
+		rounded differently.
+	5) The %CAPSULE# may be different, but there shall be a uniq mapping
+	between the numbers, the corresponding %CAPSULE# appearing in the
+	same places and exhibiting the same dependencies.
+
+In other words: some "comments" or "CAPSULE names" may diverge; the 
+processing and results shall not!
+
+EOT
+
+exit

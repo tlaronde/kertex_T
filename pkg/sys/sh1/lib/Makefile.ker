@@ -1,0 +1,11 @@
+DATA = sys.sh
+
+all: $(DATA)
+
+$(DATA): ./$(TARGET_TYPE).data
+	sed -e 's!@@SYS_FTPC@@!$(SYS_FTPC)!'\
+		-e 's!@@SYS_HTTPC@@!$(SYS_HTTPC)!'\
+      	-e 's!@@SYS_SUDOING@@!$(SYS_SUDOING)!'\
+		-e 's!@@SYS_ROOT_ID@@!$(SYS_ROOT_ID)!'\
+		./$(TARGET_TYPE).data >$(DATA)
+

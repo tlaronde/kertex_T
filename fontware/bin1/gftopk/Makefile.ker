@@ -1,0 +1,21 @@
+PROG = gftopk
+
+LIBES = $(WEBLIB) $(PASCALLIB)
+
+MAKE_STATIC=YES
+
+COBJ =	gftopk.o
+
+all: $(PROG)
+
+gftopk.p gftopk.pool:	$(KNUTH_SRC_DIR)/mfware/gftopk.web gftopk.ch
+	$(M_DIR)/tangle $(KNUTH_SRC_DIR)/mfware/gftopk.web gftopk.ch
+
+gftopk.c coerce.h: 	gftopk.p gftopk.h ppdef.data
+	cat $(PROJECTDIR)/lib1/pascal/ppdef.data\
+		$(PROJECTDIR)/lib1/web/ppdef.data\
+		ppdef.data gftopk.p \
+		| sed -f $(M_DIR)/uniqids.sed\
+		| $(M_DIR)/pp2rc -h gftopk.h\
+		| $(M_DIR)/fixwrites >gftopk.c
+	

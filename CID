@@ -1,0 +1,53 @@
+USRI: 2.23
+VERSION: 0.99.22.0
+VENDOR: polynum
+FLAGS: PUBLISHED
+LANG: C, sh
+NAME: kerTeX Target programs and data.
+AUTHORS:
+
+	Result distributed but software still maintained outside:
+
+	Donald E. Knuth's TeX related work (unchanged sources) and CWEB
+	(with Silvio Levy).
+	Silvio Levy for CWEB (with Donald E. Knuth) and cwmerge (named 
+	wmerge in sources).
+	Oren Patashnik for BibTeX (0.99d) (same type of licence as D.E.K.'s)
+
+	Software included here (original authors):
+
+	John Hobby from ATT for MetaPost (for public domain 0.641).
+	Tomas Rokicki for dvips (for public domain version 5.76).
+	The NTS team for e-TeX (v2.1) : Joachim Lammarsch, Philip Taylor,
+	Peter Breitenlohner, Jiri Zlatuska, Bernd Raichle, Friedhelm Sowa.
+	Tanmoy Bhattacharya for the hyperbasics.tex macro file.
+	Alexander Peslyak for the MD5 code in libweb.
+
+	Data distributed with kerTeX (unchanged):
+
+	AMS for supplementary fonts.
+	Adobe for the core PostScript(R) fonts AFM.
+
+	For the result at what is in the kerTeX_T sources:
+
+	Thierry Laronde <tlaronde@polynum.com> for the current framework,
+	fixes etc.
+
+LICENCE: 
+	KerTeX public licence 1.0 for the work on the distribution (making
+	it work, organizing etc.). Prote (Thierry Laronde) is under a MIT
+	licence.
+DESCRIPTION:
+	Just the core of TeX/METAFONT, dvips, MetaPost and e-TeX, 
+	converted to C, plus AMS fonts. And the Prote evolution of
+	Tex+e-TeX.
+	A TeX kernel system.
+REQUIRE:
+ELEMENTS:
+LINK:
+DEPENDS: C89, marginally: 1003.1, 1003.2
+BUILD_DEPENDS:
+RUN_DEPENDS:
+PROVIDE:
+COMMENTS:
+END: sentinel

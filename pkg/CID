@@ -1,0 +1,7 @@
+NAME: kerTeX Pkg framework
+AUTHOR: Thierry Laronde
+LICENCE: kerTeX Public Licence version 1.0
+VERSION: 0.99.10
+BIN_FILES:
+LIB_FILES:
+END:

@@ -1,0 +1,36 @@
+LIB = $(WEBLIB)
+
+CFILES = pascalh.c\
+	argfmt.c\
+	inputln.c\
+	date.c\
+	print.c\
+	farithm.c\
+	file.c\
+	md5.c\
+	$(PROJECTDIR)/sys/lib1/web/$(TARGET_TYPE).c
+
+COBJ =	pascalh.o\
+	argfmt.o\
+	inputln.o\
+	date.o\
+	print.o\
+	farithm.o\
+	file.o\
+	md5.o\
+	$(TARGET_TYPE).o
+
+XCPPFLAGS = -DDEBUG -I$(PROJECTDIR)/lib1/pascal -DENDIANNESS=$(T_ENDIANNESS)
+
+all: $(LIB)
+
+$(COBJ): web.h
+
+$(TARGET_TYPE).o: $(PROJECTDIR)/sys/lib1/web/$(TARGET_TYPE).c
+
+pathck: $(SRCDIR)/pathck.c $(WEBLIB)
+	$(CC) $(CPPFLAGS) $(XCPPFLAGS) $(CFLAGS) -o $@ $(SRCDIR)/pathck.c -L. -L$(OBJDIR)/RKLIB -lweb-static -lpascal-static
+
+subrck: $(SRCDIR)/subrck.c $(WEBLIB)
+	$(CC) $(CPPFLAGS) $(XCPPFLAGS) $(CFLAGS) -o $@ $(SRCDIR)/subrck.c -L. -L$(OBJDIR)/RKLIB -lweb-static -lpascal-static
+

@@ -1,0 +1,137 @@
+# Plan9 implementation of the routine of translating url gets in
+# executable commands.
+#
+PKG_NULL_FILE="/dev/null"
+
+# We need a sed(1) with POSIX old syntax. It is in ape/.
+#
+PKG_SED=/bin/ape/sed
+PKG_UNZIP="unzip -af"
+PKG_RMDIR="rm"
+
+# No special user.
+#
+pkg_stop_if_root()
+{
+	return 0
+}
+
+pkg_user0_cmd()
+{ 
+	$KERTEX_SHELL "$@"
+}
+
+pkg_lstree()
+{
+	du -a . | $PKG_SED 's/^[0-9][0-9]*[ 	][ 	]*//'
+}
+
+# sys_$PKG_RPROTO_cnx_open() sends to stdout the cmds necessary to open
+# the cnx.
+# Must be called after pkg_setck_url().
+#
+sys_file_cnx_open()
+{
+	test -d "$PKG_RROOT" || pkg_error "file : $PKG_RROOT doesn't exist!"
+}
+
+sys_http_cnx_open()
+{
+	return 0
+}
+
+sys_ftp_cnx_open()
+{
+	mkdir -p $TMPDIR/.plan9_mntpnt
+	echo "echo 'I will silently get data from the $PKG_RHOST FTP server...' >&2"
+	if test "x$PKG_RUSER" = "xanonymous" || test "x$PKG_RUSER" = "xftp"; then
+		echo "ftpfs -a $PKG_RPWD -m $TMPDIR/.plan9_mntpnt -r $PKG_RROOT $PKG_RHOST >/dev/null 2>&1"
+	else
+		cat <<EOT
+cat <<TOE | ftpfs -m $TMPDIR/.plan9_mntpnt -r $PKG_RROOT $PKG_RHOST >/dev/null 2>&1
+$PKG_RUSER
+$PKG_RPWD
+TOE
+EOT
+	fi
+}
+
+# sys_$PKG_RPROTO_lcd(ldir)
+# Change the local directory.
+#
+sys_file_lcd()
+{
+	echo "cd $1"
+}
+
+sys_http_lcd()
+{
+	echo "cd $1"
+}
+
+sys_ftp_lcd()
+{
+	echo "cd $1"
+}
+
+# sys_$PKG_RPROTO_ls(rdir)
+# list the remote dir.
+#
+sys_file_ls()
+{
+	echo "( cd $rcd"
+	echo " du -a . | $PKG_SED 's/^[0-9][0-9]*[ 	][ 	]*//' )"
+}
+
+sys_http_ls()
+{
+cat <<EOT
+	( path='/bin'; hget $PKG_URL${1#${PKG_RROOT}}; )\\
+		| $PKG_SED -n 's!^.*<a[^>]*>\\([^<]*\\)</a>.*\$!\\1!p'\\
+		| $PKG_SED -e 's/^[ 	]*//' -e 's/[ 	]*\$//'
+EOT
+}
+
+sys_ftp_ls()
+{
+	echo "( cd $TMPDIR/.plan9_mntpnt${1#${PKG_RROOT%/}}"
+	echo " du -a . | $PKG_SED 's/^[0-9][0-9]*[ 	][ 	]*//' )"
+
+}
+
+# sys_$PKG_RPROTO_get(rdir, rfile, lfile)
+# echoes the cmd to get the rpath/rfile to the lfile.
+#
+sys_file_get()
+{
+	echo "cp '$1$2' '$3'"
+}
+
+sys_http_get()
+{
+	echo "echo 'hgetting (silently) $PKG_URL${1#$PKG_RROOT}$2 (please wait)...'" 
+	echo "( path='/bin'; hget '$PKG_URL${1#$PKG_RROOT}$2' >'$3'; )"
+}
+
+sys_ftp_get()
+{
+	echo "cp '$TMPDIR/.plan9_mntpnt${1#${PKG_RROOT%/}}$2' '$3'"
+}
+
+# sys_$PKG_RPROTO_cnx_close() echoes the command for closing the connection.
+#
+sys_file_cnx_close()
+{
+	return 0
+}
+
+sys_http_cnx_close()
+{
+	return 0
+}
+
+sys_ftp_cnx_close()
+{
+	echo "unmount $TMPDIR/.plan9_mntpnt >&2"
+}
+

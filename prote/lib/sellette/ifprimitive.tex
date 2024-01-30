@@ -1,0 +1,7 @@
+\catcode`\{=1 \catcode`\}=2
+\def\aa{a macro}
+\message{Defined macro aa: \ifprimitive\aa true\else false\fi;}
+\message{Not a cs: \ifprimitive a true\else false\fi;}
+\message{An unknown cs: \ifprimitive\unknown true\else false\fi;}
+\message{A primitive (def): \ifprimitive\def true\else false\fi.}
+\end

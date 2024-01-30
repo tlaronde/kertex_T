@@ -1,0 +1,250 @@
+#!@@TARGETSHELL@@
+#
+# Trip'ping and Etrip'ping e-TeX. This is just a sh(1) transcription of
+# the procedure described in Donald E. Knuth's ``A torture Test for
+# TeX'' and of the related torture Test for e-TeX.
+#
+# We add the use of Prote in TeX compatibility and e-TeX compatibility
+# mode.
+#
+# Thierry Laronde, 2010-04-08; 2020-09-24, 2021-10-09.
+#
+
+# These ones are set at config time and can be overwritten in env.
+#
+: ${KERTEX_LIBDIR:=@@KERTEX_LIBDIR@@}
+: ${KERTEX_BINDIR:=@@KERTEX_BINDIR@@}
+
+#========== NOTHING SHOULD HAVE TO BE CHANGED BELOW
+: ${TMPDIR:=/tmp}
+
+usage="Usage:
+
+$(basename $0) [-h] [-p]
+	-h print Help
+	-p run eTRIP test for Prote.
+
+"
+
+test $# -eq 0 || test $# -eq 1\
+	|| { echo "Incorrect arguments. $usage" >&2; exit 1; }
+
+engine=etex
+if test $# -eq 1; then
+	case $1 in
+		-h) echo "$usage"; exit 0;;
+		-p) engine=prote;;
+		*) echo "$(basename $0): unknown option '$1'. $usage" >&2
+			exit 1;;
+	esac
+fi
+
+case $engine in
+	etex) ck_tex_arg="-e";;
+	prote) ck_tex_arg="-p";;
+esac
+
+cat <<EOT
+==================== 1) TRIP test in compatibility mode
+
+The first pass is to qualify e-TeX or Prote as a TeX implementation
+in compatibility mode and in e-TeX mode. We simply call the TRIP test
+with an e-TeX or Prote prepared initex.
+
+The full manual explaining the test and the reading of results is in:
+
+$KERTEX_LIBDIR/etex/etrip/etripman.tex.
+
+In brief, the only divergences from what is already acceptable for
+different runs of the TRIP test are:
+
+	a) The banner (kerTeX C version etc.), the name and the dates.
+
+	b) The message "entering extended mode" will appear on the terminal
+	and in the TRIP.LOG.
+
+	c) The input '*\input trip' instead of '\input trip' is recorded in
+	the first TRIP.LOG file; similarly the input
+	'&trip \toksdef\tokens=0 \input trip' instead of ' & trip  trip ' is
+	recorded in the second TRIP.LOG file.
+
+	d) The following 6 lines (the last of them blank) will be missing
+
+	from the first TRIP.LOG file:
+! Bad register code (256).
+1.29 ...{1} \toksdef\tokens=256
+                               \show\errorstopmode
+A register number must be between 0 and 255.
+I changed this one to zero.
+
+
+	e) The first TRIP.LOG file will report the dumping of 38 additional
+	memory words.
+
+	f) If the date has changed, the number of string characters dumped
+	by the first e-TRIPTEX run may vary +/- 2.
+
+	g) Both e-TRIPTEX runs report 66 additional multiletter control
+	sequences (in the TRIP.LOG files).
+
+	h) The second \.{e-TRIPTEX} run reports the unfinished
+	group(s) when the program terminates; there are three additional lines
+	(the first of them blank) on the terminal and in the \.{TRIP.LOG}
+
+### semi simple group (level 1) entered at line 429 (begingroup)
+### bottom level
+
+	The second TRIP.LOG does not contain six lines
+
+{restoring \fam=-1}
+	
+	one line
+
+{restoring \displayindent=0.0pt}
+
+	and one line
+
+{restoring current font=\ip}
+
+	Ten lines displaying an \hbox contain the additional text
+	', display'. Finally the second TRIP.LOG reports the additional use
+	of 23 input buffer (b) and 2 save (s) stack positions.
+
+EOT
+
+$KERTEX_BINDIR/adm/ck_tex $ck_tex_arg
+
+cat <<EOT
+==================== 2) ETRIP torture test
+
+# The second pass is to verify the proper ETRIP test, the torture test
+# for e-TeX, both in e-TeX mode and, in testing Prote, in Prote mode.
+
+EOT
+
+cd $TMPDIR
+
+case $engine in
+	etex) cp $KERTEX_BINDIR/lib/etriptex initex
+		chmod 755 initex
+		cp $KERTEX_LIBDIR/etex/etrip/etrip.pool etex.pool
+		nmode=1
+		;;
+	prote) cp $KERTEX_BINDIR/lib/sellette initex
+		chmod 755 initex
+		cp $KERTEX_LIBDIR/prote/sellette/sellette.pool prote.pool
+		nmode=2
+		;;
+esac
+
+
+KERTEXINPUTS=".;$KERTEX_LIBDIR/etex/etrip"
+export KERTEXINPUTS
+
+imode=0
+mode=
+while test $imode -lt $nmode; do
+
+cat <<"EOT"
+
+# Doing B.6: pltotf
+#
+=> Calling pltotf
+EOT
+#
+
+$KERTEX_BINDIR/pltotf $KERTEX_LIBDIR/etex/etrip/etrip.pl etrip.tfm
+
+cat <<"EOT"
+
+# Doing B.7.
+# Input: etrip.tex and etrip.tfm must be in the search path.
+# The results: etrip.log must be identical to etripin.log.
+#
+EOT
+echo "=> Calling (e-TeX/Prote) initex with '*${mode}etrip'"
+
+echo '*'${mode}'etrip' | ./initex >/dev/null
+
+cat <<EOT
+
+# The result shall not be different from etripin.log.
+#
+#BEGINDIFF ETRIPIN.LOG
+EOT
+diff etrip.log $KERTEX_LIBDIR/etex/etrip/etripin.log
+echo "#ENDDIF ETRIPIN.LOG"
+
+cat <<"EOT"
+
+# Doing B.8.
+#
+# The results:
+#	1) On stdout, same as ETRIP.FOT.
+#	2) A similar ETRIP.LOG.
+#	3) ETRIP.DVI and ETRIP.OUT.
+#	4) An empty 8TERMINAL.TEX.
+#
+=> Calling (e-TeX/Prote) initex with "&etrip etrip" 
+EOT
+echo '&etrip etrip' | ./initex >etrip.fot
+
+cat <<EOT
+
+# Doing B.9.
+#
+# The result shall not be different (except for constants or messages)
+# from etrip.log
+#
+#BEGINDIFF ETRIP.FOT
+EOT
+diff etrip.fot $KERTEX_LIBDIR/etex/etrip/etrip.fot
+echo "#ENDDIF ETRIP.FOT"
+
+echo
+echo "#BEGINDIFF ETRIP.LOG"
+diff etrip.log $KERTEX_LIBDIR/etex/etrip/etrip.log
+echo "#ENDDIFF ETRIP.LOG"
+
+cat <<EOT
+
+# Doing B.10.
+#
+# Converting DVI in an ASCII representation.
+#
+# The result ETRIP.TYP should agree with the master ETRIP.TYP except
+# for small floating-point rounding discrepancies. Furthermore there may
+# be differences between 'right' and 'w' and 'x' commands, and between
+# 'down' and 'y' and 'z'; the key thing is that all characters and rules
+# and xxx's should be in almost the same positions as in the master file
+#
+#
+EOT
+
+cat <<EOT | dvitype etrip.dvi >/dev/null
+2
+*.*.*.*.*.*.*.*.*.*
+1000000
+7227/100
+0
+
+EOT
+
+echo
+echo "#BEGINDIFF ETRIP.TYP"
+diff dvitype.out $KERTEX_LIBDIR/etex/etrip/etrip.typ
+echo "#ENDDIFF ETRIP.TYP"
+
+# Cleaning
+rm -f etrip.* 8terminal.tex etripos.tex dvitype.out
+
+imode=$(($imode + 1))
+mode="${mode}*"
+
+done
+
+# Cleaning.
+#
+rm -f initex *.pool 
+
+exit

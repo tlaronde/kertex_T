@@ -1,0 +1,10 @@
+PROG=	afm2tfm
+
+COBJ=	main.o
+
+LIBES = $(WEBLIB) $(PASCALLIB) $(MATHLIB)
+
+MAKE_STATIC=YES
+
+all:	$(PROG)
+

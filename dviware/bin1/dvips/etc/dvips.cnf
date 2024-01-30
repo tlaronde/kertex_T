@@ -1,0 +1,78 @@
+*
+*   See config.lino for more info.
+*   With a virtual machine, we can claim 1M of memory.
+*
+m 5000000
+*
+*   And send output by default to a file.
+*
+o
+*
+*   Default resolution.
+*
+D 600
+*
+*	AMS pfb versions of the cm fontes are included, and all the AMS
+*	provided ones also.
+*	You can comment	out if you want to use the embedded pk.
+*	Same principles applies to other fontes, but the map must be
+*	correct! especially the names used in the PS program must match
+*	the name associated in the PS program with the font.
+*
+p +psfonts.map
+p +cm.map
+p +cmextra.map
+p +cyrillic.map
+p +euler.map
+p +latxfont.map
+p +symbol.map
+*
+*
+*   Last resort sizes.
+*
+R 100 120 144 300 360 400 432 480 600 720
+*
+*   Paper size information.  First definition is the default.
+*
+*   If your default is not a4, comment the two following lines
+*	and uncomment letterSize (if it is the desired default...). 
+*
+@ A4size 210mm 297mm
+@+ %%PaperSize: A4
+
+*@ letterSize 8.5in 11in
+
+@ letter 8.5in 11in
+@+ %%BeginPaperSize: Letter
+@+ letter
+@+ %%EndPaperSize
+
+@ legal 8.5in 14in
+@+ ! %%DocumentPaperSizes: Legal
+@+ %%BeginPaperSize: Legal
+@+ legal
+@+ %%EndPaperSize
+
+@ ledger 17in 11in
+@+ ! %%DocumentPaperSizes: Ledger
+@+ %%BeginPaperSize: Ledger
+@+ ledger
+@+ %%EndPaperSize
+
+@ tabloid 11in 17in
+@+ ! %%DocumentPaperSizes: Tabloid
+@+ %%BeginPaperSize: Tabloid
+@+ 11x17
+@+ %%EndPaperSize
+
+@ A4 210mm 297mm
+@+ ! %%DocumentPaperSizes: A4
+@+ %%BeginPaperSize: A4
+@+ a4
+@+ %%EndPaperSize
+
+@ A3 297mm 420mm
+@+ ! %%DocumentPaperSizes: A3
+@+ %%BeginPaperSize: A3
+@+ a3
+@+ %%EndPaperSize

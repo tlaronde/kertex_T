@@ -1,0 +1,94 @@
+\begindiv Pr\'ecis
+
+@ If there is a common base for the Pascal language---even a standard---
+the compilers differ greatly. But indeed, as numerous (and famous)
+others have already written, Pascal has several infelicities and
+limitations.
+
+\DEK\ has written \TeX\ so that the Pascal written can be easily
+translated to any other language---for example C as is done with web2c
+and its derivative in ker\TeX: {\tt pp2rc} (this stands for Pseudo
+Pascal to Raw C). But a lot relies too on {\tt TANGLE}, that circumvents
+some of the notorious limitations of Pascal.
+
+Hence the section ``How to Read a Web File'' in ``\TeX: The Program''.
+But some additionnal notes could be added.
+
+@ {\tt TANGLE} treats what we call strings in a special way. There is a
+difference between strings delimited by double-quotes and strings
+delimited by single-quotes ({\tt TANGLE}, \P 39):
+
+\beginquote
+Strings are treated like identifiers; the first character (a double-quote)
+distinguishes a string from an alphabetic name, but for {\tt TANGLE}'s purposes
+strings behave like numeric macros. (A `string' here refers to the
+strings delimited by double-quotes that {\tt TANGLE} processes. \PASCAL\
+string constants delimited by single-quote marks are not given such special
+treatment; they simply appear as sequences of characters in the \PASCAL\
+texts.)
+\endquote
+
+Here, in fact, a string enclosed in double-quotes will be referred to
+by a pointer that is only an index. So keep in mind that a string
+enclosed in double-quotes will appear in fact as an integer.
+
+When, in the code, the \PASCAL\ |write| and |writeln| procedures are
+used, the argument is a string between single quotes.
+
+When the special pool of strings is used, there are special written
+routines using in fact the index (justly called a pointer) and they have
+the prefix |print|.
+
+@ Furthermore, {\tt TANGLE} starts allocating pointers (indices) at $256$
+({\tt TANGLE} \P 42). The $[0..255]$ range is not allocated by {\tt
+TANGLE}, but is used in \TeX\ (the program) for the single letter
+strings.
+
+The double-quoted strings encountered by {\tt TANGLE} are then given an
+index $>= 256$, and are put, one string by line, in the {\sl pool} file,
+that has a special format. The maximum length of a string (of bytes) is
+$99$; every record in the {\sl pool} file is a line beginning with
+a decimal number expressed as 2 digits and immediately followed by the
+string. The first record corresponds to the index $256$. The last line
+in the {\sl pool} file is a checksum produced by {\tt TANGLE} and
+recorded in the program tangled so that loading the {\sl pool} file it
+can have a mean to verify that it is (probably if nobody has
+deliberately tampered with) a corresponding table.
+
+@ One supplementary thing to understand about this:
+
+The {\sl pool} file can be edited, for example to put some translation
+for the records relating to information to user. But not all the records
+can be tampered with since some strings are not dedicated to the user
+but have a special definition because they are used in the processing
+(example: ``13m2d5c2l5x2v5i'' used for converting numbers in roman
+numerals).
+
+But even when modifying the (possible) strings, the checksum shall not
+be modified. And there has to be the same number of records in the same
+order.
+
+This file is indeed loaded by {\tt INITEX}, not by an instance of {\tt
+VIRTEX}, since the latter loads a memory dump created by the former,
+dump that have these preloaded strings.
+
+The consequence, too, is that to have ``localized'' messages for \TeX\
+and al., one would have to create---the way it is now---as many dumps as
+there are languages.
+
+@ \TeXprog is also a lesson on engineering. The word {\sl
+control} comes from the french {\it contre r\^ole} that has given by
+shrinking {\it contr\^ole} i.e. when there was a list of items (a {\it
+r\^ole}), one could afterwards verify that what had been done or was
+about to be done matched the reference {\it r\^ole}; verification was a
+comparison between achieved or in progress {\sl against} ({\it contre})
+the {\it r\^ole}).
+
+Here, \TeX\ is an implementation of what is described in the \TeXbook.
+The \TeXbook\ is the {\it r\^ole}. So one has to use and to refer to
+both books to understand what is the aim (the \TeXbook) and what is the
+way (\TeXprog).
+
+You should have the two!
+
+\enddiv %Précis

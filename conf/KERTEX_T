@@ -1,0 +1,123 @@
+# These are the variables/macros that can be used in the conf.
+# The default are POSIX/X11 compliant ones.
+# $Id: KERTEX_T,v 1.69 2024/01/16 19:44:59 tlaronde Exp $
+#
+#  Copyright 2010-2014, 2016-2017, 2019--2021, 2024
+#      Thierry LARONDE <tlaronde@polynum.com>
+#  All rights reserved. 
+#  
+#  This work is under the KerGIS Public Licence v1.1
+# 
+#  See the COPYRIGHT file at the root of the source directory or see
+#  http://www.kergis.com/ for complete information.
+# 
+# !!!THIS SOFTWARE IS PROVIDED ``AS IS'' WITHOUT ANY WARRANTIES!!! 
+#                      USE IT AT YOUR OWN RISK 
+
+#========== THIS RISK COMP API
+# Need to tell with which RISK API the files were designed for
+# The RK_ prefix is reserved. Use another one for the project defined
+# variable.
+#
+RK_API_VERSION=1.20
+
+#========== USER CUSTOMIZABLE
+# see KERTEX_T.options for a description
+#
+KNUTH_SRC_DIR=${KNUTH_SRC_DIR:-"$PROJECTDIR/../knuth"}
+BIBTEX_SRC_DIR=${BIBTEX_SRC_DIR:-"$PROJECTDIR/../bibtex"}
+ETEX_SRC_DIR=${ETEX_SRC_DIR:-"$PROJECTDIR/../etex"}
+AMS_SRC_DIR=${AMS_SRC_DIR:-"$PROJECTDIR/../ams"}
+ADOBE_SRC_DIR=${ADOBE_SRC_DIR:-"$PROJECTDIR/../adobe"}
+CWEB_SRC_DIR=${CWEB_SRC_DIR:-"$PROJECTDIR/../cweb"}
+M_DIR=${M_DIR:-$(echo $OBJDIR|sed 's/KERTEX_T/KERTEX_M/')}
+
+# Generate METAFONT 2D display for virmf if sys defined.
+#
+WITH_2D_MF=${WITH_2D_MF:-YES}
+
+SYS_FTPC=${SYS_FTPC:-ftp}
+SYS_HTTPC=${SYS_HTTPC:-ftp}
+
+# Not user settable, or partly settable. Map must be in sync.
+#
+KERTEX_BINDIR=$TARGETBINDIR/kertex
+KERTEX_LIBDIR=$TARGETLIBDIR/kertex
+
+KERTEX_FIXED_PATH=${KERTEX_FIXED_PATH:-NO}
+test $KERTEX_FIXED_PATH = NO || CPPFLAGS="$CPPFLAGS -DKERTEX_FIXED_PATH"
+
+
+# Darwin sudoes.
+# Interix "root" is not #0.
+# Needed for pkg administration.
+#XXX Should perhaps be directly in RISK.
+#
+SYS_SUDOING=
+SYS_ROOT_ID=0
+test $TARGET != darwin || SYS_SUDOING=sudo
+test $TARGET != interix || SYS_ROOT_ID=197108
+
+# Naming the system dependent chunk (primitives extensions in Prote).
+#
+case "${TARGET_TYPE:-}" in
+	unix|plan9) ;;
+	*) TARGET_TYPE=dumb;;
+esac
+
+# System windowing/drawing libraries.
+#
+if test "x$WITH_2D_MF" != xYES -o "x${TARGET_2D_TYPE:-}" = x; then
+	TARGET_2D_TYPE=dumb2D
+	TARGET_2D_LIBES=
+fi
+
+# Maximum length of the path spec to explore to find the stuff.
+# (Default to value of _POSIX_ARG_MAX; max string length on MS Windows
+# NT and server 2000 is 2017.)
+#
+MAXPATHSPEC=${MAXPATHSPEC:-4096}
+
+# By default, BIGTEX is set to YES. It is simply used as an extension
+# of the change name to use.
+#
+# These influence the size of the memory used. There may be some limits
+# (for example under Android, 16MB is a limit. It is OK with BIG, but
+# not with huge.).
+#
+BIGTEX=${BIGTEX:-YES}
+if test "$BIGTEX" = "NO"; then
+	BIGTEX=""
+BIGMP=""
+else
+	BIGTEX=BIG
+	BIGMP=BIG
+fi
+
+# HUGE only for MetaPost for now.
+#
+HUGETEX=${HUGETEX:-NO}
+if test "$HUGETEX" = "YES"; then
+	BIGTEX=BIG
+	BIGMP=HUGE
+fi
+
+# Use floating flavors of arithm routines only if explicitely requested.
+#
+FIXPT=${FIXPT:-YES}
+
+#========== INTERNALS - DO NOT TAMPER WITH THESE!
+MAKE_DSHARED_LIB=NO
+CPPFLAGS="$CPPFLAGS -DT_TETRA=${T_TETRA:-long} -I$OBJDIR/include"
+
+M_TOOLS_REQUIRED="$M_TOOLS_REQUIRED ctangle"
+
+#========== OUR LIBES
+# Implementing some core Pascal routines as a C library.
+PASCALLIB=$(rk_add_lib libpascal__ $PROJECTDIR/lib1/pascal pascal.h static)
+# WEB and general kerTeX specifics.
+WEBLIB=$(rk_add_lib libweb__ $PROJECTDIR/lib1/web web.h static)
+# The METAFONT Online Graphic Output routines library. System dependent.
+OGOLIB=$(rk_add_lib libogo__ $PROJECTDIR/sys/lib2 ogo.h static)
+# The new T1 support library.
+T1LIB=$(rk_add_lib libt1__ $OBJDIR/fontware/lib1/t1 t1.h static)

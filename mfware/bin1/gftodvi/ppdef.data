@@ -1,0 +1,16 @@
+{these ones are modified via uniqids}
+@define @field b0field;
+@define @field b1field;
+@define @field b2field;
+@define @field b3field;
+@define @field scfield;
+@define @field qqqqfield;
+
+{declared in memory.h}
+@define type fourquarters;
+@define type memoryword;
+{path handling}
+@define function bopenin();
+{C macro}
+@define procedure writedvi();
+@define function touchar();

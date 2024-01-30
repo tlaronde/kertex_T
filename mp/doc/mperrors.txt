@@ -1,0 +1,377 @@
+/************ Changes to MetaPost since version 0.50 *****************/
+
+199. Fix numerous typos in TeX material as suggested by DEK.  In the PASCAL
+  material, change the one instance of |half_word| to |halfword| and the
+  instance of |jobname| to |job_name|.  Also add missing |so| in
+  |copy_old_name|, add missing :1's in @<Output statistics...@>, and rename
+  |max_pool_used| -> |max_pl_used|, |first_output_name| -> |first_file_name|,
+  |last_output_name| -> |last_file_name|, |ps_marks| -> |check_ps_marks|.
+
+200. Implementation of setbounds..to must call |init_bbox|.  Otherwise
+  <corner command>, setbounds..to, <corner command> causes confusion.
+
+201. Alter fix_graphics_state to use PostScript's dtransform and idtransform
+  commands to make sure the argument to setlinewidth corresponds to an integer
+  number of pixels.  Deciding between horizontal and vertical width adjustment
+  requires testing the pen shape and the horizontalness or verticalness of the
+  path.
+
+202. Have |stroke_ellipse| tweak the pen transformation so it cannot be singular
+  in the PostScript output; i.e., make sure the output is valid even when the
+  pen shape is degenerate.
+
+203. Alter |stroke_ellipse| to avoid unnecessary gsave/grestore pairs in the
+  PostScript output.
+
+204. Use a larger tolerance for the lineto vs. curvto decision in |ps_path_out|.
+
+205. Change get_next to allow numeric tokens as large as 32767.99998 when
+  |internal[warningcheck]<=0|.  Similar changes in |str_to_num| allow big
+  results from oct and hex.
+
+206. The |read_string_op| case in |do_nullary| must set |limit:=start| in
+  order to keep the input stack in a valid state in case of error due to
+  end-of-file on the terminal.  (This may also affect METAFONT)
+
+207. Implement new operator `readfrom <filename>'.  New input routine
+  |start_read_input| uses |str_scan_file| (formally part of |read_font_info|).
+  The \&{readstring} code in |do_nullary| gets moved to a separate procedure
+  |finish_read| so that |do_read_from| can use it.  Also introduced symbolic
+  names |is_term|, |is_read|, |is_scantok| for special |name| values.
+
+208. Implement new command `write <string expression> to <filename>'.  Codes
+  for |selector| get redefined to make room for write..to output, and new cases
+  are added to |print_ln| and |print_char|.  Procedure |open_write_file| is
+  introduced.
+
+209. New iteration type `for p in <picture expression>: <loop text> endfor'
+  iterates through the interior components of the picture.  Also changed the
+  format of loop nodes, reassigned graphical object codes, split off subpicture
+  copying code from |private edges| into a new function |copy_objects|, and
+  wrote a new routine |skip_1component| for finding picture components.
+
+210. Remove the error message for `dashed nullpicture' and just let the
+  |dash_p| field be |null| in that case.  Add a test to |scan_with_list| so
+  it doesn't |add_edge_ref(null)|.  (That was harmless but very sloppy.)
+
+211. The \&{length} operator now applies to pictures.  Function |pict_length|
+  uses |skip_1component| via the macro interface |skip_component|.
+
+212. Add boolean operators \&{stroked}, \&{filled}, \&{textual}, \&{clipped},
+ \&{bounded}.  They test whether the argument is a picture expression whose
+ first component is of the indicated type.
+
+213. Remove the ``optimization'' in |do_bounds| that ignored clip and setbounds
+  for blank pictures.
+
+214. Part selectors now extract information about the first component of a
+  picture.  In addition to \&{xpart}, \ldots, \&{yypart} for the transform
+  components in a text component, there are \&{redpart}, \ldots, \&{bluepart}
+  and new operators \&{textpart}, \&{fontpart}, \&{pathpart}, \&{penpart}, and
+  \&{dashpart}.  All return null values if the requested information is not
+  available.
+
+215. Update the PostScript structuring comments to conform to EPSF-3.0.
+
+216. With change 213, it may be necessary to update the |obj_tail| pointer
+  when adding a start bounds or start clip node.
+
+217. Test for failure of |input_ln| in |do_read_from| was reversed.
+
+218. In change 202, the test for which component of the transformation to
+  tweak was inadequate.
+
+219. Procedure |read_font_info| should not change |font_name[null_font]| and
+  it should not set |font_ps_name| twice.  Entries in the |font_name| array
+  might as well have |str_ref[n]=max_str_ref|.
+
+220. Since the EOF marker string for \&{readfrom} and \&{write} contains
+  non-printing characters, it must be stored in a global variable and
+  initialized at run-time.
+
+221. When testing the length of a picture or setting up a picture iteration,
+  the test for dropping an enclosing clipping or setbounds path must use
+  |skip_1component|.  It isn't sufficient to test the type of the first object.
+
+222. Procedure |do_infont| needs to |flush_cur_exp| because |new_text_node|
+  does not own the reference count for the font name string.
+
+223. Statistics |pact_chars| and |pact_strs| were not being maintained properly.
+
+224. Procedure |take_pict_part| needs to make sure the |pen_p| pointer is
+  non-null before using it to return a value for \&{penpart}.
+
+225. Procedure |take_pict_part| should have used |add_str_ref| when returning
+  the \&{textpart} or \&{fontpart}.
+
+226. In |stroke_ellipse|, the test for needing an initial gsave should be
+  based on whether the width-corrected pen transform will be nontrivial.
+  Also don't |print_ln| after printing the initial transform.
+
+227. Horizontal and vertical-based width setting output statements were
+  swapped in |fix_graphics_state|.
+
+228. Change 201 should have used |print("0 ")| instead of |print_char("0 ")|
+  in the width-setting code in |fix_graphics_state|.
+
+229. Procedure |do_read_from| should not set |rd_from| and call |add_str_ref|
+  when |start_read_input| is about to do the same thing.
+
+230. Procedure |do_write| should not set |wr_fname| and call |add_str_ref|
+  when |open_write_file| is about to do the same thing.
+
+231. Add code to |close_files_and_terminate| to close all open \&{write} files
+  and \&{readfrom} files.
+
+232. In |do_compaction|, the pool size overflow test was mixed up and
+  |max_pool_ptr| wasn't being updated properly.  In |print_char|, |max_pool_ptr|
+  should be updated and |do_compaction| should be called before resorting to
+  dropping characters.  Procedure |unit_str_room| now does this and negative
+  arguments to |do_compaction| now suppress overflow tests
+
+233. Changed `in' to `within' for picture iterations so that `in' can still
+  mean inches.
+
+4/16/93: Modify plain and mfplain so `tracinglostchars' is initially on.
+4/16/93: Reworked mp/Makefile and the sources to `timemath'.
+4/16/93: Modified dvitomp so it outputs rules as strokes with butt end caps.
+4/18/93: Modified mptotex and mptotr so `btex <newline>' does not produce a
+        blank line.  Also updated the test suite in mpware.
+4/19/93: Modified boxes.mp so that clobbering the pic macro will not mess up
+        other macrs.
+4/19/93: Fix mproof.tex so it works even if there is a space after the last arg.
+
+4/19/93: /********* Version 0.60 released ***********/
+
+6/4/93: New macros finalized: graph.mp gives the functionality of grap;
+        format.mp typesets numbers; marith.mp gives the functionality of
+        floating point arithmetic; sarith.mp does arithmetic on strings like
+        "6.02e23"; string.mp has routines for parsing strings.
+6/4/93: Fix bug in plain where _ is not initialized to -1.  This only effects
+        x**y where x and y are negative.
+6/8/93: Fix mptotex and mptotr so they don't complain if the final newline is
+        missing.
+6/16/93: Fix print_char() in mpware/dmp.c so Latin-1 characters greater than 128
+        are not considered printable even is isprint() accepts them.  (Even if
+        mp is compiled to accept such characters on input, they get mapped into
+        the ^^<hex_digits> external form if they appear as a 1-character string
+        token.)
+6/23/93: Fix dmp.c by adding a call to finish_last_char() at the beginning of
+        do_graphic().  Otherwise output for text and troff graphics get
+        intermingled.  Version number for dmp changed to 0.60.
+
+224. Procedure |unknown_graphics_state| needs an argument to tell it whether it
+  should assume the graphics state color is black (as is done initially) or
+  totally unknown (as is done after printing the `grestore' from a stop clip
+  node.
+
+225. Procedure |scan_with_list| should restrict color components to |0..unity|.
+  (This is needed to make Change 224 work.)
+
+6/25/93: /********* Version 0.61 released ***********/
+
+7/20/93: Installed graph, marith, sarith, format macros on local machines
+8/13/93: Fixed mfplain to used currenttransform
+
+1/2/95: Begin final bug fixes for public domain version
+
+1/2/95: Changed o_correction to 1.0 in mfplain.mp
+        Changed draw, filldraw in mfplain.mp so t_ affects path but not pen, not
+        vice versa
+        Changed draw and makelabel in mfplain.mp so t_ applies to label coords,
+        not label itself
+        Changed mp/mp.h to use "rb" and "wb" in fopen() arguments for binary
+        files when _POSIX_SOURCE is defined in site.h
+
+226. Add conditionals in do_path_trans analogous to MF module 962 to avoid
+  overflow.
+
+227. Use underscores in names generated by dvitomp so btex..etex works in macro
+  definitions whose formal parameters would otherwise collide with the generated
+  names.
+
+228. Fix get_turn_amt so it does not go into an infinite loop in the case of a
+  razor pen parallel to stroke.
+
+229. For security reasons, testaccess() in mpext.c now disallows access to files
+   whose names begin with '.'
+
+1/4/95: /********* Version 0.62 released ***********/
+
+1/30/95: Added missing \maketitle in mpintro.tex
+        Added *.d data files for doc/mpgraph.mp
+        Moved examples.mp, mpintro.tex and mpintro.bib from mplib to doc
+        Fixed typo in $ERRLOG in mpware/makempx and mpware/troffmpx
+        Fixed a few typos in mp.web
+
+230. Fix |ps_string_out| to output a backslash as (\\) instead of (\).
+
+231. Fix bug 561 just discovered in mf.web whereby wrong choices when
+  recycling an independent variable could cause spurious overflows.
+
+232. Improve |pyth_add| by treating the case where one argument is zero as
+  trivial.
+
+233. Introduce function |indexed_size| so that \.{fshow} arguments for rotated
+  fonts come out exactly right.  Otherwise, the PostScript output can be wrong
+  when some rotation angles are not multiples of 90 degrees.
+
+234. Balance the parens showing on the terminal (from entry 554 in mf84.bug).
+
+236. Report correct line number when buffer overflows (entry 556 in mf84.bug).
+
+237. |final_cleanup| should not retain spurious reference counts (entry 562
+  in mf84.bug).
+
+238. The second argument to |check_ps_marks| should not be |eight_bits|
+  because it could be 256 if the font_ec entry is 255.  This could cause
+  a loop in @<Print the \.{\%*Font} comment...@>.
+
+239. Introduce a boolean variable to allow |make_name_string| to know if it
+  is safe to call |str_room|.  This avoids a "?" result when |do_compaction|
+  could avoid the problem.
+
+4/6/95: /********* Version 0.63 released ***********/
+
+8/29/95: Fixed bug in graph.mp where Glinsc_ could rescale in the middle of
+        Gscan_ so that its result path is corrupted.  The distribution has
+        been updated and the new graph.mp has been installed locally.  The
+        version number is still 0.63.
+
+240. In |slow_print|, and when displaying a symbolic token in |show_token_list|,
+  the "???" and " NONEXISTENT" results should only be given when the pointer is
+  |>max_str_ptr|, not when it is |>=max_str_ptr|.
+
+241. Insert missing closedir() before "return (r<0) ? -1 : r;" in pathexp.c
+
+10/18/95: /********* Version 0.631 released ***********/
+
+2/19/96: Fixed name conflict in boxes.mp by using d_ in place of d in
+        sizearc_ and pathsel_.  The distribution has been updated and the new
+        graph.mp has been installed locally.  The version number is still 0.631.
+
+3/25/96: Fixed a bug in Mleq macro in marith.mp.  Also modified makempx to
+	insert file $MPTEXPRE (default: mptexpre.tex) if this file is readable.
+
+10/23/96: Fixed a bug in graph.mp whereby gdrawarrow could drop arrowheads if
+	its path argument seemed too short.
+
+242. When prologues is negative, make the output files use full precision for
+  coordinates in "%%BoundingBox" comments.  (Suggested by DEK)
+
+243. In btex..etex blocks, supress "number too large" and "invalid character"
+  errors.
+
+244. Fix |end_name| so it can cope with string compaction.
+
+245. The debug code in |make_string| should only check for |confusion|
+  when |do_compaction| is not called.
+
+246. The special argument to |do_compaction| that supresses overflow tests
+  should be |pool_size| instead of |-1| since |-1| is out of range.
+
+247. Change |transforming| to |transformed| in |stroke_ellipse| since some
+  versions of tangle could complain about a so-called `indentifier conflict'
+  with a local variable in |ship_out|.
+
+248. Fix missing underscores in |@<Tweak the transformation parameters...@>|.
+
+1/24/97: Added a dotlabeldiam parameter in plain.mp as suggested by DEK.
+
+1/24/97: /********* Version 0.632 released ***********/
+
+249. Added the closefrom primitive.
+
+249. Use the ^^ notation only when printing on the terminal or the log file
+   so that internal computations and the write command are all 8-bit clean.
+
+250. Ignore arithmetic overflow during a comparison such as  20000>-20000.
+
+251. Need to reverse polygonal pens when doing a negative-determinant
+   transform.
+
+252. When readfrom's a_open_in fails, don't try to close the file.
+
+253. Change the meaning of the dash_scale field so it is a true scale
+   factor and can be maintained properly when implementing  withpen.
+
+254. The dashpart operator now copies its argument correctly and applies
+   the  dash_scale.
+
+255. The |char_base| variable could become negative when using fonts that
+   do not start at character 0.
+
+256.  Fix reset versus rewrite in b_open_in.
+
+1/28/98: Fixed dvitomp by introducing the local_only array.
+1/28/98: In dvitomp, abort instead of warn if a tfm or vf file is bad.
+1/28/98: Fixed printing of font names in dvitomp when there is a checksum
+         mismatch.
+1/28/98: In plain.mp, use filldraw in the drawdblarrow macro.
+
+1/28/98: /********* Version 0.64 released ***********/
+
+257. Avoid bad |dash_scale| reference for filled nodes in
+   @<Transform |pen_p(q)|, making sure...@>.
+
+3/19/98: /********* Version 0.641 released *********/
+
+11/14/02: Fixed a bug in graph.mp's setrange command.
+
+
+Known bugs that have not (yet) been fixed:
+-------------------------------------------------------------
+%%BoundingBox comments and operators such as llcorner fail to
+account for the pen when you use filldraw.
+
+If the TeX or LaTeX in a btex...etex block artificially zeros the
+height and depth (e.g., via TeX's \smash command), MetaPost loses
+track of TeX's idea of the height, width and depth.
+
+Numerous problems can arise when you use pensquare or a polygonal
+pen explicitly constructed via the makepen primitive.  I have had
+reports of infinite loops, unreasonable instances of "MetaPost
+capacity exceeded", and just wrong output.  The turningnumber
+primitive uses the same flaky code.  These seldom-used features
+sort of work most of the time, but not as reliably as they should.
+
+When using the graph macros,  plot picture_expression  should
+probably center the picture at the graph coordinates instead of
+shifting the picture so its origin is there.
+
+If you use extra_endfig with the boxes.mp macros, a missing ";"
+can cause problems.
+
+When using the mfplain package, a missing save command in the
+definition of makelabel can cause trouble.
+
+Modifying the @<Character |k| cannot be printed@> module in the
+mp.ch change file can allow dangerous characters to appear in the
+PostScript output files.  In installations with an 8-bit character
+set other than Latin-1, this can cause wrong characters to appear
+in the output.
+
+
+I probably will make the following changes one day:
+-------------------------------------------------------------
+Fix the boxes.mp macros to make it easier to reuse box labels.
+
+Add %%BeginProlog where appropriate.
+
+Output EPSF in prologues:=0 mode for figures that do not use btex..etex or
+        infont.
+
+
+
+The following changes have been suggested, but I doubt if I will get to them
+-----------------------------------------------------------------------------
+Allow pictures to contain sampled images
+
+Allow <path expression> nojoin <path knot>
+        so that paths can have non-contiguous segments as in PostScript
+
+Allow some access to cmyk colors and/or other color spaces
+
+Allow access to PostScript's eofill operator
+
+Parse ^^ in strings during input (suggested for use with infont)
