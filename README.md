@@ -17,3 +17,11 @@ post 2e.
 
 But see COPYRIGHTS for a description of who is the author of what and
 what responsability an author has in the present work.
+
+For further documentation see:
+
+http://kertex.kergis.com/
+
+http://kertex.kergis.com/fr/index.html  # french
+http://kertex.kergis.com/en/index.html  # english
+
