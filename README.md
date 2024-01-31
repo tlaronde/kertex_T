@@ -1,12 +1,20 @@
-# kertex_T
-kerTeX distribution of D.E. Knuth's TeX typographic system.
+# kerTeX distribution of D.E. Knuth's TeX typographic system.
 
-This is the main part of the distribution, the bulk of what will be
-installed on the Target (hence the `T'). It uses kertex_M (`M' for
-Matrix) in order to convert WEB to C for compilation.
+![Quixante](http://kertex.kergis.com/img/quixante_half.png)
 
-kerTeX is the kernel system: the main part upon which everything else
-relies.
+This is the main part of the kerTeX distribution, the bulk of what will
+be installed on the Target (hence the 'T'). It uses **kertex_M** ('M'
+for Matrix) in order to convert WEB to C for compilation. Both use
+**risk_comp** as compilation and installation framework.
+
+kerTeX is the **TeX kernel system**: the main part upon which
+everything else relies.
+
+**`#CF0149` kerTeX relies only on a libc and, for
+administration of extensions (packages), and slightly for MetaPost
+utilities, on a reduced subset of POSIX.2 utilities that are indeed
+available for any OS (MS Windows included via MSYS*). And it will
+stay this way. **
 
 It includes all the D.E. Knuth's work and additions (John Hobby's
 MetaPost, e-TeX, Oren Patashnik's BibTeX, D.E. Knuth and Sylvio Levi 
@@ -18,10 +26,11 @@ post 2e.
 But see COPYRIGHTS for a description of who is the author of what and
 what responsability an author has in the present work.
 
-For further documentation see:
+## Further documentation
 
-http://kertex.kergis.com/
+* [kertex main site](http://kertex.kergis.com/)
 
-http://kertex.kergis.com/fr/index.html  # french
-http://kertex.kergis.com/en/index.html  # english
+* [kertex site french version](http://kertex.kergis.com/fr/index.html)
+
+* [kertex site english version](http://kertex.kergis.com/en/index.html)
 
