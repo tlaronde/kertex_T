@@ -10,11 +10,11 @@ for Matrix) in order to convert WEB to C for compilation. Both use
 kerTeX is the **TeX kernel system**: the main part upon which
 everything else relies.
 
-**`#CF0149` kerTeX relies only on a libc and, for
+**kerTeX relies only on a libc and, for
 administration of extensions (packages), and slightly for MetaPost
 utilities, on a reduced subset of POSIX.2 utilities that are indeed
-available for any OS (MS Windows included via MSYS*). And it will
-stay this way. **
+available for any OS (MS Windows included via MSYS). And it will
+stay this way.**
 
 It includes all the D.E. Knuth's work and additions (John Hobby's
 MetaPost, e-TeX, Oren Patashnik's BibTeX, D.E. Knuth and Sylvio Levi 
