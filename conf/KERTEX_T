@@ -29,7 +29,6 @@ BIBTEX_SRC_DIR=${BIBTEX_SRC_DIR:-"$PROJECTDIR/../bibtex"}
 ETEX_SRC_DIR=${ETEX_SRC_DIR:-"$PROJECTDIR/../etex"}
 AMS_SRC_DIR=${AMS_SRC_DIR:-"$PROJECTDIR/../ams"}
 ADOBE_SRC_DIR=${ADOBE_SRC_DIR:-"$PROJECTDIR/../adobe"}
-CWEB_SRC_DIR=${CWEB_SRC_DIR:-"$PROJECTDIR/../cweb"}
 M_DIR=${M_DIR:-$(echo $OBJDIR|sed 's/KERTEX_T/KERTEX_M/')}
 
 # Generate METAFONT 2D display for virmf if sys defined.

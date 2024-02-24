@@ -1178,16 +1178,13 @@
 #========== cweb
 + d $USER0:$GROUP0 755 * $TARGETLIBDIR/kertex/cweb
 + f $USER0:$GROUP0 755 $OBJDIR/cweb/bin1/ctangle/ctangle $TARGETBINDIR/kertex/ctangle
-= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/cweb.1 $TARGETLIBDIR/kertex/1/cweb Tman
-= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/c++lib.w $TARGETLIBDIR/kertex/cweb/c++lib.w
-= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/iso_types.w $TARGETLIBDIR/kertex/cweb/iso_types.w
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cweb/cweb.1 $TARGETLIBDIR/kertex/1/cweb Tman
 + f $USER0:$GROUP0 755 $OBJDIR/cweb/bin1/cweave/cweave $TARGETBINDIR/kertex/cweave
-= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/cwebmac.tex $TARGETLIBDIR/kertex/tex/cwebmac.tex
-= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/cwebman.tex $TARGETLIBDIR/kertex/cweb/cwebman.tex
-= f $USER0:$GROUP0 644 $CWEB_SRC_DIR/prod.w $TARGETLIBDIR/kertex/cweb/prod.w
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cweb/cwebmac.tex $TARGETLIBDIR/kertex/tex/cwebmac.tex
+= f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cweb/cwebman.tex $TARGETLIBDIR/kertex/cweb/cwebman.tex
 + f $USER0:$GROUP0 755 $OBJDIR/cweb/bin1/cwmerge/cwmerge $TARGETBINDIR/kertex/cwmerge
 # The simplest example. Others are in the sources.
-+ f $USER0:$GROUP0 644 $CWEB_SRC_DIR/examples/wc.w $TARGETLIBDIR/kertex/cweb/wc.w
++ f $USER0:$GROUP0 644 $KNUTH_SRC_DIR/cweb/examples/wc.w $TARGETLIBDIR/kertex/cweb/wc.w
 
 ##========== NTS' e-TeX.
 ##

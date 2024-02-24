@@ -10,9 +10,10 @@ compilation and the distribution of named results mf(1) and tex(1) if
 the implementation passes the torture tests. They do. [in "knuth"
 sources]
 
-Silvio Levy for CWEB with Donald E. Knuth (Andreas Scherer now
-maintaining; only an extract of the sources are included). 
-["cweb" sources]
+Silvio Levy for CWEB with Donald E. Knuth (this version is
+unmaintained; the newly maintained version is a regression: included
+files not tagged in source files so debugger can't find the source;
+cweave depends for TeX on a file provided by LaTeX). ["knuth" sources]
 
 Oren Patashnik for BibTeX (0.99d). (same type of licence as the one 
 covering D.E. Knuth's work). Still maintained by author as far as I
@@ -150,9 +151,12 @@ licence permet cependant l'usage, la compilation et la distribution du
 résultat sous les noms mf(1) et tex(1) si l'implémentation passe
 correctement les épreuves. C'est le cas. [sources "knuth"]
 
-Silvio Levy pour CWEB avec Donald E. Knuth (Andreas Scherer assure
-désormais la maintenance; et nous ne fournissons qu'un extrait des
-sources). [sources "cweb"]
+Silvio Levy pour CWEB avec Donald E. Knuth (la version n'est plus
+maintenue; la nouvelle version maintenue est une régression : les
+fichiers inclus dans le fichier CWEB ne sont pas signalées en
+commentaires dans le source empêchant un dévermineur de fournir
+l'information sur la ligne de source correspondante ; cweave, pour les
+fichiers TeX, dépend d'un fichier fourni par LaTeX).[sources "knuth"]
 
 Oren Patashnik pour BibTeX (0.99d). (même type de licence que celle
 couvrant les programmes de D.E. Knuth) [sources "bibtex"]

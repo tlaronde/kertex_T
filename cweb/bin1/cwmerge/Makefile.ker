@@ -6,7 +6,7 @@ COBJ = wmerge.o
 
 LIBES = $(WEBLIB)
 
-CWEBINPUTS = $(CWEB_SRC_DIR)
+CWEBINPUTS = $(KNUTH_SRC_DIR)/cweb
 
 CWEBEES = wmerge.c
 
@@ -14,5 +14,5 @@ XCPPFLAGS = -I$(PROJECTDIR)/lib1/pascal
 
 all: $(PROG) 
 
-$(CWEBEES): $(CWEB_SRC_DIR)/examples/wmerge.w kertex.ch
+$(CWEBEES): $(KNUTH_SRC_DIR)/cweb/examples/wmerge.w kertex.ch
 

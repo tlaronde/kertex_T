@@ -16,9 +16,6 @@ ADOBE_SRC_DIR	[default: "../adobe"]
 	The directory where are Adobe published AFM for the core PostScript
 	fonts.
 
-CWEB_SRC_DIR		[default: "../cweb"]
-	The directory where the CWEB utilities sources are.
-
 M_DIR	[default: substitute KERTEX_M to KERTEX_T objdir]
 	The directory where the KerTeX matrix tools compiled are.
 
