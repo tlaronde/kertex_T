@@ -7,8 +7,6 @@
 
 : ${TMPDIR:=/tmp}
 
-: ${SRC_DIR:=/data/m/kertex_pkg/src}
-
 # It has to be run at the root of our sources.
 #
 test -s conf/KERTEX_T\
@@ -32,6 +30,6 @@ done
 
 ( cd "$TMPDIR/$$"; zip -r "$TMPDIR/$$.zip" .; )
 
-mv "$TMPDIR/$$.zip" "$SRC_DIR/pkgtools.zip" 
+mv "$TMPDIR/$$.zip" "pkgtools.zip" 
 
 rm -fr "$TMPDIR/$$"

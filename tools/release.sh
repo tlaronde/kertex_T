@@ -18,6 +18,16 @@ test -s conf/KERTEX_T\
 ( cd prote/bin1; sh ../../tools/webmerge_prote.sh; )
 ( cd texware/bin1/bibtex; sh ../../../tools/webmerge_bibtex.sh; )
 
+version=$(sed -n 's/^VERSION:[ 	]*\([0-9.][0-9.]*\)[ 	]*$/\1/p' CID)
+git archive -o kertex_T_$version.tar main
+tar -rf kertex_T_$version.tar \
+	tex/bin1/webmerged*.ch \
+	mf/bin1/webmerged*.ch \
+	mp/bin1/webmerged*.ch \
+	etex/bin1/webmerged*.ch \
+	prote/bin1/webmerged*.ch \
+	texware/bin1/bibtex/webmerged*.ch
+
 # Creating the pkgtools.zip.
 #
 tools/mk_pkgtools_zip
