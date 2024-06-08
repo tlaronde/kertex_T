@@ -1,0 +1,213 @@
+#!/bin/rc
+# C) 2012-2013, 2019--2021, 2023 Thierry Laronde <tlaronde@polynum.com>
+#
+# All rights reserved and no warranty! Run it at your risks!
+#
+
+# Sources: what is in the tarball and must be present by default.
+#
+sources=(knuth etex bibtex ams adobe kertex_M kertex_T risk_comp)
+urldir='http://downloads.kergis.com/kertex/'
+
+fn read{
+	$1=`{awk '{print;exit}'}
+}
+
+# Stop if error
+#
+flag +e
+
+if (test $#* -ge 2) {
+	echo 'usage: ' $0 '[conf_file]'
+	exit 1
+}
+if (test $#* -eq 1) {
+	if (test -s $1)
+		my_conf=$1
+	if not {
+		echo 'Incorrect conf file: ' $1
+		exit 2
+	}
+}
+
+cat <<EOT
+
+This script is for a Plan9 instance.
+
+If it is a rc(1) script, this does not mean that the compilation and
+installation are totally native: it still uses APE, but switches when
+needed.
+
+This script is for the obvious case: equality: TARGET is the same type
+as MATRIX---same OS, same machine type. Cross-compilation can be made 
+too by R.I.S.K. but not via
+this script.
+
+Be sure to run me in a dir where there is enough space for the
+sources unpacked (40 Mb will do; I will _not_ remove the bundle).
+
+During the build, don't be afraid of some compiler warnings: these
+are purely cosmetic ones, because the translation of Pascal in C
+doesn't put extra braces when indenting if/else; or because D.E.
+Knuth and Silvio Levy have written the CWEB programs so that they
+can compile even on pre-ANSI C compilers (old prototypes).
+
+Don't worry: if something is really wrong, the build fails...
+
+When I prompt for an answer, the value displayed between square
+brackets is the default: [default]. Just hitting ENTER will keep
+it as is.
+
+EOT
+
+# Setting the directory holding the script and, perhaps, the sources.
+#
+fqcmd=`{whatis $0}
+
+# Offer the choice between local and remote access to sources.
+#
+ans=()
+echo 'Do you want to retrieve the latest sources on the website or shall'
+echo -n 'I use sources in the file hierarchy (http|dir)? [http] '
+read ans
+
+# Access via filesystem.
+#
+if (test x^$"ans '=' xdir) {
+  dir=`{echo $fqcmd | sed 's![^/]*$!!'}
+  ans=()
+  echo -n 'Specify the dir: [' $dir '] '
+  read ans
+  test x^$"ans '=' x || dir=$ans
+  cd $dir
+  for (src in $sources) {
+  	test -d $src || { 
+      echo
+      echo $src 'doesn''t exist in ' `{pwd}
+      exit 3
+      }
+  }
+} 
+if not {
+  echo
+  echo -n 'Which version of the install doc do you want (en|fr)? [en] '
+  
+  read ans
+  
+  switch ($ans) {
+  	case fr 
+  		hget $urldir^LISEZ.MOI >LISEZ.MOI
+  	case *
+  		hget $urldir^README >README
+  }
+
+  echo
+  echo -n 'Which version of the sources do you want (stable|dev)? [stable] '
+  
+  read ans
+  
+  switch ($ans) {
+  	case dev
+  		bundle='kertex_bundle_dev'
+  	case *
+  		bundle='kertex_bundle'
+  }
+  
+  echo 'Hget''ting (silently) the bundle...'
+  hget $urldir^$bundle^.tar >$bundle^.tar
+  
+  test -s $bundle^.tar || { 
+    echo
+  	echo 'Getting the bundle failed...'
+  	exit 3
+  }
+  
+  echo 'Extracting the source chunks...'
+  tar xf $bundle^.tar
+  
+  echo 'Extracting each source...'
+  
+  for (src in $sources) {
+  	tar xzf $src^_*.tar.gz
+  	rm $src^_*.tar.gz
+  }
+} # Remote retrieving.
+
+echo
+echo 'By default, I will remove intermediary products to use the'
+echo 'minimal amount of space. Answer: NO to the following to keep'
+echo 'them (C files) instead.'
+echo -n 'Remove intermediary products (SAVE_SPACE) (YES|NO)? [YES] '
+  
+read ans
+test $#ans -eq 0 && ans=YES
+save_space=$ans
+
+echo
+echo 'Compiling kertex_M...'
+@{ 
+	cd kertex_M
+	cd `{ape/psh ../risk_comp/sys/posix/sh1/rkconfig $my_conf}
+	{ echo make 'SAVE_SPACE='^$save_space all | ape/psh } \
+		|| { echo 'Compilation of kertex_M failed!'; exit 4; }
+}
+
+echo
+echo 'Compiling kertex_T...'
+cd kertex_T
+cd `{ape/psh ../risk_comp/sys/posix/sh1/rkconfig $my_conf}
+{ echo make 'SAVE_SPACE='^$save_space all | ape/psh }\
+		|| { echo 'Compilation of kertex_T failed'; exit 5; }
+
+ans=()
+echo
+echo -n 'Do you want to install kerTeX here now? [Yn] '
+read ans
+test $#ans -eq 0 && ans=YES
+
+switch ($ans) {
+	case n N no NO
+		echo make 'SAVE_SPACE='^$save_space pkg | ape/psh
+		echo
+		echo 'I have built the package here: '`{pwd}^'/PKG.tar'
+		exit 0
+}
+
+# We are installing...
+#
+echo make 'SAVE_SPACE='^$save_space local_install | ape/psh
+
+echo
+echo 'Retrieving latest pkg/tools to see if there is an update:'
+. which_kertex
+$KERTEX_SHELL $KERTEX_LIBDIR/pkg/rcp/tools@pkg.sh install
+echo 'pkg/tools update: DONE'
+
+echo
+echo -n 'Do you want to generate the dumps and the fonts now? [Yn] '
+read ans
+test $#ans -eq 0 && ans=YES
+
+switch ($ans) {
+	case n N no NO
+		echo
+		echo 'You can generate them later running: pkg/rcp/core@pkg.sh'
+	case *
+		$KERTEX_SHELL $KERTEX_LIBDIR/pkg/rcp/core@pkg.sh install
+}
+
+ans=()
+echo
+echo -n 'Do you want to download all the recipes (to build pkg) now? [Yn] '
+read ans
+test $#ans -eq 0 && ans=YES
+
+switch ($ans) {
+	case n N no NO
+		echo
+		echo 'You can generate them later running: pkg/rcp/rcp@pkg.sh'
+	case *
+		$KERTEX_SHELL $KERTEX_LIBDIR/pkg/rcp/rcp@pkg.sh install
+}
+
+exit 0
