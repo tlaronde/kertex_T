@@ -1,4 +1,5 @@
 # webmerged change file are produced from a partition of change files
 webmerged*.ch
 kertex_T_[0-9.]*.tar
+kertex_T_[0-9.]*.tar.gz
 pkgtools.zip
