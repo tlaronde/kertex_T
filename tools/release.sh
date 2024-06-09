@@ -6,6 +6,8 @@
 # webmerging).
 #
 
+: ${TMPDIR:=/tmp}
+
 # It has to be run at the root of our sources.
 #
 test -s conf/KERTEX_T\
@@ -19,14 +21,30 @@ test -s conf/KERTEX_T\
 ( cd texware/bin1/bibtex; sh ../../../tools/webmerge_bibtex.sh; )
 
 version=$(sed -n 's/^VERSION:[ 	]*\([0-9.][0-9.]*\)[ 	]*$/\1/p' CID)
-git archive -o kertex_T_$version.tar main
-tar -rf kertex_T_$version.tar \
-	tex/bin1/webmerged*.ch \
+
+rm -f kertex_T_$version.tar.gz
+
+git archive --prefix=kertex_T/ -o kertex_T_$version.tar main
+
+mkdir -p "$TMPDIR/$$/kertex_T" || {
+	echo "Unable to create '$TMPDIR/$$/kertex_T'" >&2
+	exit 1
+}
+
+tar -cf - tex/bin1/webmerged*.ch \
 	mf/bin1/webmerged*.ch \
 	mp/bin1/webmerged*.ch \
 	etex/bin1/webmerged*.ch \
 	prote/bin1/webmerged*.ch \
-	texware/bin1/bibtex/webmerged*.ch
+	texware/bin1/bibtex/webmerged*.ch \
+	| ( cd "$TMPDIR/$$/kertex_T" && tar -xf - )
+
+hic="$PWD"
+( cd "$TMPDIR/$$" && tar -rf "$hic/kertex_T_$version.tar" kertex_T )
+
+rm -fr "$TMPDIR/$$/"
+
+gzip kertex_T_$version.tar
 
 # Creating the pkgtools.zip.
 #
