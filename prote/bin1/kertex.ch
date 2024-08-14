@@ -170,7 +170,7 @@ This routine is externally implemented.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @x
 In this basic implementation, we set the string to the empty one by
-simply setting |xchg_buffer_length| to $0$.
+simply setting |xchg_buffer_length| to~$0$.
 
 @d get_file_mtime==xchg_buffer_length:=0
 @y
