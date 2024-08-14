@@ -1,7 +1,7 @@
 % This is prote.ch, the change file to add to TeX and e-TeX new 
 % primitives or functionalities.
 %
-% Copyright 2021, 2023 Thierry LARONDE <tlaronde@polynum.com>
+% Copyright 2021, 2023--2024 Thierry LARONDE <tlaronde@polynum.com>
 % MIT/X11 license.
 %
 % The TeX program is copyright (C) 1982 by D. E. Knuth.
@@ -135,6 +135,13 @@
 %    the input behavior that ".tex" be appended if no extension. So
 %    modified to provide this.
 %
+% 1.1.1: 2024-08-14: Andreas Scherer has provided some typographic
+% improvements (formatting of the TeX generated doc) to Martin Ruckert
+% who was kind enough to push them back to me. The corrections are
+% incorporated and reflected only in the patchlevel number (third)
+% number since there is strictly no change in the program behavior or
+% implementation.
+%
 %  History towards 1.0 release:
 %    0.99.4:
 %      - typos and style corrections provided by Martin Ruckert for
@@ -218,9 +225,9 @@ known as `\Prote'.
 @y
 @d eTeX_states=1 {number of \eTeX\ state variables in |eqtb|}
 @#
-@d Prote_version_string=='3.141592653-2.6-1.1.0' {current \Prote\ version}
+@d Prote_version_string=='3.141592653-2.6-1.1.1' {current \Prote\ version}
 @d Prote_version=1 { \.{\\Proteversion} }
-@d Prote_revision==".1.0" { \.{\\Proterevision} }
+@d Prote_revision==".1.1" { \.{\\Proterevision} }
 @#
 @d Prote_banner=='This is Prote, Version ',Prote_version_string
   {printed when \Prote\ starts}
@@ -246,13 +253,13 @@ end;
 @y
 not_found: str_eq_str:=result;
 end;
-@t\4@>@<Declare \Prote\ procedures for strings@>
+@#@<Declare \Prote\ procedures for strings@>@;
 @z
 %---------------------------------------
 @x [7] m.108 - Hook other arithmetic routines definitions
 @p function badness(@!t,@!s:scaled):halfword; {compute badness, given |t>=0|}
 @y
-@p @<Declare \Prote\ arithmetic routines@>@/
+@p @<Declare \Prote\ arithmetic routines@>@;
 function badness(@!t,@!s:scaled):halfword; {compute badness, given |t>=0|}
 @z
 %---------------------------------------
@@ -702,7 +709,7 @@ expand_depth_count:=0;
 @* \[53b] The extended features of \Prote.
 \Prote\ extends furthermore \eTeX\ i.e. \eTeX\ is thus required
 before adding \Prote\ own extensions. But if \eTeX\ mode has not
-be enabled, the engine is still compatible with \TeX with no added
+be enabled, the engine is still compatible with \TeX\ with no added
 primitive commands and with a modification of code---from
 \eTeX\ exclusively for now---that is sufficiently minor so that
 the engine still deserves the name \TeX.
@@ -1437,7 +1444,7 @@ dependent. The information shall be set in |xchg_buffer|.
 @^system dependencies@>
 
 In this basic implementation, we set the string to the empty one by
-simply setting |xchg_buffer_length| to $0$.
+simply setting |xchg_buffer_length| to~$0$.
 
 @d get_file_mtime==xchg_buffer_length:=0
 
@@ -1620,7 +1627,7 @@ communicate with the routines.
 
 @ To obtain the MD5 hash signature of a file will need an external
 implementation, since the algorithm requires bitwise operation that
-standard \PASCAL does not provide. So we do not bother to try. The
+standard \PASCAL\ does not provide. So we do not bother to try. The
 present implementation returns nothing.
 @^system dependencies@>
 

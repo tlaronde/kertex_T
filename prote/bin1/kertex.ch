@@ -6,13 +6,16 @@
 % 2021-09-11 TL
 %    Prote adjustements.
 %
+% 2024-08-14 TL
+%    Prote patchlevel changed (version_string).
+%
 % NOTE: the module numbers in this change file refer to the published
 %  text in TeX: The Program, Volume B of Computers&Typesetting, 1986.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 @x
-@d Prote_version_string=='3.141592653-2.6-1.1.0' {current \Prote\ version}
+@d Prote_version_string=='3.141592653-2.6-1.1.1' {current \Prote\ version}
 @y
-@d Prote_version_string=='kerTeX C 3.141592653-2.6-1.1.0' {current \Prote\ version}
+@d Prote_version_string=='kerTeX C 3.141592653-2.6-1.1.1' {current \Prote\ version}
 @z
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % [1.11] compile-time constants; mem_max enlarged. We transform mem_top
