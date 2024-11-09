@@ -9,12 +9,12 @@
 The ``banner line'' defined here should be changed whenever \.{CWEAVE}
 is modified.
 
-@d banner "This is CWEAVE (Version 3.64)\n"
+@d banner "This is CWEAVE (Version 3.65)\n"
 @y
 The ``banner line'' defined here should be changed whenever \.{CWEAVE}
 is modified.
 
-@d banner "This is CWEAVE (kerTeX C version 3.64)\n"
+@d banner "This is CWEAVE (kerTeX C version 3.65)\n"
 @z
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

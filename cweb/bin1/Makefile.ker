@@ -1,11 +1,9 @@
 DATA = common.c
 
-CWEBINPUTS = $(KNUTH_SRC_DIR)/cweb
-
 CWEBEES = common.c
 
 XCPPFLAGS = -I$(PROJECTDIR)/lib1/pascal -I$(PROJECTDIR)/lib1/web
 
 all: $(DATA) 
 
-$(CWEBEES): $(KNUTH_SRC_DIR)/cweb/common.w kertex.ch
+$(CWEBEES): common.w kertex.ch

@@ -1,5 +1,6 @@
 % This is the change file for kerTeX.
 % 2011-12-25 Thierry Laronde <tlaronde@polynum.com>
+% 2024-11-07 Fix strict prototypes Thierry Laronde <tlaronde@kergis.com>
 %
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -9,12 +10,12 @@
 The ``banner line'' defined here should be changed whenever \.{CTANGLE}
 is modified.
 
-@d banner "This is CTANGLE (Version 3.64)\n"
+@d banner "This is CTANGLE (Version 3.65)\n"
 @y
 The ``banner line'' defined here should be changed whenever \.{CTANGLE}
 is modified.
 
-@d banner "This is CTANGLE (kerTeX C version 3.64)\n"
+@d banner "This is CTANGLE (kerTeX C version 3.65)\n"
 @z
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -48,3 +49,4 @@ extern char* strncpy(); /* copy up to $n$ string characters */
 @y
 @d max_file_name_length FILENAME_MAX + 1
 @z
+

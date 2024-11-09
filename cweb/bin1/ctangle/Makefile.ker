@@ -8,7 +8,7 @@ CFILES = ctangle.c $(OBJDIR)/cweb/bin1/common.c
 
 COBJ = ctangle.o common.o
 
-CWEBINPUTS = $(KNUTH_SRC_DIR)/cweb
+CWEBINPUTS = $(PROJECTDIR)/cweb/bin1
 
 LIBES = $(WEBLIB)
 
@@ -16,5 +16,5 @@ XCPPFLAGS = -I$(PROJECTDIR)/lib1/pascal
 
 all: $(PROG) 
 
-$(CWEBEES): $(KNUTH_SRC_DIR)/cweb/ctangle.w  kertex.ch
+$(CWEBEES): ctangle.w kertex.ch
 
