@@ -1,5 +1,5 @@
 #
-#  Copyright 2010--2011, 2020--2021
+#  Copyright 2010--2011, 2020--2021, 2024
 #    Thierry LARONDE <tlaronde@polynum.com>
 #  All rights reserved. 
 #  
@@ -344,11 +344,11 @@ mv xbmc10.600pk $TMP_LIBDIR/fonts/pk/etex
 rm xbmc10.log
 
 pkg_log ""
-pkg_log "11b) Creating e-TeX digest (using Prote)."
+pkg_log "11b) Creating e-TeX digest (with Prote's extensions)."
 pkg_log ""
 #
 
-$KERTEX_BINDIR/iniprote '*etex.src \dump'
+$KERTEX_BINDIR/iniprote '**etex.src \dump'
 mv etex.dgst $TMP_BINDIR/lib
 mv etex.log $TMP_BINDIR/lib
 cp $KERTEX_BINDIR/virprote $TMP_BINDIR/etex
