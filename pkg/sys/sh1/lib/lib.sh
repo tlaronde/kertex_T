@@ -13,7 +13,7 @@
 
 #===== NOTHING TO CHANGE BELOW!
 #
-PKG_LIB_VERSION=0.99.11
+PKG_LIB_VERSION=0.99.12
 
 set -e
 
@@ -482,7 +482,7 @@ pkg_setck_nickname()
 # - a line beginning with '#' is a comment and is ignored;
 
 # - an empty line is ignored;
-# - a line consisting of a URIi (the trailing "/" is mandatory):
+# - a line consisting of a URI (the trailing "/" is mandatory):
 #	scheme ":" ["//" authority] path "/"
 #   with one of the following scheme:
 #	file
@@ -1418,11 +1418,8 @@ while test $# -gt 0; do
 	case "$1" in
 		-*) _pkg_get_opt $1;;
 		help) echo "$usage"; exit 0;;
-		status) if pkg_is_installed $PKG_NAME; then
-				exit 0
-			else
-				exit 1
-			fi
+		status) PKG_ACTION=status
+			break
 			;;
 		show) PKG_ACTION=show
 			shift
@@ -1460,6 +1457,7 @@ done
 # 1) stop if root if not removing or applying.
 #
 if test $PKG_ACTION != "apply" && test $PKG_ACTION != "remove" \
+	&& test $PKG_ACTION != "status" \
 	&& test $PKG_ACTION != "show"; then
 	pkg_stop_if_root
 fi
@@ -1481,6 +1479,16 @@ readonly PKG_NAME
 
 PKG_NICKNAME=$(pkg_setck_nickname $PKG_NAME)
 readonly PKG_NICKNAME
+
+if test $PKG_ACTION = "status"; then
+	if pkg_is_installed $PKG_NAME; then
+		status=0
+	else
+		status=1
+	fi
+	pkg_clean_tmp
+	exit $status
+fi
 
 # The name can have dependencies i.e. subdirs.
 #
