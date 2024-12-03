@@ -124,7 +124,7 @@
 # Pkg utilities
 + f $USER0:$GROUP0 644 $PROJECTDIR/pkg/sh1/bulk_get/sh $TARGETBINDIR/kertex/pkg_bulk_get.sh
 + f $USER0:$GROUP0 644 $PROJECTDIR/pkg/sh1/rcp_sketch/sh $TARGETBINDIR/kertex/pkg_rcp_sketch.sh
-+ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/proto/latex.rct $TARGETBINDIR/kertex/pkg/proto/latex.rct
++ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/proto/latex.rct $TARGETLIBDIR/kertex/pkg/proto/latex.rct
 
 # Keep the doc in the realm.
 #
