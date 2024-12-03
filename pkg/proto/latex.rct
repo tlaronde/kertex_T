@@ -94,9 +94,11 @@ exit 0
 
 BEGIN_CID
 NAME: latex/@@NAME@@
+VERSION: XXX Please specify the version of the CTAN package!
+AUTHORS: XXX Add the copyrights / authors
 LICENCE: XXX Please specify it in the recipe!
-KERTEX_VERSION: 0.99.22.0
 DESCRIPTION: XXX Please add a short description of package!
+KERTEX_VERSION: @@KERTEX_VERSION@@
 KXPATH:
 	latex @@NAME@@
 SOURCES:
