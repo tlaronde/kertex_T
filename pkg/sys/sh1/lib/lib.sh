@@ -13,7 +13,7 @@
 
 #===== NOTHING TO CHANGE BELOW!
 #
-PKG_LIB_VERSION=0.99.12
+PKG_LIB_VERSION=0.99.13
 
 set -e
 
@@ -1482,8 +1482,10 @@ readonly PKG_NICKNAME
 
 if test $PKG_ACTION = "status"; then
 	if pkg_is_installed $PKG_NAME; then
+		pkg_log "$PKG_NAME: installed"
 		status=0
 	else
+		pkg_log "$PKG_NAME: NOT installed"
 		status=1
 	fi
 	pkg_clean_tmp
