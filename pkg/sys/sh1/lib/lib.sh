@@ -447,8 +447,11 @@ pkg_setck_nickname()
 # by the library shall be implemented (for the moment these are 
 # relative to data download; see below).
 #
-# PKG_NULL_FILE: a /dev/null for Unices or Plan9. A junk file for
-# others.
+# PKG_NULL_FILE: a /dev/null for Unices or Plan9. This would be
+# NUL (or encoded \\.\NUL) on Windows. And if on some system, this is
+# unsupported, a junk file in the TMPDIR, to be removed when finished.
+# (We could also simply open a 3 descriptor redirecting to whatever
+# null file and redirect output to this descriptor.)
 #
 # The following utilities are defined as variables to allow the use in
 # sudoed # scripts:
