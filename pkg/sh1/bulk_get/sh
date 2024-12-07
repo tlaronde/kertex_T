@@ -37,7 +37,7 @@ test -d "$1" || {
 	exit 2
 }
 
-. which_kertex >&2
+. which_kertex 2>/dev/null >&2
 
 : ${KERTEX_PKG_RCP_DIR:=$KERTEX_LIBDIR/pkg/rcp}
 
@@ -46,7 +46,7 @@ gstatus=0
 ls  *.sh | sed '/@pkg.sh$/d'\
 	| while read -r rcp; do
 	status="PB"
-	$KERTEX_SHELL "$rcp" download "$1" >&2 && status="OK"
+	$KERTEX_SHELL "$rcp" download "$1" 2>/dev/null >&2 && status="OK"
 	test $status = "OK" || gstatus=1
 	printf "%s %s\n" $status $rcp
 done

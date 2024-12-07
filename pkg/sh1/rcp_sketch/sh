@@ -31,7 +31,7 @@ name="$1"
 
 . which_kertex >&2
 
-sed -e "s!@@NAME@@!$name!g" \
+sed -e "s!@@NAME@@!$name!g" -e "s!@@KERTEX_VERSION@@!$KERTEX_VERSION!" \
 	 $KERTEX_LIBDIR/pkg/proto/latex.rct \
 	>"${name}@latex.sh"
 
