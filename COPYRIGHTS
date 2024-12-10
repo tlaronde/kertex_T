@@ -11,9 +11,9 @@ the implementation passes the torture tests. They do. [in "knuth"
 sources]
 
 Silvio Levy for CWEB with Donald E. Knuth (this version is
-unmaintained; the newly maintained version is a regression: included
-files not tagged in source files so debugger can't find the source;
-cweave depends for TeX on a file provided by LaTeX). ["knuth" sources]
+unmaintained; the last authors' version is included in "knuth"
+sources; but the adaptations are now included in kertex_T).
+["knuth" sources]
 
 Oren Patashnik for BibTeX (0.99d). (same type of licence as the one 
 covering D.E. Knuth's work). Still maintained by author as far as I
@@ -42,7 +42,7 @@ programs.
 John Hobby from ATT for MetaPost (public domain 0.641).
 
 Donald E. Knuth for programs _included here_ with Tomas Rokicki for
-dvips auxiliary tools.
+dvips auxiliary tools, and Silvio Levy for CWEB.
 
 Tanmoy Bhattacharya for the hyperbasics.tex macro file (public domain).
 
@@ -80,7 +80,7 @@ The AUTHORS stands for:
 	                 KerTEX PUBLIC LICENCE
 					     version 1.0 
 
- Copyright 2010--2023 The AUTHORS.
+ Copyright 2010--2024 The AUTHORS.
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
@@ -152,11 +152,9 @@ résultat sous les noms mf(1) et tex(1) si l'implémentation passe
 correctement les épreuves. C'est le cas. [sources "knuth"]
 
 Silvio Levy pour CWEB avec Donald E. Knuth (la version n'est plus
-maintenue; la nouvelle version maintenue est une régression : les
-fichiers inclus dans le fichier CWEB ne sont pas signalées en
-commentaires dans le source empêchant un dévermineur de fournir
-l'information sur la ligne de source correspondante ; cweave, pour les
-fichiers TeX, dépend d'un fichier fourni par LaTeX).[sources "knuth"]
+maintenue; la dernière version des auteurs est placée dans les sources
+"knuth"; mais des adaptations plus récentes sont désormais dans les
+sources de kertex_T). [sources "knuth"]
 
 Oren Patashnik pour BibTeX (0.99d). (même type de licence que celle
 couvrant les programmes de D.E. Knuth) [sources "bibtex"]
@@ -185,7 +183,8 @@ programmes auxiliaires de la suite dvips.
 
 John Hobby, alors chez ATT, pour MetaPost (domaine public, version 0.641).
 Donald E. Knuth pour des programmes _inclus ici_, écrits en
-collaboration avec Tomas Rokicki et ayant trait à la suite dvips.
+collaboration avec Tomas Rokicki et ayant trait à la suite dvips, ou
+écrit avec Silvio Levy pour CWEB.
 
 Tanmoy Bhattacharya pour le fichier de macro. hyperbasics.tex (domaine
 public).
@@ -226,7 +225,7 @@ Dans ce qui suit AUTEURS est mis à la place de :
 			     LICENCE PUBLIQUE DE KerTEX
 				        version 1.0
 
-Copyright 2010--2023 les AUTEURS.
+Copyright 2010--2024 les AUTEURS.
 
 La redistribution et l'utilisation du présent progiciel, sous formes
 d'exécutables ou de fichiers sources, avec ou sans modification, sont
