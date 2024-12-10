@@ -1,0 +1,6 @@
+DATA = pstopdf
+
+all: $(DATA)
+
+$(DATA): sh.data
+	sed -e 's!@@TARGETSHELL@@!$(TARGETSHELL)!' sh.data >$@

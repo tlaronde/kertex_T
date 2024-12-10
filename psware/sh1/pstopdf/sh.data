@@ -1,0 +1,177 @@
+#!@@TARGETSHELL@@
+# pstopdf : generate a PDF from a PostScript file taking its size 
+# page definition into account.
+# 
+prog_version='0.99'
+version="$prog_version
+Written by Thierry Laronde.
+
+Copyright (c) 2024
+	Thierry Laronde <tlaronde@polynum.com>
+
+All rights reserved and NO warranties!"
+
+
+#========== DEFINITIONS (set and define; neither loads nor stores)
+
+#----- Extern settable.
+
+: ${TMPDIR:=/tmp} # can be customized, including hardcoded.
+
+# Not using another kerTeX' utility for now.
+#. which_kertex
+
+#------------------INITIALIZATIONS
+# Name by which this script was invoked.
+program=`echo "$0" | sed -e 's/[^\/]*\///g'`
+
+usage="
+Usage: $program [-h|--help] [-V|--version] ps_file
+Make a PDF from a PostScript file taking the defined page size
+in the PS file into account (uses gs(1)).
+
+Options:
+ -h|--help	display this Help and exit
+ -V|--version	display the Version and exit
+
+This program is part of kerTeX."
+
+##BEGIN_ERRORS
+# EOPTION 1 "This option is unknown (use separate flags -f -p etc.):"
+# ENOENT 2 "This file or directory doesn't exist:"
+# EUSAGE 32 "$usage"
+# EEXIST 63 "This file or directory already exists:"
+# ETMPCREATE 64 "Unable to create this tmpdir:"
+# EINT 65 "Interrupted."
+# ENOGS 66 "gs(1) not found for PDF conversion!"
+# EGS 67 "gs(1) failed to convert to PDF!"
+##END_ERRORS
+
+#----- Subfunctions
+#
+#--- No storing subfunctions
+#
+log()
+{
+    echo "$@" >&2
+}
+
+logpart()
+{
+    echo "$@" | tr -d '\n' >&2
+}
+
+#--- Storing subfunctions
+#
+# Protect from trying to remove a not verified and not newly created
+# tmpdir via ?.
+#
+clean_tmp()
+{
+  test "$tmpdir" -a -d "$tmpdir" || return 0 # Safety; set and existing
+  ( cd "$tmpdir"; rm -f .[_a-zA-Z0-9-]* *; )
+  @@TARGETRMDIR@@ "$tmpdir"
+}
+
+# Call:	error error_string_macro [args_to_fmt]
+# ex. : error "EOPTION" offending_option
+#
+error()
+{
+	logpart "Error $1: "
+
+    # Retrieving the error records.
+	record=$(sed -n "/^##BEGIN_ERRORS/,/^##END_ERRORS/s/^#[ 	]*$1[ 	]//p"\
+		"$fqscript")
+	if test "x$record" != x; then
+		errno=$(echo $record | sed 's/^\([0-9][0-9]*\).*/\1/')
+		fmt=$(echo $record | sed 's/^[0-9][0-9]*[ 	]*\(.*\)$/\1/')
+		shift
+		eval log $fmt "${@:-}"
+	fi
+
+	test "$errno"\
+		|| { log "Programmer error: error '$1' unknown!"; exit 127; }
+
+	test $errno -lt 32 && log "$usage"
+	test $errno -gt 65 && clean_tmp # more than ETMPCREATE
+
+	exit $errno
+}
+
+#========== CHECKS (set env; maybe loads but no stores)
+
+unset tmpdir || true # Safety for clean_tmp().
+
+# We can be an executable, or a non executable (hence not a command)
+# fed to sh.
+#
+if test -s $0; then
+	fqscript="$0"
+	expr "$fqscript" : '/' >/dev/null 2>&1 || fqscript="$PWD/$fqscript"
+else
+	fqscript="$(command -v $0)"
+fi
+
+#==========PREPROCESSING
+
+# Getting the options
+test $# -ne 0 || error EUSAGE
+
+psfile=
+while [ $# -gt 0 ]; do
+	case "$1" in
+		-h|--help) echo "$usage"; exit 0;;
+		-V|--version) echo "$version"; exit 0;;
+		-*) error EOPTION "$1";;
+	 	*) psfile="$1";;
+	esac
+shift	
+done
+
+tmpdir="$TMPDIR/$$"
+readonly tmpdir
+
+test ! -d "$tmpdir" || error EEXIST "$tmpdir"
+
+#========== PROCESSING (stores)
+#
+# From now on, error() shall be safe to call.
+
+mkdir -p "$tmpdir" || error ETMPCREATE "$tmpdir"
+trap "error EINT" HUP INT QUIT ABRT TERM
+
+pdffile=$(basename "$psfile")
+pdffile="${pdffile%.ps}.pdf"
+
+junk=$(command -v gs)
+if test "x$junk" != x; then
+	# There may be EPS so this is the first occurrence of bbox spec that
+	# has to be used.
+	# gs/pdfwrite uses the default page dimension and doesn't take into
+	# account the actual document dimension if it is not specified
+	# explicitely. It has some heuristics about text flows and by
+	# default rotate the pages in order for the majority of text to be
+	# read from left to right. We want "as is" to we instruct it to do
+	# nothing about this.
+	#
+	# See too the file /usr/pkg/share/ghostscript/9.55.0/lib/align.ps
+	# (or likely place in the ghostscript distribution) for possible
+	# enhancements/customizations of eventual printing.
+	#
+	dim=$(sed -n '/%%BoundingBox:/p' "$psfile"| sed 1q)
+	cols=$(echo $dim | sed -n 's/%%BoundingBox: *[^ ][^ ]*  *[^ ][^ ]* *\([^ ][^ ]*\)  *[^ ][^ ]* *$/\1/p')
+	rows=$(echo $dim | sed -n 's/%%BoundingBox: *[^ ][^ ]*  *[^ ][^ ]* *[^ ][^ ]*  *\([^ ][^ ]*\) *$/\1/p')
+	  
+	gs -q -dSAFER -dNOPAUSE -dBATCH \
+		-dAutoRotatePages=/None \
+		-sOutputFile="$pdffile" \
+		-sDEVICE=pdfwrite \
+		-c "<</PageSize [$cols $rows] /PageOffset [0 0]>> setpagedevice" \
+		-f "$psfile" \
+	|| error EGS
+else
+	error ENOGS
+fi
+
+exit 0

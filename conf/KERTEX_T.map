@@ -37,6 +37,7 @@
 # dvips and related
 @ d * * $PROJECTDIR/dviware/bin1/dvips *
 @ d * * $PROJECTDIR/dviware/bin1/dvips/lib *
+@ d * * $PROJECTDIR/psware/sh1/pstopdf *
 # sys, used by MetaPost auxiliaries.
 # no-op for now
 * d * * $PROJECTDIR/sys/posix/bin1/newer *
@@ -502,6 +503,11 @@
 + f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/doc/dvips.tex $TARGETLIBDIR/kertex/dvips/doc/dvips.tex
 = f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/doc/dvipsmac.tex $TARGETLIBDIR/kertex/dvips/doc/dvipsmac.tex
 + f $USER0:$GROUP0 644 $PROJECTDIR/dviware/bin1/dvips/doc/test.tex $TARGETLIBDIR/kertex/dvips/doc/test.tex
+
+#
+# ps utilities.
+#
++ f $USER0:$GROUP0 755 $OBJDIR/psware/sh1/pstopdf/pstopdf $TARGETBINDIR/kertex/kpstopdf
 
 #========== REENCODING VECTORS
 # Used by dvips(1) and afm2tfm(1).
