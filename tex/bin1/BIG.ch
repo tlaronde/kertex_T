@@ -51,7 +51,7 @@
 @!mem_min=0; {smallest index in \TeX's internal |mem| array;
   must be |min_halfword| or more;
   must be equal to |mem_bot| in \.{INITEX}, otherwise |<=mem_bot|}
-@!buf_size=200000; {maximum number of characters simultaneously present in
+@!buf_size=400000; {maximum number of characters simultaneously present in
   current lines of open files and in control sequences between
   \.{\\csname} and \.{\\endcsname}; must not exceed |max_halfword|}
 @!error_line=79; {width of context lines on terminal error messages}
