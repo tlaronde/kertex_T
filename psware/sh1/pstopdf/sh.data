@@ -2,7 +2,7 @@
 # pstopdf : generate a PDF from a PostScript file taking its size 
 # page definition into account.
 # 
-prog_version='0.99'
+prog_version='1.0'
 version="$prog_version
 Written by Thierry Laronde.
 
@@ -165,6 +165,7 @@ if test "x$junk" != x; then
 	  
 	gs -q -dSAFER -dNOPAUSE -dBATCH \
 		-dAutoRotatePages=/None \
+		-dALLOWPSTRANSPARENCY \
 		-sOutputFile="$pdffile" \
 		-sDEVICE=pdfwrite \
 		-c "<</PageSize [$cols $rows] /PageOffset [0 0]>> setpagedevice" \
