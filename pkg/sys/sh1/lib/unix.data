@@ -44,6 +44,16 @@ pkg_lstree()
 	find . -print
 }
 
+pkg_dircp()
+{
+	mkdir -p "$2"
+
+	# Take into account that dirs can be specified relatively
+	# ('.' or '..') so don't cd...
+	#
+	cp -R "$1"/* "$2"
+}
+
 # sys_$PKG_RPROTO_cnx_open() sends to stdout the cmds necessary to open
 # the cnx.
 # Must be called after pkg_setck_url().

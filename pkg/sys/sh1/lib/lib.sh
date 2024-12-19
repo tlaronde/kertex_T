@@ -13,7 +13,7 @@
 
 #===== NOTHING TO CHANGE BELOW!
 #
-PKG_LIB_VERSION=0.99.14
+PKG_LIB_VERSION=0.99.15
 
 set -e
 
@@ -466,6 +466,8 @@ pkg_setck_nickname()
 # 	anything except printing error and exiting.
 # pkg_user0_cmd: executing under special user.
 # pkg_lstree: getting the listing of the current dir.
+# pkg_dircp: copy content of dir1 to dir2, creating dir2 first if not
+#    existing. Does not move but copy files. dir1 unchanged
 #
 # GETTING DATA
 #
