@@ -6,7 +6,7 @@ prog_version='$Id: sh.data,v 1.39 2022/05/26 17:01:11 tlaronde Exp $'
 version="$prog_version
 Written by Thierry Laronde.
 
-Copyright (c) 2005--2012, 2018--2020, 2022
+Copyright (c) 2005--2012, 2018--2020, 2022, 2025
 	Thierry Laronde <tlaronde@polynum.com>
 
 All rights reserved and NO warranties!"
@@ -259,11 +259,11 @@ texfile=$tmpdir/tex
 # char for the \special command.
 #
 cat <<"EOT" >"$texfile"
-\hsize @@phsize@@ bp
-\vsize @@pvsize@@ bp
+\hsize @@phsize@@bp
+\vsize @@pvsize@@bp
 \catcode`\{=1 % left brace is begin-group character
 \catcode`\}=2 % right brace is end-group character
-\special{papersize=@@phsize@@ bp, @@pvsize@@ bp}
+\special{papersize=@@phsize@@bp, @@pvsize@@bp}
 EOT
 
 log "\t2.1 Treating each EPS file."
@@ -320,10 +320,7 @@ while read file; do
 
 	# TeX proper commands.
 	#
-	if test $i -ne 0; then
-		printf '\\shipout\n' >>"$texfile"
-	fi
-	printf '\\vbox{\n' >>"$texfile"
+	printf '\\shipout\\vbox{\n' >>"$texfile"
 	do_special "$file" >>"$texfile"
 	printf '\\special{PSfile=%s}\n' "$file" >>"$texfile"
 	printf '}\n\n' >>"$texfile"
@@ -371,7 +368,7 @@ log "4. Translating dvi into ps."
 # y "-10bp" correction made).
 #
 $KERTEX_BINDIR/dvips \
-	-O "$((-1 * $xmin - 72))bp,$(($ymax - 72 - 10))bp" texput.dvi\
+	-O "$((-1 * $xmin - 72))bp,$(($ymax - 72))bp" texput.dvi\
 	>"$bookname.ps"
 
 if test $do_pdf = YES; then
