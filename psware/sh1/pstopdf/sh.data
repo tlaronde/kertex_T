@@ -2,7 +2,7 @@
 # pstopdf : generate a PDF from a PostScript file taking its size 
 # page definition into account.
 # 
-prog_version='1.0'
+prog_version='1.1'
 version="$prog_version
 Written by Thierry Laronde.
 
