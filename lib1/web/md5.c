@@ -1,6 +1,7 @@
 /* The original author and licence is specified below. This has been
    adapted for kerTeX by Thierry Laronde <tlaronde@polynum.com>
-   2021-08-31.
+   2021-08-31 (2025-03-16: remove "stdint.h" for uniq uint32_t
+   usage: unsigned long will do).
    kerTeX Public Licence v1.0.
  */
 /*
@@ -42,7 +43,6 @@
  * optimizations are not included to reduce source code size and avoid
  * compile-time configuration.
  */
-#include <stdint.h>
 #include <string.h>
 #include "kertex.h"
 #include "pascal.h"
@@ -50,7 +50,7 @@
  
 /* Any 32-bit or wider unsigned integer data type will do */
 /* A machine word will be better; we play it safe. [TL] */
-typedef uint32_t MD5_u32plus_;
+typedef unsigned long MD5_u32plus_;
  
 typedef struct {
 	MD5_u32plus_ lo, hi;
