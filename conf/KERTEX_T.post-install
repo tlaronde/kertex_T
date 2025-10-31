@@ -2,7 +2,7 @@
 #
 # $Id: KERTEX_T.post-install,v 1.35 2012/03/22 13:58:40 tlaronde Exp $
 #
-#  Copyright 2010 Thierry LARONDE <tlaronde@polynum.com>
+#  Copyright 2010, 2025 Thierry LARONDE <tlaronde@polynum.com>
 #  All rights reserved. 
 #  
 #  This work is under the KerGIS Public Licence v1.1
@@ -34,7 +34,7 @@ to see where stuff is installed. And then run:
 
              WARNING! WARNING! WARNING! CHANGED!!!!
 
-	\$KERTEX_SHELL \$KERTEX_LIBDIR/pkg/kertex.sh install
+	\$KERTEX_SHELL \$KERTEX_LIBDIR/pkg/rcp/core@pkg.sh install
 
 Note too that now, for every kerTeX system on whatever host, the
 semicolon ';' is used instead of the colon ':' for path separator when
