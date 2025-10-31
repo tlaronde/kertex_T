@@ -1291,6 +1291,8 @@
 + f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/mdfivesum.tex $TARGETLIBDIR/kertex/prote/sellette/mdfivesum.tex
 + f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/pseudo-randoms.log $TARGETLIBDIR/kertex/prote/sellette/pseudo-randoms.log
 + f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/pseudo-randoms.tex $TARGETLIBDIR/kertex/prote/sellette/pseudo-randoms.tex
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/roff.log $TARGETLIBDIR/kertex/prote/sellette/roff.log
++ f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/roff.tex $TARGETLIBDIR/kertex/prote/sellette/roff.tex
 + f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/shellescape.log $TARGETLIBDIR/kertex/prote/sellette/shellescape.log
 + f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/shellescape.tex $TARGETLIBDIR/kertex/prote/sellette/shellescape.tex
 + f $USER0:$GROUP0 644 $PROJECTDIR/prote/lib/sellette/strcmp.log $TARGETLIBDIR/kertex/prote/sellette/strcmp.log
