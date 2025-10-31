@@ -1,0 +1,25 @@
+\catcode`\{=1 \catcode`\}=2
+\message{This feature is only available starting with version 1.2.0 of
+Prote.}
+\message{Version: \the\Proteversion.\Proterevision; (should be 1.2.0)}
+\message{Default is \string\noroffcompat, that is .Proterevision put at
+the very start of a line should not be expanded:}
+\message{Revision: 
+.Proterevision;
+(should be the string .Proterevision)}
+\roffdot
+\message{After validating roffdot then this should be expanded:}
+\message{Revision: 
+.Proterevision;
+(should be \Proterevision)}
+\message{If the dot is not the very first character, this should not
+validate as a cs:}
+\message{Revision: 
+ .Proterevision;
+(should be the string .Proterevision)}
+.noroffcompat
+\message{Resetting to default \string\noroffcompat:}
+\message{Revision:
+.Proterevision;
+(should be .Proterevision)}
+\end

@@ -10,8 +10,8 @@
 \maintitle{PROTE}
 \vskip 3ex
 \centerline{Thierry Laronde---tlaronde\AT polynum.com}
-\centerline{1.1.0}
-\centerline{2023-08-01}
+\centerline{1.2.0}
+\centerline{2025-10-27}
 \vskip 1ex
 \hrule height 0.2ex
 \vskip 1ex
@@ -114,24 +114,29 @@ or not; value to be expanded by |\the| or not; read-only or read---write
 
 The following principles have been followed:
 
-(1)~When a primitive corresponds to a read-write variable, the variable
+(1)~When a primitive corresponds to a setting of a mode, affecting the
+way \TeX\ behaves, the setting corresponding to defined values given
+by symbolic names, the primitives are in fact setting a global
+variable. These are |setting_*| variants.
+
+(2)~When a primitive corresponds to a read-write variable, the variable
 has been added as a parameter in the corresponding |eqtb| region,
 integer (if the units, even if defined, is not specified at expansion)
 or dimension. These are |assign_*| variants.
 
-(2)~When the primitive corresponds to a read-only variable but whose
+(3)~When the primitive corresponds to a read-only variable but whose
 value can be expanded by |\the|, it is a |last_item| variant.
 
-(3)~When the primitive expands to something that is externally given
+(4)~When the primitive expands to something that is externally given
 (and is not expanded by |\the|), it is a |convert| variant.
 
-(4)~When the primitive is a conditional, it is obviously a |if_else|
+(5)~When the primitive is a conditional, it is obviously a |if_else|
 variant.
 
-(5)~When the primitive changes (or may change) the definition of the
+(6)~When the primitive changes (or may change) the definition of the
 following token, it is a |expand_after| variant.
 
-(6)~When the primitive is really orthogonal, it is an |extension|
+(7)~When the primitive is really orthogonal, it is an |extension|
 variant.
 
 @ In \TeX, there is a lot of ``numbering'' in the sense of encoding
@@ -176,13 +181,13 @@ according to their type.
 @ D.E.~Knuth has designed a torture test that is a \TeX\ command file in
 order to check the conformity of the TeX engine. The torture test is
 named {\tt TRIP}. What is tested is a version of the {\tt INITEX}
-instance of the \TeX engine, with some defined parameters for
+instance of the \TeX\ engine, with some defined parameters for
 compilation.
 
 So there are two things to be distinguished: the name of the command
 file pushing the engine in all dark corners (for \TeX: {\tt TRIP}) and
 the version of the engine tested (in ker\TeX, the corresponding
-{\tt INITEX} for the \TeX version is called {\tt triptex}).
+{\tt INITEX} for the \TeX\ version is called {\tt triptex}).
 
 @ \eTeX\ adds more than a simple torture test, called {\tt ETRIP}: it
 adds the constraints that the {\tt INITEX} instance of the \eTeX\ engine
@@ -199,8 +204,8 @@ the primitives added in order to verify that they conform to the API
 contract defined below.
 
 \extra{In ker\TeX, one will find the Bourne shell scripts {\tt ck\_tex},
-{\tt ck\_etex} and {\tt ck\_prote}, in the directory {\tt 
-\$KERTEX\_BINDIR/adm}, to check the conformance. One can refer to these
+{\tt ck\_etex} and {\tt ck\_prote} in the directory {\tt 
+\$KERTEX\_BINDIR/adm} to check the conformance. One can refer to these
 files for further information.}
 
 \enddiv % Mise sur la sellette
@@ -242,7 +247,7 @@ code when passing data to external routines, or set by the external
 routine to pass data to the internal code. Remember that the index
 starts at $1$ (and not $0$ like in normal C code). If |xchg_buffer_length|
 is $0$ this does mean that there is no data. Even if the array is
-representing a string, it is neither NUL or space terminated: the
+representing a string, it is neither NUL nor space terminated: the
 |xchg_buffer_length| gives the size.
 
 \enddiv % Exchanging with the system
@@ -512,6 +517,8 @@ As the previous but for the y.
 
 \enddiv % DVI related
 
+\vfil
+\break
 \begindiv File-related primitives
 
 @ For these primitives, a |<balanced text>| (expanded) is converted
@@ -566,6 +573,43 @@ to nothing---the same happens if there is a problem with the file
 opening.}
 
 \enddiv % File-related primitives
+
+\begindiv Roff compatibility
+
+@ \TeX\ is a layout engine. There is {\it de facto} no reason to
+prevent \TeX\ from rendering texts described with {\tt roff} like
+macros. One of the main differences concerning the macros is that
+{\tt roff} treats specially a dot at the very start of a new line: it
+introduces a macro call.
+
+\Prote\ adds thus a global variable for the setting of the {\tt roff}
+compatibility. Setting this variable with defined values---given as
+symbolic names---is made {\it via} primitives.
+
+This global variable (named |roff_compat| in \Prote, but this is an
+implementation detail and is not part of the A.P.I.) behaves as
+|interaction| in \TeX: it is not subject to grouping or local scope.
+
+For now, there are only two values and hence two primitives:
+|\noroffcompat| (this is the default) meaning no special treatment; and
+|\roffdot|, treating a leading dot in a new line as an |escape|
+command introducing a macro. For now and for future, any other
+|roff| setting will validate this dot compatibility. (In \Prote,
+|\noroffcompat| sets the global variable to $0$ and |\roffdot| sets
+it to $1$, but the values have no meaning, only the order between the
+values matters). Greater values will validate all lesser values
+features, except of course the first corresponding to the 
+|\noroffcompat| setting.
+
+@ |\noroffcompat|. ({\sl global var |roff_compat| setting})\enskip
+No {\tt roff} compatibility feature. This is the default.
+
+@ |\roffdot|. ({\sl global var |roff_compat| setting})\enskip
+A dot at the very beginning of a line (first character) is interpreted
+as an escape command. Hence a macro generally called |\somecs| can
+be called at the very beginning of a line as |.somecs|.
+
+\enddiv % Roff compatibility
 
 \enddiv % Added primitives
 

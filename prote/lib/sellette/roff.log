@@ -1,0 +1,17 @@
+This is Prote, Version kerTeX C 3.141592653-2.6-1.2.0 (INITEX)  30 OCT 2025 20:21
+entering extended mode
+entering Prote mode
+****./roff
+(./roff.tex
+This feature is only available starting with version 1.2.0 of Prote.
+Version: 1.2.0; (should be 1.2.0)
+Default is \noroffcompat, that is .Proterevision put at the very start o
+f a line should not be expanded:
+Revision: .Proterevision; (should be the string .Proterevision)
+After validating roffdot then this should be expanded:
+Revision: 2.0; (should be 2.0)
+If the dot is not the very first character, this should not validate as 
+a cs: Revision: .Proterevision; (should be the string .Proterevision)
+Resetting to default \noroffcompat:
+Revision: .Proterevision; (should be .Proterevision) )
+No pages of output.

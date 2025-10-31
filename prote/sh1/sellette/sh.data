@@ -3,7 +3,7 @@
 # Trip'ping and Etrip'ping Prote, in the three modes, and testing the
 # PAPI contract for the new primitives.
 #
-# Thierry Laronde, 2021-10-10.
+# Thierry Laronde, 2021-10-10, 2025-10-30.
 #
 
 # These ones are set at config time and can be overwritten in env.
@@ -75,7 +75,8 @@ for feature in expanddepth \
 	filemoddate \
 	filesize \
 	filedump \
-	mdfivesum; do
+	mdfivesum \
+	roff; do
 	(
 	test -f $KERTEX_LIBDIR/prote/sellette/$feature.pre.sh\
 		&& . $KERTEX_LIBDIR/prote/sellette/$feature.pre.sh

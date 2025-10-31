@@ -1,7 +1,7 @@
 % This is prote.ch, the change file to add to TeX and e-TeX new 
 % primitives or functionalities.
 %
-% Copyright 2021, 2023--2024 Thierry LARONDE <tlaronde@polynum.com>
+% Copyright 2021, 2023--2025 Thierry LARONDE <tlaronde@polynum.com>
 % MIT/X11 license.
 %
 % The TeX program is copyright (C) 1982 by D. E. Knuth.
@@ -53,8 +53,8 @@
 % that name is reserved strictly for the program which is the creation
 % and sole responsibility of Professor Knuth.
 @y
-% Prote is copyright (C) 2021 by Thierry Laronde and put under
-% the MIT/X11 license.
+% Prote is copyright (C) 2021, 2023--2025 by Thierry Laronde and put
+% under the MIT/X11 license.
 %
 % As TeX and e-TeX are reserved names for the unchanged (except for the
 % necessary implementation of system dependencies) instances of, resp.,
@@ -123,7 +123,7 @@
 % connection with the use or performance of this software. This work has
 % been a ``labor of love'' and the author hopes that users enjoy it.
 @y
-% This is the 1.1 version of Prote, developed during August 2021,
+% This is the 1.2 version of Prote, developed during August 2021,
 % and corrected during september/october 2021 and amended in august 2023
 % for file primitives behavior matching input behavior.
 %
@@ -141,6 +141,8 @@
 % incorporated and reflected only in the patchlevel number (third)
 % number since there is strictly no change in the program behavior or
 % implementation.
+%
+% 1.2: 2025-10-27: addition of the first roff compatibility features.
 %
 %  History towards 1.0 release:
 %    0.99.4:
@@ -225,9 +227,9 @@ known as `\Prote'.
 @y
 @d eTeX_states=1 {number of \eTeX\ state variables in |eqtb|}
 @#
-@d Prote_version_string=='3.141592653-2.6-1.1.1' {current \Prote\ version}
+@d Prote_version_string=='3.141592653-2.6-1.2.0' {current \Prote\ version}
 @d Prote_version=1 { \.{\\Proteversion} }
-@d Prote_revision==".1.1" { \.{\\Proterevision} }
+@d Prote_revision=="2.0" { \.{\\Proterevision} }
 @#
 @d Prote_banner=='This is Prote, Version ',Prote_version_string
   {printed when \Prote\ starts}
@@ -261,6 +263,15 @@ end;
 @y
 @p @<Declare \Prote\ arithmetic routines@>@;
 function badness(@!t,@!s:scaled):halfword; {compute badness, given |t>=0|}
+@z
+%---------------------------------------
+@x [15] m.207 - inserting a code for roff mode assignment
+@d set_interaction=100 {define level of interaction ( \.{\\batchmode}, etc.~)}
+@d max_command=100 {the largest command code seen at |big_switch|}
+@y
+@d set_interaction=100 {define level of interaction ( \.{\\batchmode}, etc.~)}
+@d set_roff_mode=101 {define level of roff compat. ( \.{\\noroffcompat}, etc.~)}
+@d max_command=101 {the largest command code seen at |big_switch|}
 @z
 %---------------------------------------
 @x [17] m.222 - Define frozen_primitive
@@ -378,7 +389,19 @@ control sequence between \.{\\csname} and \.{\\endcsname}.
 @!align_state:integer; {group level with respect to current alignment}
 @!incsname_state:integer; {group level with respect to in csname state}
 @z
- %---------------------------------------
+%---------------------------------------
+@x [24] m.343 - generate escape if in roffdot compat mode
+begin switch: if loc<=limit then {current line not yet finished}
+  begin cur_chr:=buffer[loc]; incr(loc);
+  reswitch: cur_cmd:=cat_code(cur_chr);
+@y
+begin switch: if loc<=limit then {current line not yet finished}
+  begin cur_chr:=buffer[loc]; incr(loc);
+  reswitch: @<Set |cur_cmd| to |cat_code| or |escape| if |roff_dot|
+    conditions hold@>@;
+@z
+
+%---------------------------------------
 @x [25] m.366 - add forward declarations for expanding
 @t\4@>@<Declare \eTeX\ procedures for expanding@>@;@/
 @y
@@ -516,13 +539,20 @@ if Prote_ex then
 end
 @z
 %---------------------------------------
+@x [49] m.1210 - Adding set_roff_mode to the cases of main_control
+any_mode(set_interaction):prefixed_command;
+@y
+any_mode(set_interaction),
+any_mode(set_roff_mode):prefixed_command;
+@z
+%---------------------------------------
 @x [50] m.1307 - Saving Prote state
 dump_int(@$);@/
 @<Dump the \eTeX\ state@>@/
 @y
 dump_int(@$);@/
 @<Dump the \eTeX\ state@>@/
-@<Dump the \Prote\ state@>@/
+@<Dump the \Prote\ state and |roff_mode|@>@/
 @<Dump the |ROM| array@>@/
 @z
 %---------------------------------------
@@ -532,7 +562,7 @@ if x<>@$ then goto bad_fmt; {check that strings are the same}
 @y
 if x<>@$ then goto bad_fmt; {check that strings are the same}
 @/@<Undump the \eTeX\ state@>@/
-@/@<Undump the \Prote\ state@>@/
+@/@<Undump the \Prote\ state and |roff_mode|@>@/
 @/@<Undump the |ROM| array@>@/
 @z
 %---------------------------------------
@@ -709,10 +739,14 @@ expand_depth_count:=0;
 @* \[53b] The extended features of \Prote.
 \Prote\ extends furthermore \eTeX\ i.e. \eTeX\ is thus required
 before adding \Prote\ own extensions. But if \eTeX\ mode has not
-be enabled, the engine is still compatible with \TeX\ with no added
+been enabled, the engine is still compatible with \TeX\ with no added
 primitive commands and with a modification of code---from
 \eTeX\ exclusively for now---that is sufficiently minor so that
 the engine still deserves the name \TeX.
+
+\Prote\ features are thus supplementary, and we need a way to register
+if we have these supplementary features or not. This is done via a
+global boolean variable and the condition is obvious.
 
 @d Prote_ex==(Prote_mode=1) {is this prote mode?}
 
@@ -726,12 +760,6 @@ initial `*' in a row).
  
 @<Initialize table entries...@>=
 Prote_mode:=0; {initially we are in compatibility mode}
-
-@ @<Dump the \Prote\ state@>=
-dump_int(Prote_mode);
-
-@ @<Undump the \Prote\ state@>=
-undump(0)(1)(Prote_mode);
 
 @ In order to not clobber the global scope with variables that are
 locally used, the initializations for \Prote, if the mode is
@@ -2245,6 +2273,81 @@ end;
 
 @ @<Cases for |out_what|@>=
 save_pos_code: save_pos_out(p);
+
+@*1 Roff compatibility related primitives.
+
+These primitives are related to various features aiming to allow to
+proceed |roff| like scripts with \TeX\ (here, the variant \Prote).
+
+The compatibility mode mimicks what is done via the global variable
+|interaction| and is, accordingly, also implemented with a global
+variable: |roff_mode|, that has been defined above, to gather things
+that have to be dumped and undumped.
+
+The value of this variable is a positive integer,
+and greater values will validate features set on by lower values.
+The variable is set to some value via primitives named after the
+symbolic constant defined below. We start with $0$ that is
+|no_roff_compat|. The first feature is treating a leading dot in
+a new line as an escape character.
+
+@d no_roff_compat=0 {no special treatment for roff compatibility}
+@d roff_dot=1 {treats a leading dot in a new line as an escape char}
+
+@<Glob...@>=
+@!roff_mode:no_roff_compat..roff_dot; {current level of roff compatibility}
+
+@ At start, there is no |roff| compatibility feature. In order to
+speed the inner loop, we will not test for \Prote\ mode but set
+unconditionally the global variable to |no_roff_compat|.
+
+@<Set init...@>=roff_mode:=no_roff_compat;
+
+@ Setting this internal variable is done via primitives, mimicking
+what is done for |interaction|. 
+
+@<Generate all \Prote\ primitives@>=
+primitive("noroffcompat",set_roff_mode,no_roff_compat);@/
+@!@:noroffcompat_}{\.{\\noroffcompat} primitive@>
+primitive("roffdot",set_roff_mode,roff_dot);@/
+@!@:roffdot_}{\.{\\roffdot} primitive@>
+
+@ @<Cases of |print_cmd_chr|...@>=
+set_roff_mode: case chr_code of
+  no_roff_compat: print_esc("noroffcompat");
+  roff_dot: print_esc("roffdot")
+  endcases;
+ 
+@ @<Assignments@>=
+set_roff_mode: roff_mode:=cur_chr;
+
+@ If in |roff| compatibility mode---set only in \Prote\ state---,
+a leading dot in a new line is treated as an escape character.
+|new_line| does not tag the very beginning of the line---the first
+character---, but a possible sequence of ignored (space) characters.
+So we need to verify that this is strictly the very beginning and we
+order the conditions so that the test will fail early in the more
+frequent case.
+
+@<Set |cur_cmd| to |cat_code| or |escape| if |roff_dot|
+   conditions hold@>=
+if (loc=start+1)and(state=new_line)and(roff_mode>=roff_dot)and(cur_chr=".")
+  then cur_cmd:=escape else cur_cmd:=cat_code(cur_chr);
+
+@*1 Dumping/undumping \Prote\ global variables.
+
+Dumping and undumping are reciprocal serial functions: we undump the
+same amount of bytes in the same order. Other saved and restored
+features have dedicated modules. Here we are concerned with the two
+added global variables.
+ 
+@<Dump the \Prote\ state and |roff_mode|@>=
+dump_int(Prote_mode);
+dump_int(roff_mode);
+
+@ @<Undump the \Prote\ state and |roff_mode|@>=
+undump(0)(1)(Prote_mode);
+undump(no_roff_compat)(roff_dot)(roff_mode);
 
 @* \[54] System-dependent changes.
 @z
