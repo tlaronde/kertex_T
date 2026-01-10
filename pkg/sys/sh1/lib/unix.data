@@ -170,7 +170,7 @@ sys_http_get()
 {
 	echo "echo 'Getting $1$2. Please wait...'"
 	case $sys_httpc in
-		ftp) echo "ftp '$PKG_URL${1#$PKG_RROOT}$2' '$3'"
+		ftp) echo "ftp -o '$3' '$PKG_URL${1#$PKG_RROOT}$2'"
 	  		;;
 		lftp) echo "lftp -c 'get \"$PKG_URL${1#$PKG_RROOT}$2\" -o \"$3\"'"
 	  		;;
