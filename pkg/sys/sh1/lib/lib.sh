@@ -1,6 +1,6 @@
 # The library of pkg sh routines.
 #
-# C) 2011--2014, 2016--2017, 2019--2020, 2022, 2024
+# C) 2011--2014, 2016--2017, 2019--2020, 2022, 2024, 2026
 #	Thierry Laronde <tlaronde@polynum.com>
 #
 # All right reserved and no warranties: use at your own risks!
@@ -13,7 +13,7 @@
 
 #===== NOTHING TO CHANGE BELOW!
 #
-PKG_LIB_VERSION=0.99.15
+PKG_LIB_VERSION=0.99.16
 
 set -e
 
