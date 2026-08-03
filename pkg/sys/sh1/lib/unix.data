@@ -63,6 +63,11 @@ sys_file_cnx_open()
 	test -d "$PKG_RROOT" || pkg_error "file : $PKG_RROOT doesn't exist"
 }
 
+sys_https_cnx_open()
+{
+	sys_http_cnx_open "$@"
+}
+
 sys_http_cnx_open()
 {
 	return 0
@@ -96,6 +101,11 @@ sys_file_lcd()
 	echo "cd $1"
 }
 
+sys_https_lcd()
+{
+	sys_http_lcd "$@"
+}
+
 sys_http_lcd()
 {
 	echo "cd $1"
@@ -116,6 +126,11 @@ sys_ftp_lcd()
 sys_file_ls()
 {
 	echo "( cd $1; ls; )"
+}
+
+sys_https_ls()
+{
+	sys_http_ls "$@"
 }
 
 sys_http_ls()
@@ -166,6 +181,11 @@ sys_file_get()
 	echo "cp '$1$2' '$3'"
 }
 
+sys_https_get()
+{
+	sys_http_get "$@"
+}
+
 sys_http_get()
 {
 	echo "echo 'Getting $1$2. Please wait...'"
@@ -205,6 +225,11 @@ sys_ftp_get()
 sys_file_cnx_close()
 {
 	return 0
+}
+
+sys_https_cnx_close()
+{
+	sys_http_cnx_close "$@"
 }
 
 sys_http_cnx_close()

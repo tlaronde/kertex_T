@@ -13,7 +13,7 @@
 
 #===== NOTHING TO CHANGE BELOW!
 #
-PKG_LIB_VERSION=0.99.16
+PKG_LIB_VERSION=0.99.17
 
 set -e
 
@@ -476,7 +476,7 @@ pkg_setck_nickname()
 # to be recognized correctly.
 #
 # One thing is very system dependent: the program allowing to retrieve
-# an url, for http and ftp protocols, in a non interactive way. But
+# an url, for http, https and ftp protocols, in a non interactive way. But
 # this is not simply the program, this can be the syntax too. The
 # following variable is for Unices to adapt. Plan9 has a different
 # approach.
@@ -503,6 +503,7 @@ pkg_setck_nickname()
 #	file:///root/[path/] # the third '/' is for "/root"
 #	ftp://user:passwd@server/[path/]
 #	http://[user:passw@]server/[path/]
+#	https://[user:passw@]server/[path/]
 #
 # Sole commands supported: LCD and GET.
 #
@@ -523,7 +524,7 @@ pkg_setck_nickname()
 # By default, we start retrieving at / (==TMPDIR) as LCD.
 #
 # GET can get a uniq file or get files according to a regexp in a
-# directory (for this to work with http, we rely on the httpd to send
+# directory (for this to work with http[s], we rely on the httpd to send
 # a htmpl file with a listing where filenames are given in <a>*</a>
 # entries).
 # 
@@ -553,16 +554,16 @@ pkg_setck_nickname()
 #
 # call: url
 # sets: PKG_URL, PKG_RPROTO, PKG_RUSER, PKG_RPWD, PKG_RHOST (the server
-# for ftp and http; empty for file) and PKG_RROOT (PKG_URL minus
+# for ftp and http[s]; empty for file) and PKG_RROOT (PKG_URL minus
 # the protocol for file; the root server dir, prepended to the rcd,
-# for http and ftp).
+# for http[s] and ftp).
 # return: exits on error
 #
 PKG_URL=
 PKG_RPROTO=
 PKG_RUSER=
 PKG_RPWD=
-PKG_RHOST= # the server name for ftp and http; no trailing '/'
+PKG_RHOST= # the server name for ftp and http[s]; no trailing '/'
 PKG_RROOT= # shall have a trailing '/'
 
 pkg_setck_url()
@@ -586,7 +587,7 @@ pkg_setck_url()
 	#
 	PKG_RHOST=$(echo $junk | $PKG_SED -n 's!^\(.*/\)$!\1!p')
 	case "${PKG_RPROTO:-}" in
-		ftp|http|file) ;;
+		ftp|http|https|file) ;;
 		*) pkg_error "Insupported protocol in url '$1'!";;
 	esac
 	test "x$PKG_RHOST" != x\
@@ -600,7 +601,7 @@ pkg_setck_url()
 		fi
 		PKG_RROOT="$(echo $PKG_RHOST | sed 's!^[^/]*/!/!')"
 		PKG_RHOST="$(echo $PKG_RHOST | sed 's!^\([^/]*\)/.*$!\1!')"
-	elif test $PKG_RPROTO = http; then
+	elif test $PKG_RPROTO = http || test $PKG_RPROTO = https; then
 		PKG_RROOT="$(echo $PKG_RHOST | sed 's!^[^/]*/!/!')"
 		PKG_RHOST="$(echo $PKG_RHOST | sed 's!^\([^/]*\)/.*$!\1!')"
 	else # file
@@ -628,7 +629,7 @@ pkg_setck_url()
 #	- pkg_setck_url has been called, hence PKG_URL, PKG_RPROTO, 
 #		PKG_RUSER, PKG_RPWD, PKG_RHOST are defined;
 #	- rdir is absolutely qualified i.e. it begins with a '/' with
-#		path as prefix for http or ftp, or /root/path for file
+#		path as prefix for http, https or ftp, or /root/path for file
 #		protocol;
 #	- the commands have to be sent to stdout.
 #
