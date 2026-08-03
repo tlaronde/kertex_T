@@ -1,0 +1,7 @@
+DATA = pkg_rcp_sketch.sh
+
+all: $(DATA)
+
+$(DATA): sh.data
+	sed -e 's!@@TARGETSHELL@@!$(TARGETSHELL)!' sh.data >$@
+

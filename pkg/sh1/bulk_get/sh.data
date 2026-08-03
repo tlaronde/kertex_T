@@ -1,7 +1,7 @@
-#!/bin/sh
+#!@@TARGETSHELL@@
 # Bulk downloading the src for all the recipes.
 version='$Header: /data/cvs/priv/2/23/pkg/sh1/bulk_get/sh,v 1.3 2024/01/27 18:26:13 tlaronde Exp $
-C) 2024
+C) 2024, 2026
 	Thierry Laronde <tlaronde@kergis.com>
 All rights reserved and no warranty of any kind! Use at your own risk!
 KerTeX PUBLIC LICENCE version 1.0

@@ -74,6 +74,8 @@
 # Administration and packages stuff
 @ d * * $PROJECTDIR/sh1/which *
 @ d * * $PROJECTDIR/pkg/sys/sh1/lib *
+@ d * * $PROJECTDIR/pkg/sh1/rcp_sketch *
+@ d * * $PROJECTDIR/pkg/sh1/bulk_get *
 
 #========== THE MAIN DIR TREE
 # These two directories and this program are what kerTeX puts on the
@@ -123,8 +125,8 @@
 + f $USER0:$GROUP0 644 $PROJECTDIR/pkg/rcp/core/pkg.sh $TARGETLIBDIR/kertex/pkg/rcp/core@pkg.sh
 + f $USER0:$GROUP0 644 $PROJECTDIR/pkg/rcp/pkg.sh $TARGETLIBDIR/kertex/pkg/rcp/rcp@pkg.sh
 # Pkg utilities
-+ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/sh1/bulk_get/sh $TARGETBINDIR/kertex/pkg_bulk_get.sh
-+ f $USER0:$GROUP0 644 $PROJECTDIR/pkg/sh1/rcp_sketch/sh $TARGETBINDIR/kertex/pkg_rcp_sketch.sh
++ f $USER0:$GROUP0 755 $OBJDIR/pkg/sh1/bulk_get/pkg_bulk_get.sh $TARGETBINDIR/kertex/pkg_bulk_get.sh
++ f $USER0:$GROUP0 755 $OBJDIR/pkg/sh1/rcp_sketch/pkg_rcp_sketch.sh $TARGETBINDIR/kertex/pkg_rcp_sketch.sh
 + f $USER0:$GROUP0 644 $PROJECTDIR/pkg/proto/latex.rct $TARGETLIBDIR/kertex/pkg/proto/latex.rct
 
 # Keep the doc in the realm.
